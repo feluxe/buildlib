@@ -1,0 +1,3 @@
+
+recursive-exclude tests *
+include buildlib/cli/interface.txt
