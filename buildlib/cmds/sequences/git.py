@@ -1,9 +1,11 @@
-import prmt
 import sys
-from buildlib.cmds import git
 from typing import NamedTuple
-from buildlib.utils.git.prompt import prompt_commit_msg, prompt_branch
+
+import prmt
 from headlines import h3
+
+from buildlib.cmds import git
+from cmds.git.prompt import prompt_branch, prompt_commit_msg
 
 
 class Answers(NamedTuple):

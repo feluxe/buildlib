@@ -23,36 +23,36 @@ def publish_sequence() -> None:
         'gemfury_env': CFG['gemfury_env'],
         }
 
-    answers: Answers = prompt_seq_publish.get_answers(**kwargs)
-    res = list()
+    a: Answers = prompt_seq_publish.get_answers(**kwargs)
+    result = list()
 
-    if answers.should_update_version_num:
-        res.append(build.update_version_num_in_cfg_yaml(CFG_FILE, answers.version))
+    if a.should_update_version_num:
+        result.append(build.update_version_num_in_cfg_yaml(CFG_FILE, a.version))
 
-    if answers.should_run_build_py:
-        res.append(build.run_build_file(CWD + '/build.py'))
+    if a.should_run_build_py:
+        result.append(build.run_build_file(CWD + '/build.py'))
 
-    if answers.should_run_git_commands:
-        if answers.should_run_git_add_all:
-            res.append(git.add_all())
+    if a.should_run_git_commands:
+        if a.should_run_git_add_all:
+            result.append(git.add_all())
 
-        if answers.should_run_git_commit:
-            res.append(git.commit(answers.commit_msg))
+        if a.should_run_git_commit:
+            result.append(git.commit(a.commit_msg))
 
-        if answers.should_run_git_tag:
-            res.append(git.tag(answers.version, answers.branch))
+        if a.should_run_git_tag:
+            result.append(git.tag(a.version, a.branch))
 
-        if answers.should_run_git_push:
-            res.append(git.push(answers.branch))
+        if a.should_run_git_push:
+            result.append(git.push(a.branch))
 
-    if answers.should_push_registry:
-        if answers.should_push_gemfury:
-            wheel_version_num = convert_semver_to_wheelver(answers.version)
+    if a.should_push_registry:
+        if a.should_push_gemfury:
+            wheel_version_num = convert_semver_to_wheelver(a.version)
             wheel_file = get_python_wheel_name_from_semver_num(wheel_version_num, CWD + '/dist')
-            res.append(build.push_python_wheel_to_gemfury('dist/' + wheel_file))
+            result.append(build.push_python_wheel_to_gemfury('dist/' + wheel_file))
 
     print(h3('Publish Results'))
-    for item in res:
+    for item in result:
         print(item.return_msg)
 
 
