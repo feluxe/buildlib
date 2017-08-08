@@ -9,7 +9,7 @@ __pycache__/
 venv-buildlib/
 
 ### Wheels ###
-build/
+/build/
 dist/
 buildlib.egg-info/
 

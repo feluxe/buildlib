@@ -1,64 +1,65 @@
-from buildlib.utils.semver.prompt import prompt_semver_num_by_choice
-from buildlib.cmds.sequences import git as prompt_seq_git
-from typing import NamedTuple, Optional
 import prmt
+from cmdinter import CmdFuncResult
+from typing import Optional, Union, List
+from buildlib.utils.yaml import load_yaml
+from buildlib.utils.semver.prompt import prompt_semver_num_by_choice, prompt_semver_num_manually
+from buildlib.cmds import build
+from buildlib.utils.semver import convert_semver_to_wheelver, get_python_wheel_name_from_semver_num
 
 
-class Answers(NamedTuple):
-    should_update_version_num: bool
-    version: Optional[str]
-    should_run_build_py: bool
-    should_run_git_commands: bool
-    should_run_git_add_all: bool
-    should_run_git_commit: bool
-    commit_msg: Optional[str]
-    should_run_git_tag: bool
-    should_run_git_push: bool
-    branch: Optional[str]
-    should_push_registry: bool
-    should_push_gemfury: bool
-    gemfury_env: Optional[str]
+def load_cfg(path):
+    try:
+        return load_yaml(path, keep_order=True)
+    except:
+        return None
 
 
-def get_answers(
-    ask_registry=False,
-    ask_build=False,
-    cur_version=None,
-    gemfury_env=None
-    ) -> Answers:
+def get_version(cfg_path):
+    cfg = load_cfg(cfg_path)
+    cur_version: str = cfg and cfg.get('version')
+    if cur_version:
+        return prompt_semver_num_by_choice(cur_version)
+    else:
+        return prompt_semver_num_manually()
+
+
+def publish_sequence(
+    cfg_file: Optional[str] = None,
+    build_file: Optional[str] = None,
+    wheel_dir: Optional[str] = None,
+    run_update_version: Union[bool, str] = True,
+    run_build_file: Union[bool, str] = 'y',
+    run_push_gemfury: Union[bool, str] = False,
+    run_push_pypi: Union[bool, str] = False,
+    cur_version: Optional[str] = None,
+    ) -> List[CmdFuncResult]:
     """"""
+    result = []
+    new_version = None
 
-    question: str = 'Do you want to update the VERSION NUMBER before publishing? [y|n]'
-    should_update_version_num = prmt.confirm(question, default='y')
+    if run_update_version:
+        default = run_update_version if type(run_update_version) == str else ''
+        question: str = 'Do you want to update the VERSION NUMBER before publishing? [y|n]'
+        if prmt.confirm(question, default=default):
+            new_version = get_version(cfg_file)
+            result.append(build.update_version_num_in_cfg_yaml(cfg_file, new_version))
 
-    version = prompt_semver_num_by_choice(cur_version) if should_update_version_num else None
+    if run_build_file:
+        default = run_build_file if type(run_build_file) == str else ''
+        question: str = 'Do you want to run "build.py" before publishing?'
+        if prmt.confirm(question, default=default):
+            result.append(build.run_build_file(build_file))
 
-    question: str = 'Do you want to run "build.py" before publishing?'
-    should_run_build_py = prmt.confirm(question, default='y') if ask_build else None
+    if run_push_gemfury:
+        default = run_push_gemfury if type(run_push_gemfury) == str else ''
+        question: str = 'Do you want to push the new version to GEMFURY?'
+        if prmt.confirm(question, default=default):
+            version = new_version or cur_version or get_version(cfg_file)
+            wheel_version_num = convert_semver_to_wheelver(version)
+            wheel_file = get_python_wheel_name_from_semver_num(wheel_version_num, wheel_dir)
+            result.append(build.push_python_wheel_to_gemfury(wheel_dir + '/' + wheel_file))
 
-    question: str = 'Do you want to run ANY GIT COMMANDS before publishing?'
-    should_run_git_commands = prmt.confirm(question, default='y')
+    if run_push_pypi:
+        print('PUSHING TO PYPI NOT YET IMPLEMENTED.')
 
-    git_args = prompt_seq_git.get_answers() if should_run_git_commands else None
-
-    question: str = 'Do you want to PUSH to a package REGISTRY?'
-    should_push_registry = prmt.confirm(question, default='y') if ask_registry else None
-
-    question: str = 'Do you want to push the new version to GEMFURY?'
-    should_push_gemfury = prmt.confirm(question, default='n') if should_push_registry else None
-
-    return Answers(
-        should_update_version_num=should_update_version_num,
-        version=version or cur_version,
-        should_run_build_py=should_run_build_py,
-        should_run_git_commands=should_run_git_commands,
-        should_run_git_add_all=git_args and getattr(git_args, 'should_run_git_add_all'),
-        should_run_git_commit=git_args and getattr(git_args, 'should_run_git_commit'),
-        commit_msg=git_args and getattr(git_args, 'commit_msg'),
-        should_run_git_tag=git_args and getattr(git_args, 'should_run_git_tag'),
-        should_run_git_push=git_args and getattr(git_args, 'should_run_git_push'),
-        branch=git_args and getattr(git_args, 'branch'),
-        should_push_registry=should_push_registry,
-        should_push_gemfury=should_push_gemfury,
-        gemfury_env=gemfury_env
-        )
+    return result
