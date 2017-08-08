@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from buildlib.yaml import load_yaml
+from buildlib.utils.yaml import load_yaml
 from codecs import open
 
 with open('README.md') as f:

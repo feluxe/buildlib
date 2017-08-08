@@ -1,7 +1,9 @@
 import prmt
+import sys
 from buildlib.cmds import git
 from typing import NamedTuple
 from buildlib.utils.git.prompt import prompt_commit_msg, prompt_branch
+from headlines import h3
 
 
 class Answers(NamedTuple):
@@ -16,7 +18,17 @@ class Answers(NamedTuple):
 def get_answers() -> Answers:
     """"""
 
+    print(h3('Git Status'))
     git.status()
+    question: str = 'Is the current git status ok"?'
+    if not prmt.confirm(question, default='y'):
+        sys.exit(1)
+
+    print(h3('Git Diff'))
+    git.diff()
+    question: str = 'Is the current git diff ok"?'
+    if not prmt.confirm(question, default='y'):
+        sys.exit(1)
 
     question: str = 'Do you want to run "git add --all"?'
     should_run_git_add_all = prmt.confirm(question, default='y')
@@ -27,7 +39,7 @@ def get_answers() -> Answers:
     commit_msg = prompt_commit_msg() if should_run_git_commit else None
 
     question: str = 'Do you want to TAG with current version number?'
-    should_run_git_tag = prmt.confirm(question, default='y')
+    should_run_git_tag = prmt.confirm(question, default='n')
 
     question: str = 'Do you want to PUSH current state to GITHUB?'
     should_run_git_push = prmt.confirm(question, default='y')

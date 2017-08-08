@@ -2,9 +2,10 @@ from processy import run, ProcResult
 from cmdinter import CmdFuncResult, Status
 
 
+
 def add_all() -> CmdFuncResult:
     """"""
-    title = 'Git Add All'
+    title = 'Git Add All.'
     cmd = ['git', 'add', '--all']
 
     p: ProcResult = run(cmd)
@@ -20,7 +21,7 @@ def add_all() -> CmdFuncResult:
 
 def commit(msg: str) -> CmdFuncResult:
     """"""
-    title = 'Git Commit'
+    title = 'Git Commit.'
     cmd = ['git', 'commit', '-m', msg]
 
     p: ProcResult = run(cmd)
@@ -39,7 +40,7 @@ def tag(
     branch: str,
     ) -> CmdFuncResult:
     """"""
-    title = 'Git Tag'
+    title = 'Git Tag.'
     cmd = ['git', 'tag', version, branch]
 
     p: ProcResult = run(cmd)
@@ -55,7 +56,7 @@ def tag(
 
 def push(branch: str) -> CmdFuncResult:
     """"""
-    title = 'Git Push'
+    title = 'Git Push.'
     cmd = ['git', 'push', 'origin', branch, '--tags']
 
     p: ProcResult = run(cmd)
@@ -71,7 +72,7 @@ def push(branch: str) -> CmdFuncResult:
 
 def get_default_branch() -> CmdFuncResult:
     """"""
-    title = 'Get Default Branch'
+    title = 'Get Default Branch.'
     branch = None
     return_code = 0
 
@@ -95,8 +96,24 @@ def get_default_branch() -> CmdFuncResult:
 
 def status() -> CmdFuncResult:
     """"""
-    title = 'Git Status'
+    title = 'Git Status.'
     cmd = ['git', 'status']
+
+    p: ProcResult = run(cmd)
+
+    status: str = Status.ok if p.return_code == 0 else Status.error
+
+    return CmdFuncResult(
+        return_code=p.return_code,
+        return_msg=status + title,
+        return_val=None
+        )
+
+
+def diff() -> CmdFuncResult:
+    """"""
+    title = 'Git Diff.'
+    cmd = ['git', 'diff']
 
     p: ProcResult = run(cmd)
 

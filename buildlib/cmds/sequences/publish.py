@@ -45,7 +45,7 @@ def get_answers(
     should_push_registry = prmt.confirm(question, default='y') if ask_registry else None
 
     question: str = 'Do you want to push the new version to GEMFURY?'
-    should_push_gemfury = prmt.confirm(question, default='y') if should_push_registry else None
+    should_push_gemfury = prmt.confirm(question, default='n') if should_push_registry else None
 
     return Answers(
         should_update_version_num=should_update_version_num,
