@@ -1,7 +1,7 @@
 import re
 import os
 from typing import Union, Optional
-from buildlib.wheel import extract_version_from_wheel_name
+from buildlib.utils.wheel import extract_version_from_wheel_name
 
 
 def validate(version: str) -> bool:

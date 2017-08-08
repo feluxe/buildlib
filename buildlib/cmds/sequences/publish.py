@@ -1,4 +1,4 @@
-from buildlib.semver.prompt import prompt_semver_num_by_choice
+from buildlib.utils.semver.prompt import prompt_semver_num_by_choice
 from buildlib.cmds.sequences import git as prompt_seq_git
 from typing import NamedTuple, Optional
 import prmt

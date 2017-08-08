@@ -1,7 +1,7 @@
 import prmt
 from buildlib.cmds import git
 from typing import NamedTuple
-from buildlib.git.prompt import prompt_commit_msg, prompt_branch
+from buildlib.utils.git.prompt import prompt_commit_msg, prompt_branch
 
 
 class Answers(NamedTuple):
@@ -16,7 +16,7 @@ class Answers(NamedTuple):
 def get_answers() -> Answers:
     """"""
 
-    print(git.status(return_stdout=True).output)
+    git.status()
 
     question: str = 'Do you want to run "git add --all"?'
     should_run_git_add_all = prmt.confirm(question, default='y')

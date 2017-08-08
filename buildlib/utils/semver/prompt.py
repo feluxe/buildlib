@@ -1,4 +1,4 @@
-from buildlib import semver
+from buildlib.utils import semver
 import prmt
 
 
