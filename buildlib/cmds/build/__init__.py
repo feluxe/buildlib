@@ -45,10 +45,11 @@ def push_python_wheel_to_gemfury(wheel_file: str) -> CmdFuncResult:
         return_val=None
         )
 
+
 def push_python_wheel_to_pypi() -> CmdFuncResult:
     """"""
     title = 'Push Python Wheel to Pypi.'
-    cmd = ['python', 'setup.py', 'upload', '-r', 'pypi']
+    cmd = ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi']
     p: ProcResult = run(cmd)
     return_code = p.return_code
 
