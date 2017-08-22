@@ -36,7 +36,7 @@ def publish() -> None:
 
     publish_seq_args = publish_seq.get_args_interactively(
         run_build_file='y',
-        run_push_gemfury='y',
+        run_push_pypi='y',
         cfg_file=cfg_file,
         build_file=build_file,
         wheel_dir=wheel_dir,

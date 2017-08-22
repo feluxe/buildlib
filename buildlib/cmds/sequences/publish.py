@@ -67,7 +67,14 @@ def get_args_interactively(
             kwargs['run_push_gemfury'] = True
 
     if run_push_pypi:
-        print('PUSHING TO PYPI NOT YET IMPLEMENTED.')
+        default = run_push_pypi if type(run_push_pypi) == str else ''
+        question: str = 'Do you want to PUSH the new version to PYPI?\n'
+        if prmt.confirm(question, default=default):
+            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
+            kwargs['version'] = new_version
+            kwargs['wheel_dir'] = wheel_dir
+            kwargs['run_push_pypi'] = True
+
 
     return kwargs
 
@@ -101,7 +108,14 @@ def run_seq(
         results.append(build.push_python_wheel_to_gemfury(wheel_file))
 
     if run_push_pypi:
-        pass
+        wheel_version = convert_semver_to_wheelver(version)
+        wheel_name = get_python_wheel_name_from_semver_num(wheel_version, wheel_dir)
+        if not wheel_name:
+            print('There is no build for requested version.')
+            return results
+        wheel_file = wheel_dir + '/' + wheel_name
+        results.append(build.push_python_wheel_to_gemfury(wheel_file))
+
 
     return results
 

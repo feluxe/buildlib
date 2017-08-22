@@ -45,6 +45,21 @@ def push_python_wheel_to_gemfury(wheel_file: str) -> CmdFuncResult:
         return_val=None
         )
 
+def push_python_wheel_to_pypi() -> CmdFuncResult:
+    """"""
+    title = 'Push Python Wheel to Pypi.'
+    cmd = ['python', 'setup.py', 'upload', '-r', 'pypi']
+    p: ProcResult = run(cmd)
+    return_code = p.return_code
+
+    status: str = Status.ok if return_code == 0 else Status.error
+
+    return CmdFuncResult(
+        return_code=return_code,
+        return_msg=status + title,
+        return_val=None
+        )
+
 
 def build_python_wheel(clean_dir: bool = False) -> CmdFuncResult:
     """
