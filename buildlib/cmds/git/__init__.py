@@ -2,7 +2,6 @@ from processy import run, ProcResult
 from cmdinter import CmdFuncResult, Status
 
 
-
 def add_all() -> CmdFuncResult:
     """"""
     title = 'Git Add All.'

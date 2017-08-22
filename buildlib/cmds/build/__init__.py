@@ -141,18 +141,16 @@ def build_read_the_docs(clean_dir: bool = False) -> CmdFuncResult:
 
 
 def create_py_venv(
-    proj_dir: str,
-    venv_name: str,
-    py_bin: str = 'python',
+    py_bin: str,
+    venv_dir: str,
     ) -> CmdFuncResult:
     """
     @interpreter: must be the exact interpreter name. E.g. 'python3.5'
     """
     title = 'Create Python Virtual Environment.'
-    proj_dir = os.path.normpath(proj_dir)
-    cmd: list = [py_bin + ' -m venv ' + venv_name]
+    cmd: list = [py_bin + ' -m venv ' + venv_dir]
 
-    p: ProcResult = run(cmd, cwd=proj_dir)
+    p: ProcResult = run(cmd)
 
     status: str = Status.ok if p.return_code == 0 else Status.error
 
