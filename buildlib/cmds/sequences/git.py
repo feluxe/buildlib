@@ -1,5 +1,5 @@
 import prmt
-from typing import NamedTuple, Union, List, Optional
+from typing import Union, List, Optional, NamedTuple
 from headlines import h3
 from cmdinter import CmdFuncResult
 from buildlib.utils.yaml import load_yaml
@@ -19,6 +19,7 @@ def _load_cfg(path):
 def _get_cur_version(cfg_file):
     cfg = _load_cfg(cfg_file)
     cur_version: str = cfg and cfg.get('version')
+
     return cur_version
 
 
@@ -30,9 +31,9 @@ def _get_new_version(cur_version):
 
 
 def get_args_interactively(
-    run_any: Union[bool, str] = False,
-    show_status: Union[bool, str] = False,
-    show_diff: Union[bool, str] = False,
+    run_any: Union[bool, str] = True,
+    confirm_status: Union[bool, str] = False,
+    confirm_diff: Union[bool, str] = False,
     run_update_version: Union[bool, str] = False,
     run_add_all: Union[bool, str] = False,
     run_commit: Union[bool, str] = False,
@@ -42,77 +43,102 @@ def get_args_interactively(
     cur_version: Optional[str] = None,
     new_version: Optional[str] = None,
     branch: Optional[str] = None,
-    ) -> dict:
-    """"""
-    kwargs = {}
+    commit_msg: Optional[str] = None
+) -> dict:
+    """
+    Set "True": Option will be run without user confirmation.
+    Set "False": Option will not be run and nothing will be asked/confirmed.
+    Set "string" (e.g: "y", "n", ""): User will asked with the string as a default value.
+    """
 
-    if run_any:
-        default = run_any if type(run_any) == str else ''
-        question: str = 'Run ANY GIT COMMANDS?\n'
-        if not prmt.confirm(question, default=default):
-            return kwargs
+    if type(run_any) == str:
+        run_any: bool = prmt.confirm(
+            question='Run ANY GIT COMMANDS?\n',
+            default=run_any
+        )
 
-    if show_status:
+    if run_any and type(confirm_status) == str:
         print(h3('Git Status'))
         git.status()
-        default = show_status if type(show_status) == str else ''
-        question: str = 'GIT STATUS ok?\n'
-        if not prmt.confirm(question, default=default, margin=(1, 1)):
-            return kwargs
 
-    if show_diff:
+        run_any: bool = prmt.confirm(
+            question='GIT STATUS ok?\n',
+            default=confirm_status,
+            margin=(1, 1))
+
+    if run_any and type(confirm_diff) == str:
         print(h3('Git Diff'))
         git.diff()
-        default = show_diff if type(show_diff) == str else ''
-        question: str = 'GIT DIFF ok?\n'
-        if not prmt.confirm(question, default=default, margin=(1, 1)):
-            return kwargs
 
-    if run_update_version:
-        default = run_update_version if type(run_update_version) == str else ''
-        question: str = 'BUMP VERSION number?\n'
-        if prmt.confirm(question, default=default):
-            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
-            kwargs['version'] = new_version
-            kwargs['cfg_file'] = cfg_file
-            kwargs['run_update_version'] = True
+        run_any: bool = prmt.confirm(
+            question='GIT DIFF ok?\n',
+            default=confirm_diff,
+            margin=(1, 1)
+        )
 
-    if run_add_all:
-        default = run_add_all if type(run_add_all) == str else ''
-        question: str = 'Run GIT ADD ALL ("git add --all")?\n'
-        if prmt.confirm(question, default=default):
-            kwargs['run_add_all'] = True
+    if run_any and type(run_update_version) == str:
+        run_update_version: bool = prmt.confirm(
+            question='BUMP VERSION number?\n',
+            default=run_update_version
+        )
 
-    if run_commit:
-        default = run_commit if type(run_commit) == str else ''
-        question: str = 'Run GIT COMMIT?\n'
-        if prmt.confirm(question, default=default):
-            commit_msg = prompt_commit_msg()
-            kwargs['commit_msg'] = commit_msg
-            kwargs['run_commit'] = True
+        if run_update_version and not new_version:
+            cur_version = cur_version or _get_cur_version(cfg_file)
+            new_version = _get_new_version(cur_version)
 
-    if run_tag:
-        default = run_tag if type(run_tag) == str else ''
-        question: str = 'Run GIT TAG?\n'
-        if prmt.confirm(question, default=default):
-            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
-            branch = branch or prompt_branch()
-            kwargs['version'] = new_version
-            kwargs['branch'] = branch
-            kwargs['run_tag'] = True
+    if run_any and type(run_add_all) == str:
+        run_add_all: bool = prmt.confirm(
+            question='Run GIT ADD ALL ("git add --all")?\n',
+            default=run_add_all
+        )
 
-    if run_push:
-        default = run_push if type(run_push) == str else ''
-        question: str = 'GIT PUSH to GITHUB?\n'
-        if prmt.confirm(question, default=default):
-            branch = branch or prompt_branch()
-            kwargs['branch'] = branch
-            kwargs['run_push'] = True
+    if run_any and type(run_commit) == str:
+        run_commit: bool = prmt.confirm(
+            question='Run GIT COMMIT?\n',
+            default=run_commit
+        )
 
-    return kwargs
+        if run_commit and not commit_msg:
+            commit_msg: str = prompt_commit_msg()
+
+    if run_any and type(run_tag) == str:
+        run_tag: bool = prmt.confirm(
+            question='Run GIT TAG?\n',
+            default='y' if new_version else 'n'
+        )
+
+        if run_tag and not new_version:
+            cur_version: str = cur_version or _get_cur_version(cfg_file)
+            new_version: str = _get_new_version(cur_version)
+
+        if run_tag and not branch:
+            branch: str = prompt_branch()
+
+    if run_any and type(run_push) == str:
+        run_push: bool = prmt.confirm(
+            question='GIT PUSH to GITHUB?\n',
+            default=run_push if type(run_push) == str else ''
+        )
+
+        if run_push and not branch:
+            branch = branch or prompt_branch(),
+
+    return {
+        'run_any': run_any,
+        'run_update_version': run_update_version,
+        'run_add_all': run_add_all,
+        'run_commit': run_commit,
+        'run_tag': run_tag,
+        'run_push': run_push,
+        'cfg_file': cfg_file,
+        'version': new_version,
+        'commit_msg': commit_msg,
+        'branch': branch
+    }
 
 
 def run_seq(
+    run_any: bool = True,
     run_update_version: bool = False,
     run_add_all: bool = False,
     run_commit: bool = False,
@@ -122,9 +148,12 @@ def run_seq(
     version: Optional[str] = None,
     commit_msg: Optional[str] = None,
     branch: Optional[str] = None,
-    ) -> List[CmdFuncResult]:
+) -> List[CmdFuncResult]:
     """"""
     results = []
+
+    if not run_any:
+        return results
 
     if run_update_version:
         results.append(update_version_num_in_cfg_yaml(cfg_file, version))
@@ -157,9 +186,13 @@ def run_seq_interactively(
     cur_version: Optional[str] = None,
     new_version: Optional[str] = None,
     branch: Optional[str] = None,
-    ) -> List[CmdFuncResult]:
-    """"""
+) -> List[CmdFuncResult]:
+    """
+    Set "True": Option will be run without user confirmation.
+    Set "False": Option will not be run and nothing will be asked/confirmed.
+    Set "string" (e.g: "y", "n", ""): User will asked with the string as a default value.
+    """
 
-    kwargs = get_args_interactively(**locals())
-    results = run_seq(**kwargs)
-    return results
+    seq_args: dict = get_args_interactively(**locals())
+
+    return run_seq(**seq_args)

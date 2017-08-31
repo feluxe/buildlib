@@ -23,8 +23,8 @@ def publish() -> None:
     """"""
     git_seq_args = git_seq.get_args_interactively(
         run_any='y',
-        show_status='y',
-        show_diff='y',
+        confirm_status='y',
+        confirm_diff='y',
         run_update_version='y',
         run_add_all='y',
         run_commit='y',

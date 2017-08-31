@@ -1,6 +1,6 @@
 import prmt
 from cmdinter import CmdFuncResult
-from typing import NamedTuple, Union, List, Optional
+from typing import Union, List, Optional
 from buildlib.utils.yaml import load_yaml
 from buildlib.utils.semver.prompt import prompt_semver_num_by_choice, prompt_semver_num_manually
 from buildlib.cmds import build
@@ -17,6 +17,7 @@ def _load_cfg(path):
 def _get_cur_version(cfg_file):
     cfg = _load_cfg(cfg_file)
     cur_version: str = cfg and cfg.get('version')
+
     return cur_version
 
 
@@ -28,6 +29,7 @@ def _get_new_version(cur_version):
 
 
 def get_args_interactively(
+    run_any: Union[bool, str] = True,
     run_update_version: Union[bool, str] = False,
     run_build_file: Union[bool, str] = False,
     run_push_gemfury: Union[bool, str] = False,
@@ -37,48 +39,66 @@ def get_args_interactively(
     wheel_dir: Optional[str] = None,
     cur_version: Optional[str] = None,
     new_version: Optional[str] = None,
-    ) -> dict:
+) -> dict:
     """"""
-    kwargs = {}
 
-    if run_update_version:
-        default = run_update_version if type(run_update_version) == str else ''
-        question: str = 'Do you want to update the VERSION NUMBER before publishing?\n'
-        if prmt.confirm(question, default=default):
-            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
-            kwargs['version'] = new_version
-            kwargs['cfg_file'] = cfg_file
-            kwargs['run_update_version'] = True
+    if type(run_any) == str:
+        run_any: bool = prmt.confirm(
+            question='Run ANY GIT COMMANDS?\n',
+            default=run_any
+        )
 
-    if run_build_file:
-        default = run_build_file if type(run_build_file) == str else ''
-        question: str = 'Do you want to RUN BUILD FILE before publishing?\n'
-        if prmt.confirm(question, default=default):
-            kwargs['build_file'] = build_file
-            kwargs['run_build_file'] = True
+    if run_any and type(run_update_version) == str:
+        run_update_version: bool = prmt.confirm(
+            question='Do you want to update the VERSION NUMBER before publishing?\n',
+            default=run_update_version
+        )
 
-    if run_push_gemfury:
-        default = run_push_gemfury if type(run_push_gemfury) == str else ''
-        question: str = 'Do you want to PUSH the new version to GEMFURY?\n'
-        if prmt.confirm(question, default=default):
-            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
-            kwargs['version'] = new_version
-            kwargs['wheel_dir'] = wheel_dir
-            kwargs['run_push_gemfury'] = True
+        if run_update_version and not new_version:
+            cur_version = cur_version or _get_cur_version(cfg_file)
+            new_version = _get_new_version(cur_version)
 
-    if run_push_pypi:
-        default = run_push_pypi if type(run_push_pypi) == str else ''
-        question: str = 'Do you want to PUSH the new version to PYPI?\n'
-        if prmt.confirm(question, default=default):
-            new_version = new_version or _get_new_version(cur_version or _get_cur_version(cfg_file))
-            kwargs['version'] = new_version
-            kwargs['wheel_dir'] = wheel_dir
-            kwargs['run_push_pypi'] = True
+    if run_any and type(run_build_file) == str:
+        run_build_file: bool = prmt.confirm(
+            question='Do you want to RUN BUILD FILE before publishing?\n',
+            default=run_build_file
+        )
 
-    return kwargs
+    if run_any and type(run_push_gemfury) == str:
+        run_push_gemfury: bool = prmt.confirm(
+            question='Do you want to PUSH the new version to GEMFURY?\n',
+            default=run_push_gemfury
+        )
+
+        if run_update_version and not new_version:
+            cur_version = cur_version or _get_cur_version(cfg_file)
+            new_version = _get_new_version(cur_version)
+
+    if run_any and type(run_push_pypi) == str:
+        run_push_pypi: bool = prmt.confirm(
+            question='Do you want to PUSH the new version to PYPI?\n',
+            default=run_push_pypi
+        )
+
+        if run_update_version and not new_version:
+            cur_version = cur_version or _get_cur_version(cfg_file)
+            new_version = _get_new_version(cur_version)
+
+    return {
+        'run_any': run_any,
+        'run_update_version': run_update_version,
+        'run_build_file': run_build_file,
+        'run_push_gemfury': run_push_gemfury,
+        'run_push_pypi': run_push_pypi,
+        'cfg_file': cfg_file,
+        'build_file': build_file,
+        'wheel_dir': wheel_dir,
+        'version': new_version,
+    }
 
 
 def run_seq(
+    run_any: bool = True,
     run_update_version: bool = False,
     run_build_file: bool = False,
     run_push_gemfury: bool = False,
@@ -87,9 +107,12 @@ def run_seq(
     build_file: Optional[str] = None,
     wheel_dir: Optional[str] = None,
     version: Optional[str] = None,
-    ) -> List[CmdFuncResult]:
+) -> List[CmdFuncResult]:
     """"""
     results = []
+
+    if not run_any:
+        return results
 
     if run_update_version:
         results.append(build.update_version_num_in_cfg_yaml(cfg_file, version))
@@ -98,11 +121,13 @@ def run_seq(
         results.append(build.run_build_file(build_file))
 
     if run_push_gemfury:
-        wheel_version = convert_semver_to_wheelver(version)
-        wheel_name = get_python_wheel_name_from_semver_num(wheel_version, wheel_dir)
+        wheel_version: str = convert_semver_to_wheelver(version)
+        wheel_name: str = get_python_wheel_name_from_semver_num(wheel_version, wheel_dir)
+
         if not wheel_name:
             print('There is no build for requested version.')
             return results
+
         wheel_file = wheel_dir + '/' + wheel_name
         results.append(build.push_python_wheel_to_gemfury(wheel_file))
 
@@ -122,8 +147,8 @@ def run_seq_interactively(
     wheel_dir: Optional[str] = None,
     cur_version: Optional[str] = None,
     new_version: Optional[str] = None,
-    ) -> List[CmdFuncResult]:
+) -> List[CmdFuncResult]:
     """"""
-    kwargs = get_args_interactively(**locals())
-    results = run_seq(**kwargs)
-    return results
+    seq_args: dict = get_args_interactively(**locals())
+
+    return run_seq(**seq_args)
