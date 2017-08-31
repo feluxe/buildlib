@@ -57,13 +57,5 @@ def publish() -> None:
         print(result.return_msg)
 
 
-def execute() -> None:
-    try:
-        publish()
-    except KeyboardInterrupt:
-        print('\n\nScript aborted by user. (KeyboardInterrupt)')
-        sys.exit(1)
-
-
 if __name__ == '__main__':
-    execute()
+    publish()
