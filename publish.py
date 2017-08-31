@@ -1,4 +1,3 @@
-import sys
 import os
 from headlines import h3
 from buildlib.utils.yaml import load_yaml
@@ -30,7 +29,7 @@ def publish() -> None:
         cur_version=get_version_from_cfg(),
     )
 
-    results_1 = [*publish_seq.run_seq(**publish_seq_args_1)]
+    results_pub_seq_1 = [*publish_seq.run_seq(**publish_seq_args_1)]
 
     git_seq_args = git_seq.get_args_interactively(
         run_any='y',
@@ -49,7 +48,11 @@ def publish() -> None:
         new_version=publish_seq_args_1.get('version') or get_version_from_cfg()
     )
 
-    results = [*git_seq.run_seq(**git_seq_args), *publish_seq.run_seq(**publish_seq_args_2)]
+    results = [
+        *results_pub_seq_1,
+        *git_seq.run_seq(**git_seq_args),
+        *publish_seq.run_seq(**publish_seq_args_2)
+    ]
 
     print(h3('Publish Results'))
 
