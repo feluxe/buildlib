@@ -25,6 +25,7 @@ def publish() -> None:
     publish_seq_args_1 = publish_seq.get_args_interactively(
         run_update_version='y',
         run_build_file='y',
+        cfg_file=cfg_file,
         build_file=build_file,
         cur_version=get_version_from_cfg(),
     )
@@ -44,7 +45,6 @@ def publish() -> None:
 
     publish_seq_args_2 = publish_seq.get_args_interactively(
         run_push_pypi='y',
-        cfg_file=cfg_file,
         wheel_dir=wheel_dir,
         new_version=publish_seq_args_1.get('version') or get_version_from_cfg()
     )
