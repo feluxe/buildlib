@@ -32,10 +32,10 @@ def publish() -> None:
     )
 
     if should_update_version:
-        results += build.update_version_num_in_cfg_yaml(cfg_file, version)
+        results.append(build.update_version_num_in_cfg_yaml(cfg_file, version))
 
     if should_run_build_file:
-        results += build.run_build_file(build_file)
+        results.append(build.run_build_file(build_file))
 
     run_any_git: bool = git_prompt.should_run_any('y') \
                         and git_prompt.confirm_status('y') \
@@ -68,24 +68,23 @@ def publish() -> None:
     )
 
     if should_add_all:
-        results += git.add_all()
+        results.append(git.add_all())
 
     if should_commit:
-        results += git.commit(commit_msg)
+        results.append(git.commit(commit_msg))
 
     if should_tag:
-        results += git.tag(version, branch)
+        results.append(git.tag(version, branch))
 
     if should_push_git:
-        results += git.push(branch)
+        results.append(git.push(branch))
 
     if should_push_pypi:
-        results += build.push_python_wheel_to_pypi()
+        results.append(build.push_python_wheel_to_pypi())
 
     print(h3('Publish Results'))
 
-    for result in results:
-        print(result)
+    for i,result in enumerate(results):
         print(result.return_msg)
 
 
