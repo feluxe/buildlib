@@ -1,8 +1,8 @@
-from buildlib.utils import semver
 import prmt
+from buildlib.utils import semver
 
 
-def prompt_semver_num_manually(margin=(0, 1)) -> str:
+def semver_num_manually(margin=(0, 1)) -> str:
     """
     Ask user to enter a new version num. If input invalid recurse.
     """
@@ -13,7 +13,7 @@ def prompt_semver_num_manually(margin=(0, 1)) -> str:
 
     if not semver.validate(version):
         print('Provided version num is not semver conform.')
-        version: str = prompt_semver_num_manually(margin=margin)
+        version: str = semver_num_manually(margin=margin)
 
     return version
 
@@ -37,7 +37,7 @@ def _generate_update_semver_options(
     return options
 
 
-def prompt_semver_num_by_choice(
+def semver_num_by_choice(
     cur_version: str,
     margin=(0, 1)
 ) -> str:
@@ -70,7 +70,7 @@ def prompt_semver_num_by_choice(
     )
 
     if answer == 0:
-        return prompt_semver_num_manually(margin)
+        return semver_num_manually(margin)
 
     else:
         return options[answer].split('\t')[0]

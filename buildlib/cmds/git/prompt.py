@@ -4,7 +4,7 @@ from buildlib.cmds import git
 from cmdinter import run_cmd
 
 
-def prompt_commit_msg(
+def commit_msg(
     margin: tuple = (0, 1),
     editor: bool = True
 ) -> str:
@@ -16,7 +16,7 @@ def prompt_commit_msg(
     )
 
 
-def prompt_branch(
+def branch(
     margin: tuple = (0, 1)
 ) -> str:
     return prmt.string(

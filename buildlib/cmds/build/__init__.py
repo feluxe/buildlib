@@ -1,9 +1,9 @@
 import os
 import shutil
-from typing import Optional
 from processy import run, ProcResult
 from cmdinter import CmdFuncResult, Status
-from buildlib.utils import semver, module, wheel, yaml
+from buildlib.cmds.build import prompt
+from buildlib.utils import yaml, module
 
 
 def update_version_num_in_cfg_yaml(
