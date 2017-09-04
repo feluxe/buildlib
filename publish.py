@@ -32,7 +32,7 @@ def publish() -> None:
     )
 
     if should_update_version:
-        results += build.update_version_num_in_cfg_yaml(cfg_file, cur_version)
+        results += build.update_version_num_in_cfg_yaml(cfg_file, version)
 
     if should_run_build_file:
         results += build.run_build_file(build_file)
@@ -85,6 +85,7 @@ def publish() -> None:
     print(h3('Publish Results'))
 
     for result in results:
+        print(result)
         print(result.return_msg)
 
 
