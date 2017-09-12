@@ -78,7 +78,7 @@ def publish() -> None:
             branch: str = git.prompt.branch()
 
     should_push_pypi: bool = build.prompt.should_push_pypi(
-        default='y'
+        default='y' if should_update_version else 'n'
     )
 
     if should_add_all:
