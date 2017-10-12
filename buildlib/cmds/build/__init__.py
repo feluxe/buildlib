@@ -1,6 +1,6 @@
 import os
 import shutil
-from processy import run, ProcResult
+from processy import run, CompletedProcess
 from cmdinter import CmdFuncResult, Status
 from buildlib.cmds.build import prompt
 from buildlib.utils import yaml, module
@@ -26,9 +26,9 @@ def update_version_num_in_cfg_yaml(
     yaml.save_yaml(cfg, config_file)
 
     return CmdFuncResult(
-        return_code=0,
-        return_msg=Status.ok + title,
-        return_val=None
+        returncode=0,
+        returnvalue=None,
+        summary=Status.ok + title,
     )
 
 
@@ -40,30 +40,30 @@ def push_python_wheel_to_gemfury(
 
     if not os.path.isfile(wheel_file):
         print('Warning: Could not find wheel to push to Gemfury.')
-        return_code: int = 1
+        returncode: int = 1
 
     else:
-        p: ProcResult = run(
+        p: CompletedProcess = run(
             cmd=['fury', 'push', wheel_file],
             return_stdout=True
         )
 
-        if 'this version already exists' in p.out:
-            return_code: int = 1
+        if 'this version already exists' in p.stdout:
+            returncode: int = 1
 
         else:
-            return_code: int = p.return_code
+            returncode: int = p.returncode
 
-    if return_code == 0:
+    if returncode == 0:
         status: str = Status.ok
 
     else:
         status: str = Status.error
 
     return CmdFuncResult(
-        return_code=return_code,
-        return_msg=status + title,
-        return_val=None
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
     )
 
 
@@ -71,20 +71,21 @@ def push_python_wheel_to_pypi() -> CmdFuncResult:
     """"""
     title = 'Push Python Wheel to Pypi.'
 
-    p: ProcResult = run(cmd=['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi'])
+    p: CompletedProcess = run(
+        cmd=['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi'])
 
-    return_code: int = p.return_code
+    returncode: int = p.returncode
 
-    if return_code == 0:
+    if returncode == 0:
         status: str = Status.ok
 
     else:
         status: str = Status.error
 
     return CmdFuncResult(
-        return_code=return_code,
-        return_msg=status + title,
-        return_val=None
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
     )
 
 
@@ -103,21 +104,21 @@ def build_python_wheel(
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
-    p: ProcResult = run(cmd=['python', 'setup.py', 'bdist_wheel'])
+    p: CompletedProcess = run(cmd=['python', 'setup.py', 'bdist_wheel'])
 
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
-    if p.return_code == 0:
+    if p.returncode == 0:
         status: str = Status.ok
 
     else:
         status: str = Status.error
 
     return CmdFuncResult(
-        return_code=p.return_code,
-        return_msg=status + title,
-        return_val=None
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=status + title,
     )
 
 
@@ -150,9 +151,9 @@ def inject_interface_txt_into_readme_md(
         modified_readme.write(mod_content)
 
     return CmdFuncResult(
-        return_code=0,
-        return_msg=Status.ok + title,
-        return_val=None
+        returncode=0,
+        returnvalue=None,
+        summary=Status.ok + title,
     )
 
 
@@ -167,9 +168,9 @@ def run_build_file(build_file: str) -> CmdFuncResult:
     print('\n')
 
     return CmdFuncResult(
-        return_code=0,
-        return_msg=Status.ok + title,
-        return_val=None
+        returncode=0,
+        returnvalue=None,
+        summary=Status.ok + title,
     )
 
 
@@ -182,21 +183,21 @@ def build_read_the_docs(clean_dir: bool = False) -> CmdFuncResult:
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
-    p: ProcResult = run(
+    p: CompletedProcess = run(
         cmd=['make', 'html'],
         cwd='{}/docs'.format(os.getcwd())
     )
 
-    if p.return_code == 0:
+    if p.returncode == 0:
         status: str = Status.ok
 
     else:
         status: str = Status.error
 
     return CmdFuncResult(
-        return_code=p.return_code,
-        return_msg=status + title,
-        return_val=None
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=status + title,
     )
 
 
@@ -210,18 +211,18 @@ def create_py_venv(
     title = 'Create Python Virtual Environment.'
     cmd: list = [py_bin, '-m', 'venv', venv_dir]
 
-    p: ProcResult = run(cmd)
+    p: CompletedProcess = run(cmd)
 
-    if p.return_code == 0:
+    if p.returncode == 0:
         status: str = Status.ok
 
     else:
         status: str = Status.error
 
     return CmdFuncResult(
-        return_code=p.return_code,
-        return_msg=status + title,
-        return_val=None
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=status + title,
     )
 
 
@@ -241,7 +242,7 @@ def create_autoenv(
         f.write('source {}/bin/activate\n'.format(venv_dir))
 
     return CmdFuncResult(
-        return_code=0,
-        return_msg=Status.ok + title,
-        return_val=None
+        returncode=0,
+        returnvalue=None,
+        summary=Status.ok + title,
     )

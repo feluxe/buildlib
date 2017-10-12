@@ -81,25 +81,26 @@ def publish() -> None:
         default='y' if should_update_version else 'n'
     )
 
-    if should_add_all:
-        results.append(
-            git.add_all()
-        )
+    if run_any_git:
+        if should_add_all:
+            results.append(
+                git.add_all()
+            )
 
-    if should_commit:
-        results.append(
-            git.commit(commit_msg)
-        )
+        if should_commit:
+            results.append(
+                git.commit(commit_msg)
+            )
 
-    if should_tag:
-        results.append(
-            git.tag(version, branch)
-        )
+        if should_tag:
+            results.append(
+                git.tag(version, branch)
+            )
 
-    if should_push_git:
-        results.append(
-            git.push(branch)
-        )
+        if should_push_git:
+            results.append(
+                git.push(branch)
+            )
 
     if should_push_pypi:
         results.append(
@@ -109,7 +110,7 @@ def publish() -> None:
     print(h3('Publish Results'))
 
     for i, result in enumerate(results):
-        print(result.return_msg)
+        print(result.summary)
 
 
 if __name__ == '__main__':

@@ -21,7 +21,7 @@ def branch(
 ) -> str:
     return prmt.string(
         question='Enter BRANCH name:\n',
-        default=run_cmd(silent=True)(git.get_default_branch).return_val,
+        default=run_cmd(silent=True)(git.get_default_branch).returnvalue,
         margin=margin
     )
 
