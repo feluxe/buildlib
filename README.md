@@ -4,4 +4,4 @@
 
 ## Description
 
-A library to help build projects.
+A library that helps building projects.
