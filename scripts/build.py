@@ -116,7 +116,9 @@ def bump_routine(
 
     if should_bump_registry:
         results.append(
-            build.push_python_wheel_to_pypi()
+            build.push_python_wheel_to_pypi(
+                clean_dir=True
+            )
         )
 
     print(h3('Publish Results'))
