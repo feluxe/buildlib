@@ -35,6 +35,17 @@ def should_run_build_file(
         margin=margin
     )
 
+def should_build_wheel(
+    default: str = '',
+    margin: tuple = (1, 1),
+) -> bool:
+    """"""
+    return prmt.confirm(
+        question='Do you want to BUILD new WHEEL?\n',
+        default=default,
+        margin=margin
+    )
+
 
 def should_push_gemfury(
     default: str = '',

@@ -1,0 +1,23 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+cmdinter = "==1.0.7"
+headlines = "*"
+prmt = "==0.0.0a4"
+processy = "==1.0.2"
+"ruamel.yaml" = "==0.15.23"
+
+
+[dev-packages]
+
+
+
+[requires]
+
+python_version = "3.6"

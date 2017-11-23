@@ -1,5 +1,0 @@
-cmdinter==1.0.7
-headlines==0.0.0a2
-prmt==0.0.0a4
-processy==1.0.2
-ruamel.yaml==0.15.23

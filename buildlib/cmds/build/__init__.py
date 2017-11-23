@@ -1,5 +1,7 @@
 import os
+import re
 import shutil
+import glob
 from processy import run, CompletedProcess
 from cmdinter import CmdFuncResult, Status
 from buildlib.cmds.build import prompt
@@ -90,6 +92,7 @@ def push_python_wheel_to_pypi() -> CmdFuncResult:
 
 
 def build_python_wheel(
+    proj_root=os.getcwd(),
     clean_dir: bool = False
 ) -> CmdFuncResult:
     """
@@ -99,15 +102,14 @@ def build_python_wheel(
     """
     title = 'Build Python Wheel.'
 
-    build_dir: str = os.getcwd() + '/build'
-
-    if clean_dir and os.path.isdir(build_dir):
-        shutil.rmtree(build_dir)
-
     p: CompletedProcess = run(cmd=['python', 'setup.py', 'bdist_wheel'])
 
-    if clean_dir and os.path.isdir(build_dir):
-        shutil.rmtree(build_dir)
+    build_dir: str = proj_root + '/build'
+    egg_file: list = glob.glob('**.egg-info')
+    egg_file: str = egg_file and egg_file[0] or ''
+
+    clean_dir and os.path.isdir(build_dir) and shutil.rmtree(build_dir)
+    clean_dir and os.path.isdir(egg_file) and shutil.rmtree(egg_file)
 
     if p.returncode == 0:
         status: str = Status.ok
