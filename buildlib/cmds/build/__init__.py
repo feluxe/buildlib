@@ -69,12 +69,27 @@ def push_python_wheel_to_gemfury(
     )
 
 
-def push_python_wheel_to_pypi() -> CmdFuncResult:
+def _clean_bdist_tmp_files() -> None:
+    """"""
+    build_dir: str = f'{os.getcwd()}/build'
+    egg_file: list = glob.glob('**.egg-info')
+    egg_file: str = egg_file and egg_file[0] or ''
+
+    os.path.isdir(build_dir) and shutil.rmtree(build_dir)
+    os.path.isdir(egg_file) and shutil.rmtree(egg_file)
+
+
+def push_python_wheel_to_pypi(
+    clean_dir: bool = False,
+) -> CmdFuncResult:
     """"""
     title = 'Push Python Wheel to Pypi.'
 
     p: CompletedProcess = run(
         cmd=['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi'])
+
+    if clean_dir:
+        _clean_bdist_tmp_files()
 
     returncode: int = p.returncode
 
@@ -92,7 +107,6 @@ def push_python_wheel_to_pypi() -> CmdFuncResult:
 
 
 def build_python_wheel(
-    proj_root=os.getcwd(),
     clean_dir: bool = False
 ) -> CmdFuncResult:
     """
@@ -104,12 +118,8 @@ def build_python_wheel(
 
     p: CompletedProcess = run(cmd=['python', 'setup.py', 'bdist_wheel'])
 
-    build_dir: str = proj_root + '/build'
-    egg_file: list = glob.glob('**.egg-info')
-    egg_file: str = egg_file and egg_file[0] or ''
-
-    clean_dir and os.path.isdir(build_dir) and shutil.rmtree(build_dir)
-    clean_dir and os.path.isdir(egg_file) and shutil.rmtree(egg_file)
+    if clean_dir:
+        _clean_bdist_tmp_files()
 
     if p.returncode == 0:
         status: str = Status.ok
@@ -176,11 +186,13 @@ def run_build_file(build_file: str) -> CmdFuncResult:
     )
 
 
-def build_read_the_docs(clean_dir: bool = False) -> CmdFuncResult:
+def build_read_the_docs(
+    clean_dir: bool = False
+) -> CmdFuncResult:
     """"""
     title = 'Build Read The Docs.'
 
-    build_dir = '{}/docs/build'.format(os.getcwd())
+    build_dir = f'{os.getcwd()}/docs/build'
 
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
