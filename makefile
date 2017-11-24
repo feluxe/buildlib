@@ -5,7 +5,7 @@ bump-build:
 	$(info [BUMP BUILD])
 	"$(run_script)" bump-build
 
-bump-gitj:
+bump-git:
 	$(info [BUMP GIT])
 	"$(run_script)" bump-git
 
