@@ -1,9 +1,6 @@
-import docker
 from typing import Optional, List
 from processy import run
 from cmdinter import CmdFuncResult, Status
-
-client = docker.from_env()
 
 
 def _image_exists(image):
@@ -16,53 +13,47 @@ def _image_exists(image):
     return 'Error: No such image' not in result.stdout
 
 
+def run_container(image: str, port: int):
+    """
+    Run Docker container locally.
+    """
+    title = 'Run Docker Container.'
+
+    p = run(['docker', 'run', '-d', '-p', f'127.0.0.1:{port}:{port}', image])
+
+    if p.returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
 def stop_container(
-    by_port: Optional[int] = None,
+    by_port: int,
 ):
     if by_port:
         cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
                '--format="{{.ID}}"']
 
-    ids = run(cmd, return_stdout=True).stdout.split('\n')
+    ids = run(
+        cmd=cmd,
+        return_stdout=True,
+        verbose=False,
+    ).stdout.split('\n')
 
-    for id_ in [id_ for id_ in ids if id_]:
+    ps = [
         run(['docker', 'stop', id_.replace('"', '')])
+        for id_
+        in ids
+        if id_
+    ]
 
-
-def run_container(version=VERSION):
-    """
-    Run Docker container locally.
-    """
-    image = f'{IMAGE}:{version}'
-
-    run(['docker', 'run', '-d', '-p', f'127.0.0.1:{PORT}:{PORT}', image])
-
-
-def remove_image(image=image):
-    run(['docker', 'rmi', image, '--force'])
-
-
-def build(
-    dockerfile: str = '.',
-    tags: Optional[List[str]] = None,
-) -> CmdFuncResult:
-    """"""
-    title = 'Build Docker Image.'
-
-    try:
-        if tags:
-            for tag in tags:
-                client.images.build(
-                    tag=tag,
-                    dockerfile=dockerfile
-                )
-        else:
-            client.images.build(dockerfile=dockerfile)
-
-        returncode = 0
-
-    except Exception as e:
-        returncode = 1
+    returncode = max([p.returncode for p in ps])
 
     if returncode == 0:
         status: str = Status.ok
@@ -75,3 +66,51 @@ def build(
         summary=f'{status} {title}',
     )
 
+
+def remove_image(image: str):
+    """"""
+    title = 'Remove Docker Image.'
+
+    cmd = ['docker', 'rmi', image, '--force']
+
+    if _image_exists(image):
+        p = run(cmd)
+        returncode = p.returncode
+    else:
+        returncode = 0
+
+    if returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
+def build_image(
+    tags: List[str],
+) -> CmdFuncResult:
+    """
+    """
+    title = 'Build Docker Image.'
+
+    cmd = ['docker', 'build', '.', '-f', 'Dockerfile']
+    for tag in tags:
+        cmd.extend(['-t', tag])
+
+    p = run(cmd)
+
+    if p.returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
