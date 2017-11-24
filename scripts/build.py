@@ -67,8 +67,10 @@ def bump_routine(
         should_bump_git: bool = git.prompt.should_run_any('y')
 
     if should_bump_git:
-        should_bump_git: bool = git.prompt.confirm_status('y') \
-                                and git.prompt.confirm_diff('y')
+        should_bump_git: bool = all([
+            git.prompt.confirm_status('y'),
+            git.prompt.confirm_diff('y')
+        ])
 
     if should_bump_git:
         should_add_all: bool = git.prompt.should_add_all(
