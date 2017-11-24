@@ -12,10 +12,12 @@ headlines = "*"
 prmt = "==0.0.0a4"
 processy = "==1.0.2"
 "ruamel.yaml" = "==0.15.23"
+docker = "*"
 
 
 [dev-packages]
 
+docker = "*"
 
 
 [requires]

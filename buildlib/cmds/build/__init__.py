@@ -1,5 +1,4 @@
 import os
-import re
 import shutil
 import glob
 from processy import run, CompletedProcess
@@ -170,7 +169,11 @@ def inject_interface_txt_into_readme_md(
 
 
 def run_build_file(build_file: str) -> CmdFuncResult:
-    """"""
+    """
+    === DEPRECATED ===
+    In favor of the new build design, that includes 'makefile'.
+    ==================
+    """
     title = 'Run Build File.'
 
     build_module = module.load_module_from_file(build_file)
@@ -220,6 +223,10 @@ def create_py_venv(
     venv_dir: str,
 ) -> CmdFuncResult:
     """
+    === DEPRECATED ===
+    Use 'pipenv' instead.
+    ==================
+
     @interpreter: must be the exact interpreter name. E.g. 'python3.5'
     """
     title = 'Create Python Virtual Environment.'
@@ -244,6 +251,10 @@ def create_autoenv(
     venv_dir: str,
 ) -> CmdFuncResult:
     """
+    === DEPRECATED ===
+    Use 'pipenv' instead.
+    ==================
+
     Create autoenv for automatic activation of virtual env when cd into dir.
     """
     title = 'Create Auto Env File.'
