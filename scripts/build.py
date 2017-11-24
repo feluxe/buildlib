@@ -150,6 +150,7 @@ if __name__ == '__main__':
 
         elif args[1] == 'bump-git':
             bump_routine(
+                should_bump_git=True,
                 should_bump_build=False,
                 should_bump_registry=False,
             )
