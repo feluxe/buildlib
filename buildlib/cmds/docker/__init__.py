@@ -36,6 +36,8 @@ def run_container(image: str, port: int):
 def stop_container(
     by_port: int,
 ):
+    title = 'Stop Docker Container'
+
     if by_port:
         cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
                '--format="{{.ID}}"']
@@ -52,7 +54,7 @@ def stop_container(
         if id_
     ]
 
-    returncode = max([p.returncode for p in ps])
+    returncode = max([p.returncode for p in ps]) if ps else 0
 
     if returncode == 0:
         status: str = Status.ok
