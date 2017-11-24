@@ -49,9 +49,9 @@
         },
         "processy": {
             "hashes": [
-                "sha256:8ee8f6253515cc8250f8fe4860fcbf3344ba96520f57712e613da1bd55dc7b56"
+                "sha256:abb970c6c8ca8d4f6a7c81e4cf87d02351d5345a3d0c5ba37d744084168fa172"
             ],
-            "version": "==1.0.4"
+            "version": "==1.0.5"
         },
         "ruamel.yaml": {
             "hashes": [

@@ -43,7 +43,6 @@ def stop_container(
     ids = run(
         cmd=cmd,
         return_stdout=True,
-        verbose=False,
     ).stdout.split('\n')
 
     ps = [
