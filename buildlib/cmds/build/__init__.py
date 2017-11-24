@@ -29,7 +29,7 @@ def update_version_num_in_cfg_yaml(
     return CmdFuncResult(
         returncode=0,
         returnvalue=None,
-        summary=Status.ok + title,
+        summary=f'{Status.ok} {title}',
     )
 
 
@@ -129,7 +129,7 @@ def build_python_wheel(
     return CmdFuncResult(
         returncode=p.returncode,
         returnvalue=None,
-        summary=status + title,
+        summary=f'{status} {title}',
     )
 
 
@@ -164,7 +164,7 @@ def inject_interface_txt_into_readme_md(
     return CmdFuncResult(
         returncode=0,
         returnvalue=None,
-        summary=Status.ok + title,
+        summary=f'{Status.ok} {title}',
     )
 
 
@@ -185,7 +185,7 @@ def run_build_file(build_file: str) -> CmdFuncResult:
     return CmdFuncResult(
         returncode=0,
         returnvalue=None,
-        summary=Status.ok + title,
+        summary=f'{Status.ok} {title}',
     )
 
 
@@ -214,7 +214,7 @@ def build_read_the_docs(
     return CmdFuncResult(
         returncode=p.returncode,
         returnvalue=None,
-        summary=status + title,
+        summary=f'{status} {title}',
     )
 
 
@@ -243,7 +243,7 @@ def create_py_venv(
     return CmdFuncResult(
         returncode=p.returncode,
         returnvalue=None,
-        summary=status + title,
+        summary=f'{status} {title}',
     )
 
 
@@ -269,5 +269,5 @@ def create_autoenv(
     return CmdFuncResult(
         returncode=0,
         returnvalue=None,
-        summary=Status.ok + title,
+        summary=f'{Status.ok} {title}',
     )
