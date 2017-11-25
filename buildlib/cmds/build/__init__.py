@@ -1,3 +1,8 @@
+"""
+Misc build commands.
+Everything that does not deserve it's own package goes here.
+"""
+
 import os
 import shutil
 import glob

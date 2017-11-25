@@ -3,7 +3,7 @@ from processy import run
 from cmdinter import CmdFuncResult, Status
 
 
-def _image_exists(image):
+def _image_exists(image) -> bool:
     result = run(
         cmd=['docker', 'inspect', '--type=image', image],
         verbose=False,
@@ -13,7 +13,10 @@ def _image_exists(image):
     return 'Error: No such image' not in result.stdout
 
 
-def run_container(image: str, port: int):
+def run_container(
+    image: str,
+    port: int
+) -> CmdFuncResult:
     """
     Run Docker container locally.
     """
@@ -35,7 +38,7 @@ def run_container(image: str, port: int):
 
 def stop_container(
     by_port: int,
-):
+) -> CmdFuncResult:
     title = 'Stop Docker Container'
 
     if by_port:
@@ -68,7 +71,9 @@ def stop_container(
     )
 
 
-def remove_image(image: str):
+def remove_image(
+    image: str
+) -> CmdFuncResult:
     """"""
     title = 'Remove Docker Image.'
 
@@ -99,7 +104,7 @@ def build_image(
     """
     title = 'Build Docker Image.'
 
-    cmd = ['docker', 'build', '.', '-f', 'Dockerfile']
+    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile']
     for tag in tags:
         cmd.extend(['-t', tag])
 
