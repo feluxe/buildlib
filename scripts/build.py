@@ -13,9 +13,9 @@ from buildlib.cmds import build
 
 def bump_routine(
     should_bump_version: Optional[bool] = None,
-    should_bump_build: Optional[bool] = None,
+    should_build_wheel: Optional[bool] = None,
     should_bump_git: Optional[bool] = None,
-    should_bump_registry: Optional[bool] = None,
+    should_push_registry: Optional[bool] = None,
 ) -> None:
     """"""
     print('')
@@ -40,8 +40,8 @@ def bump_routine(
     else:
         version: str = cur_version
 
-    if should_bump_build is None:
-        should_bump_build: bool = build.prompt.should_build_wheel(
+    if should_build_wheel is None:
+        should_build_wheel: bool = build.prompt.should_build_wheel(
             default='y'
         )
 
@@ -53,13 +53,13 @@ def bump_routine(
             )
         )
 
-    if should_bump_build:
+    if should_build_wheel:
         results.append(
             build.build_python_wheel(clean_dir=True)
         )
 
-    if should_bump_registry is None:
-        should_bump_registry: bool = build.prompt.should_push_pypi(
+    if should_push_registry is None:
+        should_push_registry: bool = build.prompt.should_push_pypi(
             default='y' if should_bump_version else 'n'
         )
 
@@ -118,7 +118,7 @@ def bump_routine(
                 git.push(branch)
             )
 
-    if should_bump_registry:
+    if should_push_registry:
         results.append(
             build.push_python_wheel_to_pypi(
                 clean_dir=True
@@ -143,25 +143,25 @@ if __name__ == '__main__':
                 should_bump_version=True,
             )
 
-        elif args[1] == 'bump-build':
+        elif args[1] == 'build-wheel':
             bump_routine(
-                should_bump_build=True,
+                should_build_wheel=True,
                 should_bump_git=False,
-                should_bump_registry=False,
+                should_push_registry=False,
             )
 
         elif args[1] == 'bump-git':
             bump_routine(
                 should_bump_git=True,
-                should_bump_build=False,
-                should_bump_registry=False,
+                should_build_wheel=False,
+                should_push_registry=False,
             )
 
-        elif args[1] == 'bump-registry':
+        elif args[1] == 'push-registry':
             bump_routine(
-                should_bump_registry=True,
+                should_push_registry=True,
                 should_bump_git=False,
-                should_bump_build=False,
+                should_build_wheel=False,
             )
 
     except KeyboardInterrupt:

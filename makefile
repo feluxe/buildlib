@@ -1,9 +1,10 @@
 run_script = "pipenv run python scripts/build.py"
 
+.PHONY: build
 
-bump-build:
-	$(info [BUMP BUILD])
-	"$(run_script)" bump-build
+build-wheel:
+	$(info [BUILD])
+	"$(run_script)" build-wheel
 
 bump-git:
 	$(info [BUMP GIT])
@@ -13,9 +14,9 @@ bump-version:
 	$(info [BUMP VERSION NUMBER])
 	"$(run_script)" bump-version
 
-bump-registry:
-	$(info [BUMP PACKAGE REGISTRY])
-	"$(run_script)" bump-registry
+push-registry:
+	$(info [PUSH TO PACKAGE REGISTRY])
+	"$(run_script)" push-registry
 
 bump:
 	$(info [BUMP])
