@@ -221,7 +221,7 @@ def bump_routine() -> None:
         ))
 
     for result in results:
-        results.append(result.summary)
+        print(result.summary)
 
 
 if __name__ == '__main__':
