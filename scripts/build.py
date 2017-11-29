@@ -4,10 +4,9 @@ import os
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
 from typing import Optional, List
-from headlines import h3
 from buildlib.utils import yaml
 from buildlib.cmds import semver, git, build, pipenv
-from cmdinter import CmdFuncResult, Status
+from cmdinter import CmdFuncResult
 
 CWD = os.getcwd()
 CFG_FILE = 'CONFIG.yaml'
@@ -176,7 +175,7 @@ def bump_git_routine() -> None:
     results += bump_git(git_settings)
 
     print('')
-    
+
     for result in results:
         print(result.summary)
 
