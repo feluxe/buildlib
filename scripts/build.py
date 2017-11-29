@@ -3,132 +3,225 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
-from typing import Optional
+from typing import Optional, List
 from headlines import h3
-from buildlib.utils.yaml import load_yaml
-from buildlib.cmds import semver
-from buildlib.cmds import git
-from buildlib.cmds import build, pipenv
+from buildlib.utils import yaml
+from buildlib.cmds import semver, git, build, pipenv
+from cmdinter import CmdFuncResult, Status
+
+CWD = os.getcwd()
+CFG_FILE = 'CONFIG.yaml'
+CFG = yaml.load_yaml(
+    file=CFG_FILE,
+    keep_order=True
+)
 
 
-def bump_routine(
-    should_bump_version: Optional[bool] = None,
-    should_build_wheel: Optional[bool] = None,
-    should_bump_git: Optional[bool] = None,
-    should_push_registry: Optional[bool] = None,
-) -> None:
+def get_version_from_user() -> str:
+    """
+    Get new Version number from user or use the one from CONFIG.yaml.
+    """
+    return semver.prompt.semver_num_by_choice(
+        cur_version=CFG.get('version')
+    )
+
+
+def bump_version(version: str) -> CmdFuncResult:
+    """
+    Bump (update) version number in CONFIG.yaml.
+    """
+    return build.update_version_num_in_cfg_yaml(
+        config_file=CFG_FILE,
+        semver_num=version,
+    )
+
+
+class GitBumpSettings(dict):
+    version: str
+    should_bump_git: Optional[bool]
+    should_add_all: Optional[bool]
+    should_commit: Optional[bool]
+    commit_msg: Optional[str]
+    should_tag: Optional[bool]
+    should_push_git: Optional[bool]
+    branch: Optional[str]
+
+
+def get_git_settings_from_user(
+    version: str,
+    should_tag_default: Optional[bool],
+) -> GitBumpSettings:
     """"""
-    print('')
+    s = GitBumpSettings()
+    s.version = version
 
-    results = []
-    cfg_file = 'CONFIG.yaml'
+    # Ask user to run any git commands.
+    s.should_bump_git: bool = git.prompt.confirm_status('y') \
+                              and git.prompt.confirm_diff('y')
 
-    cur_version: str = load_yaml(
-        file=cfg_file,
-        keep_order=True
-    ).get('version')
-
-    if should_bump_version is None:
-        should_bump_version: bool = build.prompt.should_update_version(
+    # Git routine
+    if s.should_bump_git:
+        # Ask user to run 'git add -A.
+        s.should_add_all: bool = git.prompt.should_add_all(
             default='y'
         )
 
-    if should_bump_version:
-        version: str = semver.prompt.semver_num_by_choice(
-            cur_version=cur_version
-        )
-    else:
-        version: str = cur_version
-
-    if should_build_wheel is None:
-        should_build_wheel: bool = build.prompt.should_build_wheel(
+        # Ask user to run commit.
+        s.should_commit: bool = git.prompt.should_commit(
             default='y'
         )
 
-    if should_bump_version:
-        results.append(
-            build.update_version_num_in_cfg_yaml(
-                config_file=cfg_file,
-                semver_num=version
-            )
+        # Get commit msg from user.
+        if s.should_commit:
+            s.commit_msg: str = git.prompt.commit_msg()
+
+        # Ask user to run 'tag'.
+        s.should_tag: bool = git.prompt.should_tag(
+            default='n' if should_tag_default is False else 'y'
         )
 
-    if should_build_wheel:
-        results.append(
-            build.build_python_wheel(clean_dir=True)
-        )
-
-    if should_push_registry is None:
-        should_push_registry: bool = build.prompt.should_push_pypi(
-            default='y' if should_bump_version else 'n'
-        )
-
-    if should_bump_git is None:
-        should_bump_git: bool = git.prompt.should_run_any('y')
-
-    if should_bump_git:
-        should_bump_git: bool = all([
-            git.prompt.confirm_status('y'),
-            git.prompt.confirm_diff('y')
-        ])
-
-    if should_bump_git:
-        should_add_all: bool = git.prompt.should_add_all(
+        # Ask user to push.
+        s.should_push_git: bool = git.prompt.should_push(
             default='y'
         )
 
-        should_commit: bool = git.prompt.should_commit(
-            default='y'
-        )
-
-        if should_commit:
-            commit_msg: str = git.prompt.commit_msg()
-
-        should_tag: bool = git.prompt.should_tag(
-            default='y' if should_bump_version else 'n'
-        )
-
-        should_push_git: bool = git.prompt.should_push(
-            default='y'
-        )
-
+        # Ask user for branch.
         if any([
-            should_tag,
-            should_push_git
+            s.should_tag,
+            s.should_push_git
         ]):
-            branch: str = git.prompt.branch()
+            s.branch: str = git.prompt.branch()
 
-        if should_add_all:
+    return s
+
+
+def bump_git(
+    s: GitBumpSettings
+) -> List[CmdFuncResult]:
+    """"""
+    results = []
+
+    # If any git commands should be run.
+    if s.should_bump_git:
+        # Run 'add -A'
+        if s.should_add_all:
             results.append(
                 git.add_all()
             )
 
-        if should_commit:
+        # Run 'commit -m'
+        if s.should_commit:
             results.append(
-                git.commit(commit_msg)
+                git.commit(s.commit_msg)
             )
 
-        if should_tag:
+        # Run 'tag'
+        if s.should_tag:
             results.append(
-                git.tag(version, branch)
+                git.tag(s.version, s.branch)
             )
 
-        if should_push_git:
+        # Run 'push'
+        if s.should_push_git:
             results.append(
-                git.push(branch)
+                git.push(s.branch)
             )
+
+    return results
+
+
+def build_wheel_routine() -> None:
+    """"""
+    result = build.build_python_wheel(clean_dir=True)
+    print(f'\n{result.summary}')
+
+
+def push_registry_routine() -> None:
+    """"""
+    result = build.push_python_wheel_to_pypi(
+        clean_dir=True
+    )
+    print(f'\n{result.summary}')
+
+
+def bump_version_routine() -> None:
+    """"""
+    result = bump_version(
+        version=get_version_from_user()
+    )
+    print(f'\n{result.summary}')
+
+
+def bump_git_routine() -> None:
+    """"""
+    results = []
+
+    should_bump_version = build.prompt.should_update_version(
+        default='y'
+    )
+
+    if should_bump_version:
+        version = get_version_from_user()
+    else:
+        version = CFG.get('version')
+
+    git_settings = get_git_settings_from_user(
+        should_tag_default=version != CFG.get('version'),
+        version=version,
+    )
+
+    if should_bump_version:
+        results.append(bump_version(version))
+
+    results += bump_git(git_settings)
+
+    print('')
+    for result in results:
+        print(result.summary)
+
+
+def bump_routine() -> None:
+    """"""
+    results = []
+
+    should_bump_version: bool = build.prompt.should_update_version(
+        default='y'
+    )
+
+    if should_bump_version:
+        version = get_version_from_user()
+    else:
+        version = CFG.get('version')
+
+    should_build_wheel: bool = build.prompt.should_build_wheel(
+        default='y'
+    )
+
+    should_push_registry: bool = build.prompt.should_push_pypi(
+        default='y' if should_bump_version else 'n'
+    )
+
+    if should_bump_version:
+        results.append(bump_version(version))
+
+    git_settings = get_git_settings_from_user(
+        should_tag_default=version != CFG.get('version'),
+        version=version,
+    )
+
+    if should_build_wheel:
+        results.append(build.build_python_wheel(clean_dir=True))
+
+    if git_settings.should_bump_git:
+        results += bump_git(git_settings)
 
     if should_push_registry:
-        results.append(
-            build.push_python_wheel_to_pypi(
-                clean_dir=True
-            )
-        )
+        results.append(build.push_python_wheel_to_pypi(
+            clean_dir=True
+        ))
 
-    print(h3('Publish Results'))
-
-    for i, result in enumerate(results):
-        print(result.summary)
+    for result in results:
+        results.append(result.summary)
 
 
 if __name__ == '__main__':
@@ -138,34 +231,21 @@ if __name__ == '__main__':
         if args[1] == 'init':
             print(pipenv.install(dev=True).summary)
 
+        elif args[1] == 'build-wheel':
+            build_wheel_routine()
+
+        elif args[1] == 'push-registry':
+            push_registry_routine()
+
+        elif args[1] == 'bump-version':
+            bump_version_routine()
+
+        elif args[1] == 'bump-git':
+            bump_git_routine()
+
         elif args[1] == 'bump':
             bump_routine()
 
-        elif args[1] == 'bump-version':
-            bump_routine(
-                should_bump_version=True,
-            )
-
-        elif args[1] == 'build-wheel':
-            bump_routine(
-                should_build_wheel=True,
-                should_bump_git=False,
-                should_push_registry=False,
-            )
-
-        elif args[1] == 'bump-git':
-            bump_routine(
-                should_bump_git=True,
-                should_build_wheel=False,
-                should_push_registry=False,
-            )
-
-        elif args[1] == 'push-registry':
-            bump_routine(
-                should_push_registry=True,
-                should_bump_git=False,
-                should_build_wheel=False,
-            )
 
     except KeyboardInterrupt:
         print('\n\nScript aborted by user.\n')
