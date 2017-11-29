@@ -8,7 +8,7 @@ from headlines import h3
 from buildlib.utils.yaml import load_yaml
 from buildlib.cmds import semver
 from buildlib.cmds import git
-from buildlib.cmds import build
+from buildlib.cmds import build, pipenv
 
 
 def bump_routine(
@@ -135,7 +135,10 @@ if __name__ == '__main__':
     try:
         args = sys.argv
 
-        if args[1] == 'bump':
+        if args[1] == 'init':
+            print(pipenv.install(dev=True).summary)
+
+        elif args[1] == 'bump':
             bump_routine()
 
         elif args[1] == 'bump-version':

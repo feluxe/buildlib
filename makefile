@@ -2,6 +2,11 @@ run_script = "pipenv run python scripts/build.py"
 
 .PHONY: build
 
+init:
+	$(info [INIT PROJECT FOR DEV])
+	pipenv --python 3.6
+	"$(run_script)" init
+
 build-wheel:
 	$(info [BUILD])
 	"$(run_script)" build-wheel
