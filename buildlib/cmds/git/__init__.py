@@ -18,7 +18,7 @@ def add_all() -> CmdFuncResult:
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
 
@@ -39,7 +39,7 @@ def commit(
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
 
@@ -61,7 +61,7 @@ def tag(
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
 
@@ -80,7 +80,7 @@ def push(branch: str) -> CmdFuncResult:
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
 
@@ -114,7 +114,7 @@ def get_default_branch() -> CmdFuncResult:
 
     return CmdFuncResult(
         returncode=returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=branch,
     )
 
@@ -133,7 +133,7 @@ def status() -> CmdFuncResult:
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
 
@@ -152,6 +152,6 @@ def diff() -> CmdFuncResult:
 
     return CmdFuncResult(
         returncode=p.returncode,
-        summary=status + title,
+        summary=f'{status} {title}',
         returnvalue=None
     )
