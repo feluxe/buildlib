@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 from processy import run
 from cmdinter import CmdFuncResult, Status
 from functools import reduce
@@ -14,35 +14,42 @@ def _image_exists(image) -> bool:
     return 'Error: No such image' not in result.stdout
 
 
-def _parse_args(args: List, flag):
-    if args:
+def _parse_option(
+    args: Union[list, str],
+    flag: str,
+) -> list:
+    """"""
+    if type(args) == list:
         nested = [[flag, f] for f in args]
         return reduce(lambda x, y: x + y, nested)
+    if type(args) == str:
+        return [flag, args]
     else:
         return []
 
 
 def run_container(
     image: str,
-    publish: Optional[List[str]] = None,
     add_host: Optional[List[str]] = None,
-    volume: Optional[List[str]] = None,
     env: Optional[List[str]] = None,
+    network: Optional[str] = None,
+    publish: Optional[List[str]] = None,
+    volume: Optional[List[str]] = None,
 ) -> CmdFuncResult:
     """
     Run Docker container locally.
     """
     title = 'Run Docker Container.'
 
-    add_host = _parse_args(add_host, '--add-host')
-    env = _parse_args(env, '-e')
-    publish = _parse_args(publish, '-p')
-    volume = _parse_args(volume, '-v')
+    options = [
+        *_parse_option(add_host, '--add-host'),
+        *_parse_option(env, '-e'),
+        *_parse_option(network, '--network'),
+        *_parse_option(publish, '-p'),
+        *_parse_option(volume, '-v'),
+    ]
 
-    # p = run(['docker', 'run', '-d', '-p', f'127.0.0.1:{port}:{port}', image])
-
-    p = run(
-        ['docker', 'run', '-d'] + add_host + env + publish + volume + [image])
+    p = run(['docker', 'run', '-d'] + options + [image])
 
     if p.returncode == 0:
         status: str = Status.ok
@@ -125,12 +132,12 @@ def build_image(
     """
     title = 'Build Docker Image.'
 
-    build_arg = _parse_args(build_arg, '--build-arg')
+    options = [
+        *_parse_option(build_arg, '--build-arg'),
+        *_parse_option(tag, '-t'),
+    ]
 
-    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile'] + build_arg
-
-    for t in tag:
-        cmd.extend(['-t', t])
+    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile'] + options
 
     p = run(cmd)
 
