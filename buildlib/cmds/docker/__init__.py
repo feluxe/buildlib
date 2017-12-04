@@ -1,6 +1,7 @@
 from typing import Optional, List
 from processy import run
 from cmdinter import CmdFuncResult, Status
+from functools import reduce
 
 
 def _image_exists(image) -> bool:
@@ -98,15 +99,23 @@ def remove_image(
 
 
 def build_image(
-    tags: List[str],
+    tag: List[str],
+    build_arg: List[str],
 ) -> CmdFuncResult:
     """
     """
     title = 'Build Docker Image.'
 
-    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile']
-    for tag in tags:
-        cmd.extend(['-t', tag])
+    if build_arg:
+        nested = [['--build-arg', arg] for arg in build_arg]
+        build_arg = reduce(lambda x, y: x + y, nested)
+    else:
+        build_arg = []
+
+    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile'] + build_arg
+
+    for t in tag:
+        cmd.extend(['-t', t])
 
     p = run(cmd)
 
