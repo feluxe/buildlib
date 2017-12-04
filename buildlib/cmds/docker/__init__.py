@@ -16,14 +16,29 @@ def _image_exists(image) -> bool:
 
 def run_container(
     image: str,
-    port: int
+    publish: Optional[List[str]] = None,
+    add_host: Optional[List[str]] = None,
 ) -> CmdFuncResult:
     """
     Run Docker container locally.
     """
     title = 'Run Docker Container.'
 
-    p = run(['docker', 'run', '-d', '-p', f'127.0.0.1:{port}:{port}', image])
+    if add_host:
+        nested = [['--add-host', h] for h in add_host]
+        add_host = reduce(lambda x, y: x + y, nested)
+    else:
+        add_host = []
+
+    if publish:
+        nested = [['-p', p] for p in publish]
+        publish = reduce(lambda x, y: x + y, nested)
+    else:
+        publish = []
+
+    # p = run(['docker', 'run', '-d', '-p', f'127.0.0.1:{port}:{port}', image])
+
+    p = run(['docker', 'run', '-d'] + add_host + publish + [image])
 
     if p.returncode == 0:
         status: str = Status.ok
