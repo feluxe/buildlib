@@ -15,15 +15,17 @@ def _image_exists(image) -> bool:
 
 
 def _parse_option(
-    args: Union[list, str],
+    args: Union[bool, list, str],
     flag: str,
 ) -> list:
     """"""
     if type(args) == list:
         nested = [[flag, f] for f in args]
         return reduce(lambda x, y: x + y, nested)
-    if type(args) == str:
+    elif type(args) == str:
         return [flag, args]
+    elif type(args) == bool:
+        return [flag] if args is True else []
     else:
         return []
 
@@ -99,18 +101,53 @@ def stop_container(
 
 
 def remove_image(
-    image: str
+    image: str,
+    force: bool = True,
 ) -> CmdFuncResult:
     """"""
     title = 'Remove Docker Image.'
 
-    cmd = ['docker', 'rmi', image, '--force']
+    options = [
+        *_parse_option(force, '--force'),
+    ]
+
+    cmd = ['docker', 'rmi', image] + options
 
     if _image_exists(image):
         p = run(cmd)
         returncode = p.returncode
     else:
         returncode = 0
+
+    if returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
+def rm_dangling_images(force: bool = True) -> CmdFuncResult:
+    """"""
+    title = 'Remove Dangling Docker Images.'
+
+    ids = run(
+        cmd=['docker', 'images', '-f', 'dangling=true', '-q'],
+        return_stdout=True,
+    ).stdout.split('\n')
+
+    ps = [
+        remove_image(id_, force=force)
+        for id_
+        in ids
+        if id_
+    ]
+
+    returncode = max([p.returncode for p in ps]) if ps else 0
 
     if returncode == 0:
         status: str = Status.ok
