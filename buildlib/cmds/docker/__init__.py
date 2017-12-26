@@ -163,7 +163,7 @@ def rm_dangling_images(force: bool = True) -> CmdFuncResult:
 
 def build_image(
     tag: List[str],
-    build_arg: List[str],
+    build_arg: List[str] = None,
 ) -> CmdFuncResult:
     """
     """
