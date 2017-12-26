@@ -138,10 +138,7 @@ if __name__ == '__main__':
     try:
         args = sys.argv
 
-        if args[1] == 'init':
-            print(pipenv.install(dev=True).summary)
-
-        elif args[1] == 'build-wheel':
+        if args[1] == 'build-wheel':
             build_wheel_routine()
 
         elif args[1] == 'push-registry':
