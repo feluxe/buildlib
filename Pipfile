@@ -11,7 +11,9 @@ cmdinter = "*"
 headlines = "*"
 prmt = "*"
 processy = "*"
-"ruamel.yaml" = "==0.15.23"
+"ruamel.yaml" = "*"
+setuptools = "*"
+wheel = "*"
 
 
 [dev-packages]
