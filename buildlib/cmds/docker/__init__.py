@@ -66,7 +66,7 @@ def run_container(
 
 
 def stop_container(
-    by_port: int,
+    by_port: Union[int, str],
 ) -> CmdFuncResult:
     title = 'Stop Docker Container'
 
