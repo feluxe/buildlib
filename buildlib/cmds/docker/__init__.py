@@ -164,6 +164,7 @@ def rm_dangling_images(force: bool = True) -> CmdFuncResult:
 def build_image(
     tag: List[str],
     build_arg: List[str] = None,
+    dockerfile: str = 'Dockerfile',
 ) -> CmdFuncResult:
     """
     """
@@ -174,7 +175,7 @@ def build_image(
         *_parse_option(tag, '-t'),
     ]
 
-    cmd = ['docker', 'build', '.', '--pull', '-f', 'Dockerfile'] + options
+    cmd = ['docker', 'build', '.', '--pull', '-f', dockerfile] + options
 
     p = run(cmd)
 
