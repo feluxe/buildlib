@@ -7,10 +7,10 @@ name = "pypi"
 
 [packages]
 
-cmdinter = "*"
-headlines = "*"
-prmt = "*"
-processy = "*"
+cmdinter = "==1.0.10"
+headlines = "==0.0.0a5"
+prmt = "==0.0.0a8"
+processy = "1.0.5"
 "ruamel.yaml" = "*"
 setuptools = "*"
 wheel = "*"
