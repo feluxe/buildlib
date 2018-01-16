@@ -3,18 +3,17 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
-from typing import Optional, List
 from buildlib.utils import yaml
-from buildlib.cmds import semver, git, build, pipenv
+from buildlib.cmds import semver, build
 from buildlib.cmds.git import sequence as git_seq
-from cmdinter import CmdFuncResult
 
-CWD = os.getcwd()
-CFG_FILE = 'CONFIG.yaml'
+CFG_FILE = 'Project'
 CFG = yaml.load_yaml(
     file=CFG_FILE,
     keep_order=True
 )
+
+__version__ = CFG.get('version')
 
 
 def get_version_from_user() -> str:
@@ -26,23 +25,15 @@ def get_version_from_user() -> str:
     )
 
 
-def bump_version(version: str) -> CmdFuncResult:
-    """
-    Bump (update) version number in CONFIG.yaml.
-    """
-    return build.update_version_num_in_cfg_yaml(
-        config_file=CFG_FILE,
-        semver_num=version,
-    )
-
-
-def build_wheel_routine() -> None:
+def build_wheel() -> None:
     """"""
-    result = build.build_python_wheel(clean_dir=True)
+    result = build.build_python_wheel(
+        clean_dir=True
+    )
     print(f'\n{result.summary}')
 
 
-def push_registry_routine() -> None:
+def push_registry() -> None:
     """"""
     result = build.push_python_wheel_to_pypi(
         clean_dir=True
@@ -50,15 +41,21 @@ def push_registry_routine() -> None:
     print(f'\n{result.summary}')
 
 
-def bump_version_routine() -> None:
+def bump_version(version=None) -> None:
     """"""
-    result = bump_version(
-        version=get_version_from_user()
+
+    if not version:
+        version = get_version_from_user()
+
+    result = build.update_version_num_in_cfg_yaml(
+        config_file=CFG_FILE,
+        semver_num=version,
     )
+
     print(f'\n{result.summary}')
 
 
-def bump_git_routine() -> None:
+def bump_git() -> None:
     """"""
     results = []
 
@@ -88,7 +85,7 @@ def bump_git_routine() -> None:
         print(result.summary)
 
 
-def bump_routine() -> None:
+def bump_all() -> None:
     """"""
     results = []
 
@@ -132,28 +129,3 @@ def bump_routine() -> None:
 
     for result in results:
         print(result.summary)
-
-
-if __name__ == '__main__':
-    try:
-        args = sys.argv
-
-        if args[1] == 'build-wheel':
-            build_wheel_routine()
-
-        elif args[1] == 'push-registry':
-            push_registry_routine()
-
-        elif args[1] == 'bump-version':
-            bump_version_routine()
-
-        elif args[1] == 'bump-git':
-            bump_git_routine()
-
-        elif args[1] == 'bump':
-            bump_routine()
-
-
-    except KeyboardInterrupt:
-        print('\n\nScript aborted by user.\n')
-        sys.exit(1)
