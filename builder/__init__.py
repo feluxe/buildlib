@@ -146,7 +146,7 @@ def bump_all() -> None:
         ))
 
     if git_settings.should_bump_any:
-        results.append(git_seq.bump_sequence(git_settings))
+        results.extend(git_seq.bump_sequence(git_settings))
 
     if should_push_registry:
         results.append(build.push_python_wheel_to_pypi(
@@ -154,4 +154,5 @@ def bump_all() -> None:
         ))
 
     for result in results:
+
         print(f'\n{result.summary}')
