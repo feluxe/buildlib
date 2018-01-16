@@ -2,6 +2,7 @@
 .PHONY: run
 .PHONY: build
 .PHONY: version
+.PHONY: git
 
 
 help:
