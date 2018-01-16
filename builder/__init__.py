@@ -104,8 +104,10 @@ def bump_git() -> None:
 
     results += git_seq.bump_sequence(git_settings)
 
+    print('')
+
     for result in results:
-        print(f'\n{result.summary}')
+        print(result.summary)
 
 
 def bump_all() -> None:
@@ -152,6 +154,8 @@ def bump_all() -> None:
         results.append(build.push_python_wheel_to_pypi(
             clean_dir=True
         ))
+
+    print('')
 
     for result in results:
         print(result.summary)
