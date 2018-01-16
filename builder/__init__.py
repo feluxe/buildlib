@@ -154,5 +154,4 @@ def bump_all() -> None:
         ))
 
     for result in results:
-
-        print(f'\n{result.summary}')
+        print(result.summary)
