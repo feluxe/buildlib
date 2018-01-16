@@ -27,20 +27,32 @@ def get_version_from_user() -> str:
     )
 
 
-def build_wheel() -> None:
+def build_wheel(
+    return_result=False,
+) -> Union[CmdFuncResult, None]:
     """"""
     result = build.build_python_wheel(
         clean_dir=True
     )
-    print(f'\n{result.summary}')
+
+    if return_result:
+        return result
+    else:
+        print(f'\n{result.summary}')
 
 
-def push_registry() -> None:
+def push_registry(
+    return_result=False,
+) -> Union[CmdFuncResult, None]:
     """"""
     result = build.push_python_wheel_to_pypi(
         clean_dir=True
     )
-    print(f'\n{result.summary}')
+
+    if return_result:
+        return result
+    else:
+        print(f'\n{result.summary}')
 
 
 def bump_version(
