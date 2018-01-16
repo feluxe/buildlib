@@ -19,9 +19,15 @@ def commit_msg(
 def branch(
     margin: tuple = (0, 1)
 ) -> str:
+
+    default=run_cmd(
+        silent=True,
+        func=git.get_default_branch
+    ).returnvalue
+
     return prmt.string(
         question='Enter BRANCH name:\n',
-        default=run_cmd(silent=True, func=git.get_default_branch).returnvalue,
+        default=default,
         margin=margin
     )
 
