@@ -1,6 +1,7 @@
 
 .PHONY: run
 .PHONY: build
+.PHONY: version
 
 
 help:
