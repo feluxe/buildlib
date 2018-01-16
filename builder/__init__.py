@@ -85,7 +85,10 @@ def bump_git() -> None:
     )
 
     if should_bump_version:
-        results.append(bump_version(version))
+        results.append(bump_version(
+            new_version=version,
+            return_result=True,
+        ))
 
     results += git_seq.bump_sequence(git_settings)
 
@@ -115,7 +118,10 @@ def bump_all() -> None:
     )
 
     if should_bump_version:
-        results.append(bump_version(version))
+        results.append(bump_version(
+            new_version=version,
+            return_result=True,
+        ))
 
     git_settings = git_seq.get_sequence_settings_from_user(
         should_tag_default=version != CFG.get('version'),
