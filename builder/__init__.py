@@ -3,9 +3,11 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
+from typing import Union
 from buildlib.utils import yaml
 from buildlib.cmds import semver, build
 from buildlib.cmds.git import sequence as git_seq
+from cmdinter import CmdFuncResult
 
 CFG_FILE = 'Project'
 CFG = yaml.load_yaml(
@@ -41,18 +43,26 @@ def push_registry() -> None:
     print(f'\n{result.summary}')
 
 
-def bump_version(version=None) -> None:
-    """"""
+def bump_version(
+    new_version: str = None,
+    return_result: bool = False,
+) -> Union[CmdFuncResult, None]:
+    """
+    Bump (update) version number in CONFIG.yaml.
+    """
 
-    if not version:
-        version = get_version_from_user()
+    if not new_version:
+        new_version: str = get_version_from_user()
 
     result = build.update_version_num_in_cfg_yaml(
         config_file=CFG_FILE,
-        semver_num=version,
+        semver_num=new_version,
     )
 
-    print(f'\n{result.summary}')
+    if return_result:
+        return result
+    else:
+        print(f'\n{result.summary}')
 
 
 def bump_git() -> None:
@@ -79,10 +89,8 @@ def bump_git() -> None:
 
     results += git_seq.bump_sequence(git_settings)
 
-    print('')
-
     for result in results:
-        print(result.summary)
+        print(f'\n{result.summary}')
 
 
 def bump_all() -> None:
@@ -115,17 +123,17 @@ def bump_all() -> None:
     )
 
     if should_build_wheel:
-        results.append(build.build_python_wheel(clean_dir=True))
+        results.append(build.build_python_wheel(
+            clean_dir=True
+        ))
 
     if git_settings.should_bump_any:
-        results += git_seq.bump_sequence(git_settings)
+        results.append(git_seq.bump_sequence(git_settings))
 
     if should_push_registry:
         results.append(build.push_python_wheel_to_pypi(
             clean_dir=True
         ))
 
-    print('')
-
     for result in results:
-        print(result.summary)
+        print(f'\n{result.summary}')
