@@ -210,8 +210,8 @@ def tag_image(
     """
     title = 'Tag Image.'
 
-    registry = registry + '/' or ''
-    namespace = namespace + '/' or ''
+    registry = registry + '/' if registry else ''
+    namespace = namespace + '/' if namespace else ''
     dst_image = dst_image or src_image
 
     cmds = [['docker', 'tag', src_image, f'{registry}{namespace}{dst_image}']]
@@ -249,8 +249,8 @@ def push_image(
     """
     title = 'Tag Image.'
 
-    registry = registry + '/' or ''
-    namespace = namespace + '/' or ''
+    registry = registry + '/' if registry else ''
+    namespace = namespace + '/' if namespace else ''
 
     cmd = ['docker', 'push', f'{registry}{namespace}{image}']
 
