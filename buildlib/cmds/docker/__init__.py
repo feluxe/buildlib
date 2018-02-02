@@ -1,4 +1,5 @@
 from typing import Optional, List, Union
+import re
 from processy import run
 from cmdinter import CmdFuncResult, Status
 from functools import reduce
@@ -166,7 +167,9 @@ def remove_image(
     )
 
 
-def rm_dangling_images(force: bool = True) -> CmdFuncResult:
+def rm_dangling_images(
+    force: bool = True
+) -> CmdFuncResult:
     """"""
     title = 'Remove Dangling Docker Images.'
 
@@ -183,6 +186,77 @@ def rm_dangling_images(force: bool = True) -> CmdFuncResult:
     ]
 
     returncode = max([p.returncode for p in ps]) if ps else 0
+
+    if returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
+def tag_image(
+    src_image: str,
+    registry: Optional[str],
+    namespace: Optional[str],
+    dst_image: Optional[str],
+    tag_latest: bool = False,
+):
+    """
+    """
+    title = 'Tag Image.'
+
+    registry = registry + '/' or ''
+    namespace = namespace + '/' or ''
+    dst_image = dst_image or src_image
+
+    cmds = [['docker', 'tag', src_image, f'{registry}{namespace}{dst_image}']]
+
+    if tag_latest:
+        base_name = re.search('.*[:]', dst_image) or dst_image
+        latest = f'{base_name}:latest'
+
+        tag_cmd = ['docker', 'tag', dst_image, f'{registry}{namespace}{latest}']
+
+        cmds.insert(1, tag_cmd)
+
+    ps = [run(cmd, verbose=True) for cmd in cmds]
+
+    returncode = max([p.returncode for p in ps])
+
+    if returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
+def push_image(
+    image: str,
+    registry: Optional[str],
+    namespace: Optional[str],
+):
+    """
+    """
+    title = 'Tag Image.'
+
+    registry = registry + '/' or ''
+    namespace = namespace + '/' or ''
+
+    cmd = ['docker', 'push', f'{registry}{namespace}{image}']
+
+    p = run(cmd, verbose=True)
+
+    returncode = p.returncode
 
     if returncode == 0:
         status: str = Status.ok
