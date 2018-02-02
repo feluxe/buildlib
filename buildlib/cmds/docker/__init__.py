@@ -100,6 +100,41 @@ def stop_container(
     )
 
 
+def kill_container(
+    by_port: Union[int, str],
+) -> CmdFuncResult:
+    title = 'Stop Docker Container'
+
+    if by_port:
+        cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
+               '--format="{{.ID}}"']
+
+    ids = run(
+        cmd=cmd,
+        return_stdout=True,
+    ).stdout.split('\n')
+
+    ps = [
+        run(['docker', 'kill', id_.replace('"', '')])
+        for id_
+        in ids
+        if id_
+    ]
+
+    returncode = max([p.returncode for p in ps]) if ps else 0
+
+    if returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+
 def remove_image(
     image: str,
     force: bool = True,
