@@ -201,10 +201,10 @@ def rm_dangling_images(
 
 def tag_image(
     src_image: str,
-    registry: Optional[str],
-    namespace: Optional[str],
-    dst_image: Optional[str],
-    tag_latest: bool = False,
+    registry: Optional[str] = None,
+    namespace: Optional[str] = None,
+    dst_image: Optional[str] = None,
+    tag_latest: Optional[bool] = False,
 ):
     """
     """
