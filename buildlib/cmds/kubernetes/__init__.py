@@ -69,7 +69,7 @@ def delete(
         '-n', ','.join(namespace),
     ]
 
-    cmd = ['kubectl', 'delete'] + ','.join(type_) + options
+    cmd = ['kubectl', 'delete', ','.join(type_)] + options
 
     p = run(cmd, stdin=sp.PIPE)
 
