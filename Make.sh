@@ -1,6 +1,6 @@
 
 
-if [ $1 = "init" ]; then
+if [[ $1 = "init" ]]; then
     $(info [INIT PROJECT FOR DEV])
 	pipenv --python 3.6
 	pipenv install --dev

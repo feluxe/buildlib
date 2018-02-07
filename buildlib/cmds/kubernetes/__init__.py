@@ -1,24 +1,9 @@
 from typing import List, Union
 import sys
+from processy import run
 import subprocess as sp
 from cmdinter import CmdFuncResult, Status
 from functools import reduce
-
-
-def _parse_option(
-    args: Union[bool, list, str],
-    flag: str,
-) -> list:
-    """"""
-    if type(args) == list:
-        nested = [[flag, f] for f in args]
-        return reduce(lambda x, y: x + y, nested)
-    elif type(args) == str:
-        return [flag, args]
-    elif type(args) == bool:
-        return [flag] if args is True else []
-    else:
-        return []
 
 
 def apply(
@@ -36,8 +21,8 @@ def apply(
         sys.exit(1)
 
     options = [
-        *_parse_option(namespace, '--namespace'),
-        *_parse_option(files, '-f'),
+        '-n', ','.join(namespace),
+        '-f', ','.join(files),
     ]
 
     cmd = ['kubectl', 'apply'] + options
@@ -51,6 +36,42 @@ def apply(
         p.stdin.write(stdin.encode())
 
     p.communicate()
+
+    if p.returncode == 0:
+        status: str = Status.ok
+    else:
+        status: str = Status.error
+
+    return CmdFuncResult(
+        returncode=p.returncode,
+        returnvalue=None,
+        summary=f'{status} {title}',
+    )
+
+    # if delete:
+    #     cmd = ['kubectl', 'delete', 'pods,replicaSets', '-l', label, '-n',
+    #            s.NAMESPACE, '--now']
+    #     p = sp.run(cmd)
+
+
+def delete(
+    type_: List[str],
+    label: List[str] = None,
+    namespace: List[str] = 'default',
+) -> CmdFuncResult:
+    """
+    @type_: pods, replicaSets, deployments, etc'
+    """
+    title = 'kubectl delete.'
+
+    options = [
+        '-l', ','.join(label),
+        '-n', ','.join(namespace),
+    ]
+
+    cmd = ['kubectl', 'delete'] + ','.join(type_) + options
+
+    p = run(cmd, stdin=sp.PIPE)
 
     if p.returncode == 0:
         status: str = Status.ok
