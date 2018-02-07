@@ -208,7 +208,7 @@ def tag_image(
 ):
     """
     """
-    title = 'Tag Image.'
+    title = 'Tag Docker Image.'
 
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
@@ -247,7 +247,7 @@ def push_image(
 ):
     """
     """
-    title = 'Tag Image.'
+    title = 'Push Docker Image.'
 
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
