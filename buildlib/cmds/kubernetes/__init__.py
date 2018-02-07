@@ -6,6 +6,17 @@ from cmdinter import CmdFuncResult, Status
 from functools import reduce
 
 
+def _parse_option(
+    flag: str,
+    args: List[str],
+) -> list:
+    """"""
+    if type(args) == list:
+        return [flag, ','.join(args)]
+    else:
+        return []
+
+
 def apply(
     stdin: str = None,
     files: List[str] = None,
@@ -21,8 +32,8 @@ def apply(
         sys.exit(1)
 
     options = [
-        '-n', ','.join(namespace),
-        '-f', ','.join(files),
+        *_parse_option('-n', namespace),
+        *_parse_option('-f', files),
     ]
 
     cmd = ['kubectl', 'apply'] + options
@@ -65,8 +76,8 @@ def delete(
     title = 'kubectl delete.'
 
     options = [
-        '-l', ','.join(label),
-        '-n', ','.join(namespace),
+        *_parse_option('-l', label),
+        *_parse_option('-n', namespace),
     ]
 
     cmd = ['kubectl', 'delete', ','.join(type_)] + options
