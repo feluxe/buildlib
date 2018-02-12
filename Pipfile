@@ -10,8 +10,9 @@ name = "pypi"
 cmdinter = "==1.0.11"
 headlines = "==0.0.0a5"
 prmt = "==0.0.0a8"
-processy = "1.0.5"
+processy = "1.0.6"
 "ruamel.yaml" = "*"
+sty = "*"
 
 
 [dev-packages]
