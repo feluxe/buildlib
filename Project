@@ -1,6 +1,6 @@
 "public_name": "buildlib"
 "interal_name": "buildlib"
-"version": "1.0.47"
+"version": "1.0.48"
 "license": "unlicensed"
 "author": "Felix Meyer-Wolters"
 "author_email": "felix@meyerwolters.de"
@@ -20,5 +20,7 @@
   "data_files": []
   "classifiers": []
   "platforms": ""
-  "entry_points": {"console_scripts": [], "gui_scripts": []}
+  "entry_points": {"console_scripts": []
+, "gui_scripts": []
+}
   "tests_require": ["pytest", "wheel"]

@@ -12,6 +12,11 @@ def eprint(string):
 def print_summary(results: List[CmdFuncResult]):
     for result in results:
         if hasattr(result, 'summary'):
-            print(result.summary)
+            if '[OK]' in result.summary:
+                print(fg.li_green + result.summary + fg.rs)
+            elif '[ERR' in result.summary:
+                print(fg.li_red + result.summary + fg.rs)
+            else:
+                print(fg.li_magenta + result.summary + fg.rs)
         else:
             print('')
