@@ -22,14 +22,14 @@ def update_version_num_in_cfg(
     Increase version num based on user input or ask user for a new version number.
     """
 
-    cfg: dict = yaml.load(
+    cfg: dict = yaml.loadfile(
         config_file,
         keep_order=True
     )
 
     cfg.update({'version': semver_num})
 
-    yaml.save(cfg, config_file)
+    yaml.savefile(cfg, config_file)
 
 
 @command

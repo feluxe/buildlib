@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 from buildlib import yaml, semver, build, git
 
 CFG_FILE = 'Project'
-CFG = yaml.load(
+CFG = yaml.loadfile(
     file=CFG_FILE,
     keep_order=True
 )

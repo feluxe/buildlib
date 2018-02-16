@@ -2,7 +2,7 @@ import ruamel.yaml as yaml
 from typing import Any
 
 
-def load(
+def loadfile(
     file: str,
     keep_order: bool = False
 ) -> dict:
@@ -16,7 +16,7 @@ def load(
             return yaml.safe_load(stream.read())
 
 
-def save(
+def savefile(
     data: Any,
     file: str,
     default_style: str = '"'

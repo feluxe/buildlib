@@ -5,7 +5,7 @@ from codecs import open
 with open('README.md') as f:
     long_description = f.read()
 
-config = yaml.load('Project')
+config = yaml.loadfile('Project')
 
 setup(
     name=config['public_name'],
