@@ -1,7 +1,7 @@
 import os
 from docopt import docopt
-import builder
 from builder import CFG
+import builder
 
 
 def _get_user_input() -> dict:

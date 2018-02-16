@@ -1,6 +1,6 @@
 "public_name": "buildlib"
 "interal_name": "buildlib"
-"version": "1.0.48"
+"version": "2.0.0-beta.01"
 "license": "unlicensed"
 "author": "Felix Meyer-Wolters"
 "author_email": "felix@meyerwolters.de"
@@ -12,7 +12,7 @@
 "interpreter": "python3.6"
 "gemfury_env": "python"
 "pypi":
-  "install_requires": ["headlines", "prmt", "ruamel.yaml", "processy", "cmdinter"]
+  "install_requires": ["headlines", "prmt", "ruamel.yaml", "processy", "cmdi"]
   "packages": ["buildlib"]
   "package_dir": {"buildlib": "buildlib"}
   "package_data": {}
@@ -23,4 +23,4 @@
   "entry_points": {"console_scripts": []
 , "gui_scripts": []
 }
-  "tests_require": ["pytest", "wheel"]
+  "tests_require": ["pytest", "wheel", "docopt"]

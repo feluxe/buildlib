@@ -1,6 +1,6 @@
 from typing import Optional, List
-from buildlib.cmds import git
-from cmdinter import CmdFuncResult
+from buildlib import git
+from cmdi import CmdResult
 
 
 class GitSequenceSettings(dict):
@@ -14,7 +14,7 @@ class GitSequenceSettings(dict):
     branch: Optional[str]
 
 
-def get_sequence_settings_from_user(
+def get_settings_from_user(
     version: str,
     should_tag_default: Optional[bool] = None,
     should_bump_any: Optional[bool] = None,
@@ -74,7 +74,7 @@ def get_sequence_settings_from_user(
 
 def bump_sequence(
     s: GitSequenceSettings
-) -> List[CmdFuncResult]:
+) -> List[CmdResult]:
     """"""
     results = []
 
@@ -83,25 +83,25 @@ def bump_sequence(
         # Run 'add -A'
         if s.should_add_all:
             results.append(
-                git.add_all()
+                git.cmd.add_all()
             )
 
         # Run 'commit -m'
         if s.should_commit:
             results.append(
-                git.commit(s.commit_msg)
+                git.cmd.commit(s.commit_msg)
             )
 
         # Run 'tag'
         if s.should_tag:
             results.append(
-                git.tag(s.version, s.branch)
+                git.cmd.tag(s.version, s.branch)
             )
 
         # Run 'push'
         if s.should_push_git:
             results.append(
-                git.push(s.branch)
+                git.cmd.push(s.branch)
             )
 
     return results

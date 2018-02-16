@@ -1,6 +1,6 @@
 import os
 from typing import Optional
-from buildlib.utils import semver
+from buildlib import semver
 
 
 def extract_version_from_wheel_name(name: str) -> str:

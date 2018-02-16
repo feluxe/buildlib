@@ -1,13 +1,13 @@
 import prmt
 from headlines import h3
-from buildlib.cmds import git
-from cmdinter import run_cmd
+from buildlib import git
 
 
 def commit_msg(
     margin: tuple = (0, 1),
     editor: bool = True
 ) -> str:
+    """"""
     return prmt.string(
         question='Enter COMMIT message:\n',
         margin=margin,
@@ -19,11 +19,8 @@ def commit_msg(
 def branch(
     margin: tuple = (0, 1)
 ) -> str:
-
-    default=run_cmd(
-        silent=True,
-        func=git.get_default_branch
-    ).returnvalue
+    """"""
+    default = git.cmd.get_default_branch().val
 
     return prmt.string(
         question='Enter BRANCH name:\n',
@@ -38,7 +35,7 @@ def confirm_status(
 ) -> bool:
     """"""
     print(h3('Git Status'))
-    git.status()
+    git.cmd.status()
 
     return prmt.confirm(
         question='GIT STATUS ok?\n',
@@ -53,7 +50,7 @@ def confirm_diff(
 ) -> bool:
     """"""
     print(h3('Git Diff'))
-    git.diff()
+    git.cmd.diff()
 
     return prmt.confirm(
         question='GIT DIFF ok?\n',

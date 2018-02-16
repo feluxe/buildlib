@@ -4,13 +4,11 @@ import os
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
 from typing import Union
-from buildlib.utils import yaml
-from buildlib.cmds import semver, build
-from buildlib.cmds.git import sequence as git_seq
-from cmdinter import CmdFuncResult
+from buildlib import yaml, semver, build, git
+from cmdi import CmdResult, print_status
 
 CFG_FILE = 'Project'
-CFG = yaml.load_yaml(
+CFG = yaml.load(
     file=CFG_FILE,
     keep_order=True
 )
@@ -28,53 +26,34 @@ def get_version_from_user() -> str:
 
 
 def build_wheel(
-    return_result=False,
-) -> Union[CmdFuncResult, None]:
+) -> Union[CmdResult, None]:
     """"""
-    result = build.build_python_wheel(
+    return build.cmd.build_python_wheel(
         clean_dir=True
     )
-
-    if return_result:
-        return result
-    else:
-        print(f'\n{result.summary}')
 
 
 def push_registry(
-    return_result=False,
-) -> Union[CmdFuncResult, None]:
+) -> Union[CmdResult, None]:
     """"""
-    result = build.push_python_wheel_to_pypi(
+    return build.cmd.push_python_wheel_to_pypi(
         clean_dir=True
     )
-
-    if return_result:
-        return result
-    else:
-        print(f'\n{result.summary}')
 
 
 def bump_version(
     new_version: str = None,
-    return_result: bool = False,
-) -> Union[CmdFuncResult, None]:
+) -> Union[CmdResult, None]:
     """
     Bump (update) version number in CONFIG.yaml.
     """
-
     if not new_version:
         new_version: str = get_version_from_user()
 
-    result = build.update_version_num_in_cfg_yaml(
+    return build.cmd.update_version_num_in_cfg(
         config_file=CFG_FILE,
         semver_num=new_version,
     )
-
-    if return_result:
-        return result
-    else:
-        print(f'\n{result.summary}')
 
 
 def bump_git() -> None:
@@ -90,7 +69,7 @@ def bump_git() -> None:
     else:
         version = CFG.get('version')
 
-    git_settings = git_seq.get_sequence_settings_from_user(
+    seq_settings = git.seq.get_settings_from_user(
         should_tag_default=version != CFG.get('version'),
         should_bump_any=True,
         version=version,
@@ -99,15 +78,12 @@ def bump_git() -> None:
     if should_bump_version:
         results.append(bump_version(
             new_version=version,
-            return_result=True,
         ))
 
-    results += git_seq.bump_sequence(git_settings)
-
-    print('')
+    results.extend(git.seq.bump_sequence(seq_settings))
 
     for result in results:
-        print(result.summary)
+        print_status(result)
 
 
 def bump_all() -> None:
@@ -134,28 +110,25 @@ def bump_all() -> None:
     if should_bump_version:
         results.append(bump_version(
             new_version=version,
-            return_result=True,
         ))
 
-    git_settings = git_seq.get_sequence_settings_from_user(
+    git_settings = git.seq.get_settings_from_user(
         should_tag_default=version != CFG.get('version'),
         version=version,
     )
 
     if should_build_wheel:
-        results.append(build.build_python_wheel(
-            clean_dir=True
+        results.append(build.cmd.build_python_wheel(
+            clean_dir=True,
         ))
 
     if git_settings.should_bump_any:
-        results.extend(git_seq.bump_sequence(git_settings))
+        results.extend(git.seq.bump_sequence(git_settings))
 
     if should_push_registry:
-        results.append(build.push_python_wheel_to_pypi(
+        results.append(build.cmd.push_python_wheel_to_pypi(
             clean_dir=True
         ))
 
-    print('')
-
     for result in results:
-        print(result.summary)
+        print_status(result)

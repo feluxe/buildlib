@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
-from buildlib.utils.yaml import load_yaml
+from buildlib import yaml
 from codecs import open
 
 with open('README.md') as f:
     long_description = f.read()
 
-config = load_yaml('Project')
+config = yaml.load('Project')
 
 setup(
     name=config['public_name'],
@@ -25,7 +25,7 @@ setup(
     platforms=config['pypi']['platforms'],
     classifiers=config['pypi']['classifiers'],
     install_requires=config['pypi']['install_requires'],
-    packages=find_packages(where='.', exclude=('tests', 'tests.*', 'venv-buildlib', 'venv-buildlib.*')),
+    packages=find_packages(where='.', exclude=('tests', 'tests.*')),
     package_dir=config['pypi']['package_dir'],
     package_data=config['pypi']['package_data'],
     data_files=config['pypi']['data_files'],

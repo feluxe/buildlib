@@ -1,11 +1,14 @@
 from typing import Optional, List, Union
 import re
 from processy import run
-from cmdinter import CmdFuncResult, Status
 from functools import reduce
+from cmdi import command, CmdResult, CustomCmdResult
 
 
-def _image_exists(image) -> bool:
+def _image_exists(
+    image: str
+) -> bool:
+    """"""
     result = run(
         cmd=['docker', 'inspect', '--type=image', image],
         verbose=False,
@@ -31,6 +34,7 @@ def _parse_option(
         return []
 
 
+@command
 def run_container(
     image: str,
     add_host: Optional[List[str]] = None,
@@ -38,11 +42,11 @@ def run_container(
     network: Optional[str] = None,
     publish: Optional[List[str]] = None,
     volume: Optional[List[str]] = None,
-) -> CmdFuncResult:
+    **cmdargs,
+) -> CmdResult:
     """
     Run Docker container locally.
     """
-    title = 'Run Docker Container.'
 
     options = [
         *_parse_option(add_host, '--add-host'),
@@ -54,23 +58,12 @@ def run_container(
 
     p = run(['docker', 'run', '-d'] + options + [image])
 
-    if p.returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
 
-    return CmdFuncResult(
-        returncode=p.returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def stop_container(
     by_port: Union[int, str],
-) -> CmdFuncResult:
-    title = 'Stop Docker Container'
-
+    **cmdargs,
+) -> CmdResult:
     if by_port:
         cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
                '--format="{{.ID}}"']
@@ -87,25 +80,13 @@ def stop_container(
         if id_
     ]
 
-    returncode = max([p.returncode for p in ps]) if ps else 0
 
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def kill_container(
     by_port: Union[int, str],
-) -> CmdFuncResult:
-    title = 'Stop Docker Container'
-
+    **cmdargs,
+) -> CmdResult:
+    """"""
     if by_port:
         cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
                '--format="{{.ID}}"']
@@ -122,56 +103,29 @@ def kill_container(
         if id_
     ]
 
-    returncode = max([p.returncode for p in ps]) if ps else 0
 
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def remove_image(
     image: str,
     force: bool = True,
-) -> CmdFuncResult:
+    **cmdargs,
+) -> CmdResult:
     """"""
-    title = 'Remove Docker Image.'
-
-    options = [
-        *_parse_option(force, '--force'),
-    ]
-
-    cmd = ['docker', 'rmi', image] + options
-
     if _image_exists(image):
+        options = [
+            *_parse_option(force, '--force'),
+        ]
+
+        cmd = ['docker', 'rmi', image] + options
         p = run(cmd)
-        returncode = p.returncode
-    else:
-        returncode = 0
-
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
 
 
+@command
 def rm_dangling_images(
-    force: bool = True
-) -> CmdFuncResult:
+    force: bool = True,
+    **cmdargs,
+) -> CmdResult:
     """"""
-    title = 'Remove Dangling Docker Images.'
 
     ids = run(
         cmd=['docker', 'images', '-f', 'dangling=true', '-q'],
@@ -185,30 +139,18 @@ def rm_dangling_images(
         if id_
     ]
 
-    returncode = max([p.returncode for p in ps]) if ps else 0
 
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def tag_image(
     src_image: str,
     registry: Optional[str] = None,
     namespace: Optional[str] = None,
     dst_image: Optional[str] = None,
     tag_latest: Optional[bool] = False,
-):
+    **cmdargs,
+) -> CmdResult:
     """
     """
-    title = 'Tag Docker Image.'
 
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
@@ -226,28 +168,16 @@ def tag_image(
 
     ps = [run(cmd, verbose=True) for cmd in cmds]
 
-    returncode = max([p.returncode for p in ps])
 
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def push_image(
     image: str,
     registry: Optional[str],
     namespace: Optional[str],
-):
+    **cmdargs,
+) -> CmdResult:
     """
     """
-    title = 'Push Docker Image.'
 
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
@@ -256,28 +186,16 @@ def push_image(
 
     p = run(cmd, verbose=True)
 
-    returncode = p.returncode
 
-    if returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )
-
-
+@command
 def build_image(
     tag: List[str],
     build_arg: List[str] = None,
     dockerfile: str = 'Dockerfile',
-) -> CmdFuncResult:
+    **cmdargs,
+) -> CmdResult:
     """
     """
-    title = 'Build Docker Image.'
 
     options = [
         *_parse_option(build_arg, '--build-arg'),
@@ -287,14 +205,3 @@ def build_image(
     cmd = ['docker', 'build', '.', '--pull', '-f', dockerfile] + options
 
     p = run(cmd)
-
-    if p.returncode == 0:
-        status: str = Status.ok
-    else:
-        status: str = Status.error
-
-    return CmdFuncResult(
-        returncode=p.returncode,
-        returnvalue=None,
-        summary=f'{status} {title}',
-    )

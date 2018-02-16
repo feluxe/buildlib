@@ -1,5 +1,5 @@
 import prmt
-from buildlib.utils import semver
+from buildlib import semver
 
 
 def semver_num_manually(margin=(0, 1)) -> str:
