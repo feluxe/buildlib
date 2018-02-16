@@ -1,1 +1,1 @@
-from buildlib.docker import cmd, prompt
+from buildlib.docker import cmd
