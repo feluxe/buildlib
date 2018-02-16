@@ -20,6 +20,7 @@ sty = "*"
 docopt = "*"
 wheel = "*"
 setuptools = "*"
+cmdi = "==0.0.6"
 
 
 [requires]

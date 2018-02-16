@@ -6,7 +6,7 @@ Everything that does not deserve it's own package goes here.
 import os
 import shutil
 import glob
-from processy import run, CompletedProcess
+import subprocess as sp
 from buildlib import yaml, module
 from cmdi import command, CmdResult, CustomCmdResult
 
@@ -38,9 +38,8 @@ def push_python_wheel_to_gemfury(
     **cmdargs,
 ) -> CmdResult:
     """"""
-    p: CompletedProcess = run(
+    sp.run(
         cmd=['fury', 'push', wheel_file],
-        return_stdout=True
     )
 
 
@@ -61,7 +60,7 @@ def push_python_wheel_to_pypi(
 ) -> CmdResult:
     """"""
     cmd = ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi']
-    p: CompletedProcess = run(cmd)
+    sp.run(cmd)
 
     if clean_dir:
         _clean_bdist_tmp_files()
@@ -77,7 +76,7 @@ def build_python_wheel(
     @clean_dir: Clean 'build' dir before running build command. This may be necessary because of
     this: https://bitbucket.org/pypa/wheel/issues/147/bdist_wheel-should-start-by-cleaning-up
     """
-    p: CompletedProcess = run(cmd=['python', 'setup.py', 'bdist_wheel'])
+    sp.run(cmd=['python', 'setup.py', 'bdist_wheel'])
 
     if clean_dir:
         _clean_bdist_tmp_files()
@@ -139,7 +138,7 @@ def build_read_the_docs(
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
-    p: CompletedProcess = run(
+    sp.run(
         cmd=['make', 'html'],
         cwd='{}/docs'.format(os.getcwd())
     )
@@ -160,7 +159,7 @@ def create_py_venv(
     """
     cmd: list = [py_bin, '-m', 'venv', venv_dir]
 
-    p: CompletedProcess = run(cmd)
+    sp.run(cmd)
 
 
 @command
