@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 
 from typing import Union
 from buildlib import yaml, semver, build, git
-from cmdi import CmdResult, print_status
+from cmdi import CmdResult, print_summary
 
 CFG_FILE = 'Project'
 CFG = yaml.load(
@@ -82,8 +82,7 @@ def bump_git() -> None:
 
     results.extend(git.seq.bump_sequence(seq_settings))
 
-    for result in results:
-        print_status(result)
+    print_summary(results)
 
 
 def bump_all() -> None:
@@ -130,5 +129,4 @@ def bump_all() -> None:
             clean_dir=True
         ))
 
-    for result in results:
-        print_status(result)
+    print_summary(results)

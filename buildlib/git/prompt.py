@@ -17,7 +17,7 @@ def commit_msg(
 
 
 def branch(
-    margin: tuple = (0, 1)
+    margin: tuple = (1, 1)
 ) -> str:
     """"""
     default = git.cmd.get_default_branch().val

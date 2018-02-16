@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-cmdi = "==0.0.4"
+cmdi = "==0.0.8"
 headlines = "==0.0.0a5"
 prmt = "==0.0.0a8"
 processy = "==1.0.7"
@@ -20,7 +20,6 @@ sty = "*"
 docopt = "*"
 wheel = "*"
 setuptools = "*"
-cmdi = "==0.0.6"
 
 
 [requires]

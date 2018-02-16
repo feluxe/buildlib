@@ -38,9 +38,7 @@ def push_python_wheel_to_gemfury(
     **cmdargs,
 ) -> CmdResult:
     """"""
-    sp.run(
-        cmd=['fury', 'push', wheel_file],
-    )
+    sp.run(['fury', 'push', wheel_file])
 
 
 def _clean_bdist_tmp_files() -> None:
@@ -76,7 +74,7 @@ def build_python_wheel(
     @clean_dir: Clean 'build' dir before running build command. This may be necessary because of
     this: https://bitbucket.org/pypa/wheel/issues/147/bdist_wheel-should-start-by-cleaning-up
     """
-    sp.run(cmd=['python', 'setup.py', 'bdist_wheel'])
+    sp.run(['python', 'setup.py', 'bdist_wheel'])
 
     if clean_dir:
         _clean_bdist_tmp_files()
@@ -139,7 +137,7 @@ def build_read_the_docs(
         shutil.rmtree(build_dir)
 
     sp.run(
-        cmd=['make', 'html'],
+        ['make', 'html'],
         cwd='{}/docs'.format(os.getcwd())
     )
 
