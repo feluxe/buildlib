@@ -16,8 +16,8 @@ class GitSequenceSettings(dict):
 
 def get_settings_from_user(
     version: str,
-    should_tag_default: Optional[bool] = None,
-    should_bump_any: Optional[bool] = None,
+    ask_bump_any_git: Optional[bool] = None,
+    should_tag_default_val: Optional[bool] = None,
 ) -> GitSequenceSettings:
     """
     @should_tag_default: If True: tag default will be 'y' if False: 'n'
@@ -27,9 +27,12 @@ def get_settings_from_user(
     s = GitSequenceSettings()
     s.version = version
 
-    s.should_bump_any = should_bump_any or git.prompt.should_run_any(
-        default='y'
-    )
+    if ask_bump_any_git:
+        s.should_bump_any = git.prompt.should_run_any(
+            default='y'
+        )
+    else:
+        s.should_bump_any = True
 
     if s.should_bump_any is not False:
         # Ask user to run any git commands.
@@ -54,7 +57,7 @@ def get_settings_from_user(
 
         # Ask user to run 'tag'.
         s.should_tag: bool = git.prompt.should_tag(
-            default='n' if should_tag_default is False else 'y'
+            default='n' if should_tag_default_val is False else 'y'
         )
 
         # Ask user to push.
