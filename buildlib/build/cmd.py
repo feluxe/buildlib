@@ -38,7 +38,10 @@ def push_python_wheel_to_gemfury(
     **cmdargs,
 ) -> CmdResult:
     """"""
-    sp.run(['fury', 'push', wheel_file])
+    sp.run(
+        ['fury', 'push', wheel_file],
+        check=True
+    )
 
 
 def _clean_bdist_tmp_files() -> None:
@@ -57,8 +60,10 @@ def push_python_wheel_to_pypi(
     **cmdargs,
 ) -> CmdResult:
     """"""
-    cmd = ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi']
-    sp.run(cmd)
+    sp.run(
+        ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi'],
+        check=True,
+    )
 
     if clean_dir:
         _clean_bdist_tmp_files()
@@ -74,7 +79,10 @@ def build_python_wheel(
     @clean_dir: Clean 'build' dir before running build command. This may be necessary because of
     this: https://bitbucket.org/pypa/wheel/issues/147/bdist_wheel-should-start-by-cleaning-up
     """
-    sp.run(['python', 'setup.py', 'bdist_wheel'])
+    sp.run(
+        ['python', 'setup.py', 'bdist_wheel'],
+        check=True,
+    )
 
     if clean_dir:
         _clean_bdist_tmp_files()
@@ -138,7 +146,8 @@ def build_read_the_docs(
 
     sp.run(
         ['make', 'html'],
-        cwd='{}/docs'.format(os.getcwd())
+        cwd='{}/docs'.format(os.getcwd()),
+        check=True,
     )
 
 
@@ -155,9 +164,10 @@ def create_py_venv(
 
     @interpreter: must be the exact interpreter name. E.g. 'python3.5'
     """
-    cmd: list = [py_bin, '-m', 'venv', venv_dir]
-
-    sp.run(cmd)
+    sp.run(
+        [py_bin, '-m', 'venv', venv_dir],
+        check=True,
+    )
 
 
 @command

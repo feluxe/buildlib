@@ -1,6 +1,5 @@
 from typing import List, Union
 import sys
-from processy import run
 import subprocess as sp
 from cmdi import command, CmdResult, CustomCmdResult
 
@@ -46,11 +45,6 @@ def apply(
 
     p.communicate()
 
-    # if delete:
-    #     cmd = ['kubectl', 'delete', 'pods,replicaSets', '-l', label, '-n',
-    #            s.NAMESPACE, '--now']
-    #     p = sp.run(cmd)
-
 
 @command
 def delete(
@@ -66,6 +60,7 @@ def delete(
         *_parse_option('-n', namespace),
     ]
 
-    cmd = ['kubectl', 'delete', ','.join(type_)] + options
-
-    p = run(cmd, stdin=sp.PIPE)
+    sp.run(
+        ['kubectl', 'delete', ','.join(type_)] + options,
+        check=True,
+    )

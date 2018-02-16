@@ -1,5 +1,5 @@
-from processy import run, CompletedProcess
 from cmdi import command, CmdResult, CustomCmdResult
+import subprocess as sp
 
 
 @command
@@ -10,7 +10,10 @@ def install(
     Install packages from Pipfile.
     """
     dev_flag = ['--dev'] if dev else []
-    p: CompletedProcess = run(['pipenv', 'install'] + dev_flag)
+    sp.run(
+        ['pipenv', 'install'] + dev_flag,
+        check=True,
+    )
 
 
 @command
@@ -21,4 +24,7 @@ def create_env(
     Create a fresh python environment.
     @version: E.g.: '3.6'
     """
-    p: CompletedProcess = run(['pipenv', f'--python {version}'])
+    sp.run(
+        ['pipenv', f'--python {version}'],
+        check=True,
+    )

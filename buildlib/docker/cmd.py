@@ -1,21 +1,8 @@
 from typing import Optional, List, Union
 import re
-from processy import run
+import subprocess as sp
 from functools import reduce
 from cmdi import command, CmdResult, CustomCmdResult
-
-
-def _image_exists(
-    image: str
-) -> bool:
-    """"""
-    result = run(
-        cmd=['docker', 'inspect', '--type=image', image],
-        verbose=False,
-        return_stdout=True
-    )
-
-    return 'Error: No such image' not in result.stdout
 
 
 def _parse_option(
@@ -47,7 +34,6 @@ def run_container(
     """
     Run Docker container locally.
     """
-
     options = [
         *_parse_option(add_host, '--add-host'),
         *_parse_option(env, '-e'),
@@ -56,7 +42,10 @@ def run_container(
         *_parse_option(volume, '-v'),
     ]
 
-    p = run(['docker', 'run', '-d'] + options + [image])
+    sp.run(
+        ['docker', 'run', '-d'] + options + [image],
+        check=True,
+    )
 
 
 @command
@@ -64,21 +53,20 @@ def stop_container(
     by_port: Union[int, str],
     **cmdargs,
 ) -> CmdResult:
-    if by_port:
-        cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
-               '--format="{{.ID}}"']
+    """"""
+    cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
+           '--format="{{.ID}}"']
 
-    ids = run(
-        cmd=cmd,
-        return_stdout=True,
-    ).stdout.split('\n')
+    result = sp.run(
+        cmd,
+        check=True,
+        stdout=sp.PIPE,
+    )
 
-    ps = [
-        run(['docker', 'stop', id_.replace('"', '')])
-        for id_
-        in ids
-        if id_
-    ]
+    ids = result.stdout.decode().split('\n')
+
+    for id in ids:
+        id and sp.run(['docker', 'stop', id.replace('"', '')], check=True)
 
 
 @command
@@ -87,21 +75,34 @@ def kill_container(
     **cmdargs,
 ) -> CmdResult:
     """"""
-    if by_port:
-        cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
-               '--format="{{.ID}}"']
+    cmd = ['docker', 'ps', '-q', '--filter', f'expose={by_port}',
+           '--format="{{.ID}}"']
 
-    ids = run(
-        cmd=cmd,
-        return_stdout=True,
-    ).stdout.split('\n')
+    result = sp.run(
+        cmd,
+        check=True,
+        stdout=sp.PIPE,
+    )
 
-    ps = [
-        run(['docker', 'kill', id_.replace('"', '')])
-        for id_
-        in ids
-        if id_
-    ]
+    ids = result.stdout.decode().split('\n')
+
+    for id in ids:
+        id and sp.run(['docker', 'kill', id.replace('"', '')], check=True)
+
+
+def _image_exists(
+    image: str
+) -> bool:
+    """"""
+    result = sp.run(
+        ['docker', 'inspect', '--type=image', image],
+        check=True,
+        stdout=sp.PIPE,
+    )
+
+    stdout = result.stdout.decode()
+
+    return 'Error: No such image' not in stdout
 
 
 @command
@@ -116,8 +117,7 @@ def remove_image(
             *_parse_option(force, '--force'),
         ]
 
-        cmd = ['docker', 'rmi', image] + options
-        p = run(cmd)
+        sp.run(['docker', 'rmi', image] + options, check=True)
 
 
 @command
@@ -126,18 +126,16 @@ def rm_dangling_images(
     **cmdargs,
 ) -> CmdResult:
     """"""
+    result = sp.run(
+        ['docker', 'images', '-f', 'dangling=true', '-q'],
+        check=True,
+        stdout=sp.PIPE,
+    )
 
-    ids = run(
-        cmd=['docker', 'images', '-f', 'dangling=true', '-q'],
-        return_stdout=True,
-    ).stdout.split('\n')
+    ids = result.stdout.decode().split('\n')
 
-    ps = [
-        remove_image(id_, force=force)
-        for id_
-        in ids
-        if id_
-    ]
+    for id in ids:
+        id and remove_image(id, force=force)
 
 
 @command
@@ -149,9 +147,7 @@ def tag_image(
     tag_latest: Optional[bool] = False,
     **cmdargs,
 ) -> CmdResult:
-    """
-    """
-
+    """"""
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
     dst_image = dst_image or src_image
@@ -166,7 +162,8 @@ def tag_image(
 
         cmds.insert(1, tag_cmd)
 
-    ps = [run(cmd, verbose=True) for cmd in cmds]
+    for cmd in cmds:
+        sp.run(cmd, check=True)
 
 
 @command
@@ -176,15 +173,14 @@ def push_image(
     namespace: Optional[str],
     **cmdargs,
 ) -> CmdResult:
-    """
-    """
-
+    """"""
     registry = registry + '/' if registry else ''
     namespace = namespace + '/' if namespace else ''
 
-    cmd = ['docker', 'push', f'{registry}{namespace}{image}']
-
-    p = run(cmd, verbose=True)
+    sp.run(
+        ['docker', 'push', f'{registry}{namespace}{image}'],
+        check=True
+    )
 
 
 @command
@@ -194,14 +190,13 @@ def build_image(
     dockerfile: str = 'Dockerfile',
     **cmdargs,
 ) -> CmdResult:
-    """
-    """
-
+    """"""
     options = [
         *_parse_option(build_arg, '--build-arg'),
         *_parse_option(tag, '-t'),
     ]
 
-    cmd = ['docker', 'build', '.', '--pull', '-f', dockerfile] + options
-
-    p = run(cmd)
+    sp.run(
+        ['docker', 'build', '.', '--pull', '-f', dockerfile] + options,
+        check=True,
+    )

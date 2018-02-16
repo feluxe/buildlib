@@ -1,4 +1,4 @@
-from processy import run, CompletedProcess
+import subprocess as sp
 from typing import Optional
 from cmdi import command, CmdResult, CustomCmdResult
 
@@ -6,7 +6,10 @@ from cmdi import command, CmdResult, CustomCmdResult
 @command
 def add_all() -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'add', '--all'])
+    sp.run(
+        ['git', 'add', '--all'],
+        check=True,
+    )
 
 
 @command
@@ -14,7 +17,10 @@ def commit(
     msg: str
 ) -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'commit', '-m', msg])
+    sp.run(
+        ['git', 'commit', '-m', msg],
+        check=True,
+    )
 
 
 @command
@@ -23,13 +29,19 @@ def tag(
     branch: str,
 ) -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'tag', version, branch])
+    sp.run(
+        ['git', 'tag', version, branch],
+        check=True,
+    )
 
 
 @command
 def push(branch: str) -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'push', 'origin', branch, '--tags'])
+    sp.run(
+        ['git', 'push', 'origin', branch, '--tags'],
+        check=True,
+    )
 
 
 @command
@@ -37,18 +49,20 @@ def get_default_branch() -> CmdResult:
     """"""
     branch: Optional[str] = None
 
-    p1 = run(
-        cmd=['git', 'show-branch', '--list'],
-        return_stdout=True
+    p1 = sp.run(
+        ['git', 'show-branch', '--list'],
+        stdout=sp.PIPE,
+        check=True,
     )
 
-    if p1.stdout.find('No revs') == -1 and p1.returncode == 0:
-        p2 = run(
-            cmd=['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            return_stdout=True
+    if p1.stdout.decode().find('No revs') == -1 and p1.returncode == 0:
+        p2 = sp.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            stdout=sp.PIPE,
+            check=True,
         )
 
-        branch: str = p2.stdout.replace('\n', '')
+        branch: str = p2.stdout.decode().replace('\n', '')
 
     return branch
 
@@ -56,10 +70,16 @@ def get_default_branch() -> CmdResult:
 @command
 def status() -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'status'])
+    sp.run(
+        ['git', 'status'],
+        check=True,
+    )
 
 
 @command
 def diff() -> CmdResult:
     """"""
-    p: CompletedProcess = run(cmd=['git', 'diff'])
+    sp.run(
+        ['git', 'diff'],
+        check=True,
+    )
