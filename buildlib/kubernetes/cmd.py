@@ -44,7 +44,10 @@ def apply(
     if stdin:
         p.stdin.write(stdin.encode())
 
-    p.communicate()
+    output, error = p.communicate()
+
+    if p.returncode != 0:
+        raise sp.CalledProcessError(p.returncode, cmd)
 
 
 @command
