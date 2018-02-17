@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "235b82d9e0799aac3424a8a4b6205ca904cdb844e610fa4d6d22493405c3ae15"
+            "sha256": "5b7a98ac74738fe713cf161b186c63ceca3250b71b639d604278bc8dbbeed4d8"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -9,9 +9,9 @@
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "4.15.1-2-ARCH",
+            "platform_release": "4.15.3-1-ARCH",
             "platform_system": "Linux",
-            "platform_version": "#1 SMP Sun Feb 4 22:27:45 UTC 2018",
+            "platform_version": "#1 SMP PREEMPT Mon Feb 12 23:01:17 UTC 2018",
             "python_full_version": "3.6.4",
             "python_version": "3.6",
             "sys_platform": "linux"
@@ -31,9 +31,9 @@
     "default": {
         "cmdi": {
             "hashes": [
-                "sha256:d0afb4319eef0d7d4153475792d9fd7b69482676d05d5db0d082fb360d771898"
+                "sha256:40818821ad852298ba94b315f7d4d7d7f8fe0fd0fa3fa0a18877b20b31952966"
             ],
-            "version": "==0.0.11"
+            "version": "==0.0.12"
         },
         "headlines": {
             "hashes": [
