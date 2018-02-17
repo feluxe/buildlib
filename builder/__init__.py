@@ -58,7 +58,7 @@ def bump_git(
     if not version and build.prompt.should_update_version(
         default='y',
     ):
-        new_version = bump_version()
+        new_version = bump_version().val
 
     seq_settings = git.seq.get_settings_from_user(
         version=new_version,
@@ -83,7 +83,7 @@ def bump_all() -> None:
     if build.prompt.should_update_version(
         default='y'
     ):
-        new_version = bump_version()
+        new_version = bump_version().val
 
     results += bump_git(
         version=new_version,
