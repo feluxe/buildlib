@@ -58,6 +58,7 @@ def bump_git(
         default='y',
     ):
         version = bump_version().val
+        print('NEW', version)
         version_bumped = True
 
     seq_settings = git.seq.get_settings_from_user(
