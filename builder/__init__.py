@@ -52,15 +52,16 @@ def bump_git(
     print_summary=True,
 ):
     """"""
+    version = CFG.get('version')
 
     if not version_bumped and build.prompt.should_update_version(
         default='y',
     ):
-        bump_version()
+        version = bump_version().val
         version_bumped = True
 
     seq_settings = git.seq.get_settings_from_user(
-        version=CFG.get('version'),
+        version=version,
         ask_bump_any_git=ask_bump_any_git,
         should_tag_default_val=version_bumped,
     )

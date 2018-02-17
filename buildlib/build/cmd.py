@@ -31,6 +31,8 @@ def update_version_num_in_cfg(
 
     yaml.savefile(cfg, config_file)
 
+    return semver_num
+
 
 @command
 def push_python_wheel_to_gemfury(
