@@ -27,3 +27,11 @@ def savefile(
     with open(file, 'w') as yaml_file:
         yaml.dump(data, yaml_file, Dumper=yaml.RoundTripDumper,
                   default_style=default_style)
+
+
+def pprint_yaml(data: Any) -> None:
+    lines: list = yaml.round_trip_dump(
+        data, indent=4,
+        block_seq_indent=4,
+    ).splitlines(True)
+    print(''.join([line for line in lines]))
