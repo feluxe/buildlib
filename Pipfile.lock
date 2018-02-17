@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e748df9452f775142f4a9a8bd335fbf25fe06fa3886fa42bd9fd889f253ff71e"
+            "sha256": "235b82d9e0799aac3424a8a4b6205ca904cdb844e610fa4d6d22493405c3ae15"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -31,9 +31,9 @@
     "default": {
         "cmdi": {
             "hashes": [
-                "sha256:f8e05af0d2236193d6ed3e8da8295d9b6a69f4caddab3c495aef2f7304f7249b"
+                "sha256:d0afb4319eef0d7d4153475792d9fd7b69482676d05d5db0d082fb360d771898"
             ],
-            "version": "==0.0.8"
+            "version": "==0.0.11"
         },
         "headlines": {
             "hashes": [
@@ -46,12 +46,6 @@
                 "sha256:b88146d20eb1755dd36b62e92eef5b7dbe237b8d95ef0d65a61aa1b2becc0a27"
             ],
             "version": "==0.0.0a8"
-        },
-        "processy": {
-            "hashes": [
-                "sha256:ec43b64c60300d809b6d37183669025429efeb994c59dbc351afa3236d3b47c3"
-            ],
-            "version": "==1.0.7"
         },
         "ruamel.yaml": {
             "hashes": [
