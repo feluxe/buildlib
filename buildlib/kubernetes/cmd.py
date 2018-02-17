@@ -20,6 +20,7 @@ def apply(
     stdin: str = None,
     files: List[str] = None,
     namespace: List[str] = 'default',
+    **cmdargs,
 ) -> CmdResult:
     """
     @std: Use this to pass a config string via stdin.
@@ -51,6 +52,7 @@ def delete(
     type_: List[str],
     label: List[str] = None,
     namespace: List[str] = 'default',
+    **cmdargs,
 ) -> CmdResult:
     """
     @type_: pods, replicaSets, deployments, etc'
