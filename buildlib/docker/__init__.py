@@ -1,8 +1,8 @@
-from buildlib.docker import cmd
-from typing import Optional, Pattern, NamedTuple, Union, List
 import re
 import subprocess as sp
+from typing import Optional, Pattern, NamedTuple, Union, List
 from buildlib.util import eprint
+from buildlib.docker import cmd
 
 
 class Image(NamedTuple):
@@ -52,5 +52,5 @@ def get_images(
                 if re.search(val, image.repository):
                     new_images.append(image)
                     continue
-   
+
     return new_images or None
