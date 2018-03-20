@@ -59,13 +59,14 @@ def should_push_gemfury(
     )
 
 
-def should_push_pypi(
+def should_push_registry(
+    registry: str = 'PYPI',
     default: str = '',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
     return prmt.confirm(
-        question='Do you want to PUSH the new version to PYPI?\n',
+        question=f'Do you want to PUSH the new version to {registry}?\n',
         default=default,
         margin=margin
     )
