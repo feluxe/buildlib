@@ -58,12 +58,13 @@ def _clean_bdist_tmp_files() -> None:
 
 @command
 def push_python_wheel_to_pypi(
+    repository='pypi',
     clean_dir: bool = False,
     **cmdargs,
 ) -> CmdResult:
     """"""
     sp.run(
-        ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', 'pypi'],
+        ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', repository],
         check=True,
     )
 

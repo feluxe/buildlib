@@ -19,6 +19,8 @@ sty = "*"
 docopt = "*"
 wheel = "*"
 setuptools = "*"
+pylint = "*"
+yapf = "*"
 
 
 [requires]
