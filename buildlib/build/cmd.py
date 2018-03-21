@@ -7,25 +7,28 @@ import os
 import shutil
 import glob
 import subprocess as sp
-from buildlib import yaml, module
 from cmdi import command, CmdResult, CustomCmdResult
+from buildlib import yaml, module
+from buildlib.semver import prompt as semver_prompt
 
 
 @command
-def update_version_num_in_cfg(
-    config_file: str,
+def bump_version(
     semver_num: str,
+    config_file: str = 'Project',
     **cmdargs,
 ) -> CmdResult:
     """
     Check if version num from proj-cfg is valid.
-    Increase version num based on user input or ask user for a new version number.
     """
 
     cfg: dict = yaml.loadfile(
         config_file,
         keep_order=True
     )
+
+    if not semver_num:
+        semver_num = semver_prompt.semver_num_by_choice(cfg.version)
 
     cfg.update({'version': semver_num})
 
