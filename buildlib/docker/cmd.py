@@ -169,8 +169,8 @@ def tag_image(
 @command
 def push_image(
     image: str,
-    registry: Optional[str],
-    namespace: Optional[str],
+    registry: Optional[str] = None,
+    namespace: Optional[str] = None,
     **cmdargs,
 ) -> CmdResult:
     """"""
