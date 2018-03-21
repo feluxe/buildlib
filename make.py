@@ -58,7 +58,7 @@ def run():
         test(cfg)
 
     if uinput['git']:
-        results.append(git.seq.bump_git(cfg.version, new_release=False))
+        results.extend(git.seq.bump_git(cfg.version, new_release=False))
 
     if uinput['bump']:
 
