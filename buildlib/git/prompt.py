@@ -30,7 +30,7 @@ def branch(
 
 
 def confirm_status(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
@@ -45,7 +45,7 @@ def confirm_status(
 
 
 def confirm_diff(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
@@ -59,8 +59,8 @@ def confirm_diff(
     )
 
 
-def should_run_any(
-    default: str = '',
+def should_run_git(
+    default: str = 'y',
     margin: tuple = (1, 0)
 ) -> bool:
     """"""
@@ -72,7 +72,7 @@ def should_run_any(
 
 
 def should_add_all(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
@@ -84,7 +84,7 @@ def should_add_all(
 
 
 def should_commit(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
@@ -96,7 +96,7 @@ def should_commit(
 
 
 def should_tag(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
@@ -108,7 +108,7 @@ def should_tag(
 
 
 def should_push(
-    default: str = '',
+    default: str = 'y',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""

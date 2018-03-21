@@ -1,6 +1,6 @@
 "public_name": "buildlib"
 "interal_name": "buildlib"
-"version": "2.0.0-beta.26"
+"version": "2.0.0-beta.28"
 "license": "unlicensed"
 "author": "Felix Meyer-Wolters"
 "author_email": "felix@meyerwolters.de"
@@ -9,18 +9,6 @@
 "url": "https://github.com/feluxe/buildlib"
 "description": "A library to help build projects."
 "keywords": ["build", "library"]
-
-"build":
-- "name": "buildlib"
-  "cfg":
-  - "type": "buildWheel"
-    "cwd": "."
-
-"deploy":
-- "name": "buildlib"
-  "cfg":
-  - "type": "pushWheel"
-    "registry": "pypi"
 
 "pypi":
   "install_requires": ["headlines", "prmt", "ruamel.yaml", "cmdi==0.1.0", "sty"]
