@@ -6,6 +6,10 @@ from buildlib import buildmisc, git, wheel, project, yaml
 from docopt import docopt
 
 interface = """
+    Install:
+        pipenv install
+        pipenv run python make.py
+
     Usage:
         make.py build [options]
         make.py deploy [options]
