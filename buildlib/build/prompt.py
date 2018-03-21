@@ -1,18 +1,19 @@
 import prmt
 
 def should_run_any(
+    name: str,
     default: str = '',
     margin: tuple = (1, 1),
 ) -> bool:
     """"""
     return prmt.confirm(
-        question='Run ANY PUBLISH COMMANDS?\n',
+        question=f'Run ANY {name}?\n',
         default=default,
         margin=margin,
     )
 
 
-def should_update_version(
+def should_bump_version(
     default: str = '',
     margin: tuple = (1, 1),
 ) -> bool:
