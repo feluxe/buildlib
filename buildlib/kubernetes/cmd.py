@@ -26,7 +26,7 @@ def apply(
     @std: Use this to pass a config string via stdin.
     """
     if stdin and files:
-        sys.stderr('Cannot use parameter "stdin" and "files" at the same time')
+        sys.stderr.write('Cannot use parameter "stdin" and "files" at the same time')
         sys.exit(1)
 
     options = [
@@ -44,7 +44,7 @@ def apply(
     if stdin:
         p.stdin.write(stdin.encode())
 
-    output, error = p.communicate()
+    p.communicate()
 
     if p.returncode != 0:
         raise sp.CalledProcessError(p.returncode, cmd)
