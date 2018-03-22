@@ -64,7 +64,7 @@ class cmd:
         namespace: List[str] = None,
         **cmdargs
     ) -> CmdResult:
-        return apply(**locals())
+        return set_result(apply(**strip_args(locals())))
 
     @staticmethod
     @command
@@ -75,7 +75,7 @@ class cmd:
         label: Optional[List[str]] = None,
         **cmdargs
     ) -> CmdResult:
-        return delete(**locals())
+        return set_result(delete(**strip_args(locals())))
 
 
 def get_item_names(
