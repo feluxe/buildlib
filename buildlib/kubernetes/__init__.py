@@ -8,6 +8,19 @@ from typing import Optional, List, Pattern
 from buildlib.kubernetes import cmd
 
 
+def parse_kubectl_option(
+    flag: str,
+    args: List[str],
+    sep: 'str',
+) -> list:
+    """"""
+    if type(args) == list:
+        return [flag, sep.join(args)]
+    else:
+        return []
+
+
+
 def generate_password(length: int = 32):
     """
     Generate a base64 encoded string consisting of numbers and upper/lower case
@@ -25,30 +38,39 @@ def generate_password(length: int = 32):
     return s
 
 
-def get_pod_names(
-    label: str,
-    namespace: str,
+def get_item_names(
+    namespace: List[str],
+    kind: List[str],
+    label: List[str],
     namefilter: Optional[Pattern] = None,
     statusfilter: Optional[Pattern]=None,
     **cmdargs,
 ) -> Optional[List[str]]:
 
+
+    kind = parse_kubectl_option('', kind, sep=',')
+
+    options = [
+        *parse_kubectl_option('-n', namespace, sep=','),
+        *parse_kubectl_option('-l', label, sep=','),
+    ]
+
     result = sp.run(
-        ['kubectl', 'get', 'po', '-n', namespace, '-l', label, '-o', 'json'],
+        ['kubectl', 'get' ] + kind + options + ['-o', 'json'],
         check=True,
         stdout=sp.PIPE,
     )
 
     output = result.stdout.decode()
     data = json.loads(output)
-    pods = data.get('items')
-    pod_names = []
+    items = data.get('items')
+    item_names = []
 
-    for pod in pods:
-        name = pod.get('metadata', {}).get('name')
+    for item in items:
+        name = item.get('metadata', {}).get('name')
 
         try:
-            state = pod.get('status', {}).get('containerStatuses', [])[0].get('state')
+            state = item.get('status', {}).get('containerStatuses', [])[0].get('state')
         except KeyError:
             state = {}
 
@@ -59,7 +81,6 @@ def get_pod_names(
             if not any([re.search(statusfilter, k) for k in state.keys()]):
                 continue
 
-        pod_names.append(name)
+        item_names.append(name)
 
-    return pod_names
-
+    return item_names

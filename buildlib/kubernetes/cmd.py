@@ -2,36 +2,25 @@ from typing import List, Union, Optional
 import sys
 import subprocess as sp
 from cmdi import command, CmdResult, CustomCmdResult
-
-
-def _parse_option(
-    flag: str,
-    args: List[str],
-) -> list:
-    """"""
-    if type(args) == list:
-        return [flag, ','.join(args)]
-    else:
-        return []
+from buildlib.kubernetes import parse_kubectl_option
 
 
 @command
 def apply(
     stdin: str = None,
     files: List[str] = None,
-    namespace: List[str] = 'default',
+    namespace: List[str] = None,
     **cmdargs,
 ) -> CmdResult:
     """
     @std: Use this to pass a config string via stdin.
     """
     if stdin and files:
-        sys.stderr.write('Cannot use parameter "stdin" and "files" at the same time')
-        sys.exit(1)
+        raise ValueError('Cannot use parameter "stdin" and "files" at the same time')
 
     options = [
-        *_parse_option('-n', namespace),
-        *_parse_option('-f', files),
+        *parse_kubectl_option('-n', namespace, sep=','),
+        *parse_kubectl_option('-f', files, sep=','),
     ]
 
     cmd = ['kubectl', 'apply'] + options
@@ -53,26 +42,27 @@ def apply(
 @command
 def delete(
     namespace: List[str],
-    type_: Optional[List[str]]= None,
-    label: Optional[List[str]] = None,
+    kind: Optional[List[str]]= None,
     name: Optional[List[str]] = None,
+    label: Optional[List[str]] = None,
     **cmdargs,
 ) -> CmdResult:
     """
     @type_: pods, replicaSets, deployments, etc'
     @name: podname
     """
+    if kind and name:
+        raise ValueError('You cannot use "name" and "kind" at the same time.')
+
+    kind = parse_kubectl_option('', kind, sep=',')
+    name = parse_kubectl_option('', name, sep=' ')
+
     options = [
-        *_parse_option('-l', label),
-        *_parse_option('-n', namespace),
+        *parse_kubectl_option('-l', label, sep=','),
+        *parse_kubectl_option('-n', namespace, sep=','),
     ]
 
-    if type_:
-        type_ = ','.join(type_)
-    else:
-        type_= ''
-
     sp.run(
-        ['kubectl', 'delete', type_] + name + options,
+        ['kubectl', 'delete'] + kind + name + options,
         check=True,
     )
