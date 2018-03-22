@@ -15,7 +15,10 @@ class GitSeqSettings:
     branch: str = 'master'
 
 
-def get_settings_from_user(version: str, new_release: bool) -> GitSeqSettings:
+def get_settings_from_user(
+    version: str,
+    new_release: bool,
+) -> GitSeqSettings:
 
     s = GitSeqSettings()
 
@@ -44,7 +47,8 @@ def get_settings_from_user(version: str, new_release: bool) -> GitSeqSettings:
 
     # Ask user to run 'tag'.
     s.should_tag: bool = git.prompt.should_tag(
-        default='y' if s.new_release is True else 'n')
+        default='y' if s.new_release is True else 'n'
+    )
 
     # Ask user to push.
     s.should_push_git: bool = git.prompt.should_push(default='y')
@@ -83,6 +87,9 @@ def bump_sequence(s: GitSeqSettings) -> List[CmdResult]:
     return results
 
 
-def bump_git(version: str, new_release: bool = True):
+def bump_git(
+    version: str,
+    new_release: bool = True,
+):
     s = get_settings_from_user(version, new_release)
     return bump_sequence(s)
