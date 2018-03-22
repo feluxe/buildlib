@@ -68,6 +68,6 @@ def delete(
     ]
 
     sp.run(
-        ['kubectl', 'delete', ','.join(type_), name] + options,
+        ['kubectl', 'delete', ','.join(type_)] + name + options,
         check=True,
     )
