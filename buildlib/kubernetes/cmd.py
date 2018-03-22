@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 import sys
 import subprocess as sp
 from cmdi import command, CmdResult, CustomCmdResult
@@ -53,12 +53,14 @@ def apply(
 @command
 def delete(
     type_: List[str],
-    label: List[str] = None,
-    namespace: List[str] = 'default',
+    namespace: List[str],
+    label: Optional[List[str]] = None,
+    name: Optional[List[str]] = None,
     **cmdargs,
 ) -> CmdResult:
     """
     @type_: pods, replicaSets, deployments, etc'
+    @name: podname
     """
     options = [
         *_parse_option('-l', label),
@@ -66,6 +68,6 @@ def delete(
     ]
 
     sp.run(
-        ['kubectl', 'delete', ','.join(type_)] + options,
+        ['kubectl', 'delete', ','.join(type_), name] + options,
         check=True,
     )
