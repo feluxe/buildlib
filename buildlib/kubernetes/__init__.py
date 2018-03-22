@@ -25,7 +25,7 @@ def generate_password(length: int = 32):
     return s
 
 
-def get_pod_name(
+def get_pod_names(
     label: str,
     namespace: str,
     namefilter: Optional[Pattern] = None,
@@ -46,7 +46,6 @@ def get_pod_name(
 
     for pod in pods:
         name = pod.get('metadata', {}).get('name')
-
 
         try:
             state = pod.get('status', {}).get('containerStatuses', [])[0].get('state')
