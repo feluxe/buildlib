@@ -169,9 +169,6 @@ def delete(
     @type_: pods, replicaSets, deployments, etc'
     @name: podname
     """
-    if kind and name:
-        raise ValueError('You cannot use "name" and "kind" at the same time.')
-
     kind = parse_kubectl_option('', kind, sep=',')
     name = parse_kubectl_option('', name, sep=' ')
 
