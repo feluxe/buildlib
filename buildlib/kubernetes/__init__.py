@@ -5,7 +5,6 @@ import json
 import re
 import subprocess as sp
 from typing import Optional, List, Pattern
-from buildlib.kubernetes import cmd
 
 
 def parse_kubectl_option(
@@ -14,8 +13,13 @@ def parse_kubectl_option(
     sep: 'str',
 ) -> list:
     """"""
+    if flag in ['', None]:
+        flag = []
+    else:
+        flag = [flag]
+
     if type(args) == list:
-        return [flag, sep.join(args)]
+        return flag + [sep.join(args)]
     else:
         return []
 
@@ -41,7 +45,7 @@ def generate_password(length: int = 32):
 def get_item_names(
     namespace: List[str],
     kind: List[str],
-    label: List[str],
+    label: Optional[List[str]] = None,
     namefilter: Optional[Pattern] = None,
     statusfilter: Optional[Pattern]=None,
     **cmdargs,
@@ -71,7 +75,7 @@ def get_item_names(
 
         try:
             state = item.get('status', {}).get('containerStatuses', [])[0].get('state')
-        except KeyError:
+        except IndexError:
             state = {}
 
         if namefilter and not re.search(namefilter, name):
