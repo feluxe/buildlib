@@ -52,8 +52,8 @@ def apply(
 
 @command
 def delete(
-    type_: List[str],
     namespace: List[str],
+    type_: Optional[List[str]]= None,
     label: Optional[List[str]] = None,
     name: Optional[List[str]] = None,
     **cmdargs,
@@ -67,7 +67,12 @@ def delete(
         *_parse_option('-n', namespace),
     ]
 
+    if type_:
+        type_ = ','.join(type_)
+    else:
+        type_= ''
+
     sp.run(
-        ['kubectl', 'delete', ','.join(type_)] + name + options,
+        ['kubectl', 'delete', type_] + name + options,
         check=True,
     )
