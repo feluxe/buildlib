@@ -1,6 +1,6 @@
 "public_name": "buildlib"
 "interal_name": "buildlib"
-"version": "0.2.3"
+"version": "0.2.4"
 "license": "unlicensed"
 "author": "Felix Meyer-Wolters"
 "author_email": "felix@meyerwolters.de"
@@ -11,7 +11,8 @@
 "keywords": ["build", "library"]
 
 "pypi":
-  "install_requires": ["headlines", "prmt", "ruamel.yaml", "cmdi==0.2.0", "sty"]
+  "install_requires": ["headlines", "prmt", "ruamel.yaml", "cmdi==0.2.2", "sty"]
+  "tests_require": []
   "packages": ["buildlib"]
   "package_dir": {"buildlib": "buildlib"}
   "package_data": {}
@@ -22,4 +23,4 @@
   "entry_points": {"console_scripts": []
 , "gui_scripts": []
 }
-  "tests_require": ["pytest", "wheel", "docopt"]
+
