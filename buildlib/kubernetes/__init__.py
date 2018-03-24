@@ -54,7 +54,7 @@ class cmd:
         statusfilter: Optional[Pattern] = None,
         **cmdargs
     ) -> CmdResult:
-        return set_result(get_item_names(**strip_args(locals())))
+        return get_item_names(**strip_args(locals()))
 
     @staticmethod
     @command
@@ -64,7 +64,7 @@ class cmd:
         namespace: List[str] = None,
         **cmdargs
     ) -> CmdResult:
-        return set_result(apply(**strip_args(locals())))
+        return apply(**strip_args(locals()))
 
     @staticmethod
     @command
@@ -75,7 +75,7 @@ class cmd:
         label: Optional[List[str]] = None,
         **cmdargs
     ) -> CmdResult:
-        return set_result(delete(**strip_args(locals())))
+        return delete(**strip_args(locals()))
 
 
 def get_item_names(
