@@ -9,7 +9,8 @@ class cmd:
     @staticmethod
     @command
     def update(
-        name: str,
+        release: str,
+        chart: str,
         namespace: List[str],
         force: bool = False,
         recreate_pods: bool = False,
@@ -28,7 +29,6 @@ def update(
     """
     helm upgrade logcenter chart --force --recreate-pods --namespace mw-prod
     """
-
     options = [
         *kube.parse_option(flag='', val=release, sep=''),
         *kube.parse_option(flag='', val=chart, sep=''),
