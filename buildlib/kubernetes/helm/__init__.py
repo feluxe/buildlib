@@ -19,17 +19,19 @@ class cmd:
 
 
 def update(
-    name: str,
+    release: str,
+    chart: str,
     namespace: List[str],
     force: bool = False,
     recreate_pods: bool = False,
 ) -> None:
     """
-    helm upgrade logcenter --force --recreate-pods --namespace mw-prod chart
+    helm upgrade logcenter chart --force --recreate-pods --namespace mw-prod
     """
 
     options = [
-        *parse_option(flag='', val=name, sep=''),
+        *parse_option(flag='', val=release, sep=''),
+        *parse_option(flag='', val=chart, sep=''),
         *parse_option(flag='-n', val=namespace, sep=','),
         *parse_option(flag='--force', val=force, sep=''),
     ]

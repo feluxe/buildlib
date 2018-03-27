@@ -11,7 +11,11 @@ wheel = "*"
 setuptools = "*"
 pylint = "*"
 yapf = "*"
-toml = "*"
+cmdi = "*"
+headlines = "*"
+sty = "*"
+prmt = "*"
+"ruamel.yaml" = "*"
 
 [requires]
 python_version = "3.6"
