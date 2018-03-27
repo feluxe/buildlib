@@ -7,7 +7,8 @@ n = kubernetes.get_item_names(
     namespace=['mw-prod'],
     kind=['pods', 'replicaSets'],
     label=['app=logcenter'],
-    namefilter='.*gui.*')
+    namefilter='.*gui.*'
+)
 
 print(n)
 
@@ -15,8 +16,8 @@ n = kubernetes.cmd.get_item_names(
     namespace=['mw-prod'],
     kind=['pods', 'replicaSets'],
     label=['app=logcenter'],
-    namefilter='.*gui.*')
+    namefilter='.*gui.*'
+)
 
-
-print('OUT',n.out)
-print('ERR',n.err)
+# print('OUT', n.out)
+# print('ERR', n.err)

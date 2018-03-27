@@ -1,7 +1,7 @@
 from typing import Optional, List, Pattern, Union
 from cmdi import command, CmdResult, strip_args
 import subprocess as sp
-from buildlib.kubernetes import parse_option
+from buildlib import kubernetes as kube
 
 
 class cmd:
@@ -30,10 +30,10 @@ def update(
     """
 
     options = [
-        *parse_option(flag='', val=release, sep=''),
-        *parse_option(flag='', val=chart, sep=''),
-        *parse_option(flag='-n', val=namespace, sep=','),
-        *parse_option(flag='--force', val=force, sep=''),
+        *kube.parse_option(flag='', val=release, sep=''),
+        *kube.parse_option(flag='', val=chart, sep=''),
+        *kube.parse_option(flag='-n', val=namespace, sep=','),
+        *kube.parse_option(flag='--force', val=force, sep=''),
     ]
 
     sp.run(
