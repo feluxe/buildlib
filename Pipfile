@@ -4,11 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cmdi = "==0.3.0"
-headlines = "==0.0.0a5"
-prmt = "==0.0.0a8"
-sty = "*"
-"ruamel.yaml" = "*"
 
 [dev-packages]
 docopt = "*"
@@ -16,6 +11,7 @@ wheel = "*"
 setuptools = "*"
 pylint = "*"
 yapf = "*"
+toml = "*"
 
 [requires]
 python_version = "3.6"

@@ -9,19 +9,18 @@ from typing import Optional, List, Pattern, Union
 from cmdi import command, CmdResult, set_result, strip_args
 
 
-def parse_kubectl_option(
-    flag: str,
-    args: List[str],
-    sep: 'str',
-) -> list:
+def parse_option(flag: str, val: Union[List[str], bool],
+                 sep: 'str' = '') -> list:
     """"""
     if flag in ['', None]:
         flag = []
     else:
         flag = [flag]
 
-    if type(args) == list:
-        return flag + [sep.join(args)]
+    if type(val) == list:
+        return flag + [sep.join(val)]
+    elif type(val) == bool and val is True:
+        return flag
     else:
         return []
 
@@ -86,15 +85,14 @@ def get_item_names(
     statusfilter: Optional[Pattern] = None,
 ) -> Optional[List[str]]:
 
-    kind = parse_kubectl_option('', kind, sep=',')
-
     options = [
-        *parse_kubectl_option('-n', namespace, sep=','),
-        *parse_kubectl_option('-l', label, sep=','),
+        *parse_option('', kind, sep=','),
+        *parse_option('-n', namespace, sep=','),
+        *parse_option('-l', label, sep=','),
     ]
 
     result = sp.run(
-        ['kubectl', 'get'] + kind + options + ['-o', 'json'],
+        ['kubectl', 'get'] + options + ['-o', 'json'],
         check=True,
         stdout=sp.PIPE,
     )
@@ -131,7 +129,7 @@ def apply(
     namespace: List[str] = None,
 ) -> None:
     """
-    @std: Use this to pass a config string via stdin.
+    @stdin: Use this to pass in a config string via stdin.
     """
     if stdin and files:
         raise ValueError(
@@ -139,8 +137,8 @@ def apply(
         )
 
     options = [
-        *parse_kubectl_option('-n', namespace, sep=','),
-        *parse_kubectl_option('-f', files, sep=','),
+        *parse_option('-n', namespace, sep=','),
+        *parse_option('-f', files, sep=','),
     ]
 
     cmd = ['kubectl', 'apply'] + options
@@ -169,15 +167,14 @@ def delete(
     @type_: pods, replicaSets, deployments, etc'
     @name: podname
     """
-    kind = parse_kubectl_option('', kind, sep=',')
-    name = parse_kubectl_option('', name, sep=' ')
-
     options = [
-        *parse_kubectl_option('-l', label, sep=','),
-        *parse_kubectl_option('-n', namespace, sep=','),
+        *parse_option('', kind, sep=','),
+        *parse_option('', name, sep=' '),
+        *parse_option('-l', label, sep=','),
+        *parse_option('-n', namespace, sep=','),
     ]
 
     sp.run(
-        ['kubectl', 'delete'] + kind + name + options,
+        ['kubectl', 'delete'] + options,
         check=True,
     )
