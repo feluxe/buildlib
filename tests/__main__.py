@@ -22,6 +22,6 @@ n = kubernetes.cmd.get_item_names(
 # print('OUT', n.out)
 # print('ERR', n.err)
 
-kubernetes.helm.cmd.update(
-    release='logcenter', chart='chart', namespace='mw-prod'
-)
+# kubernetes.logs(
+#     name='logcenter-api-5ddd8ff4bc-dk74x', namespace='mw-prod', follow=True
+# )

@@ -181,3 +181,24 @@ def delete(
         ['kubectl', 'delete'] + options,
         check=True,
     )
+
+
+def logs(
+    namespace: List[str],
+    name: Optional[List[str]] = None,
+    follow: bool = False,
+) -> None:
+    """
+    @name: podname
+    kubectl logs -n mw-prod logcenter-api-5ddd8ff4bc-q5ccs
+    """
+    options = [
+        *parse_option('', name, sep=' '),
+        *parse_option('-n', namespace, sep=','),
+        *parse_option('--follow', follow, sep=''),
+    ]
+
+    sp.run(
+        ['kubectl', 'logs'] + options,
+        check=True,
+    )
