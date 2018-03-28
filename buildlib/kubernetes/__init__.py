@@ -79,6 +79,16 @@ class cmd:
     ) -> CmdResult:
         return delete(**strip_args(locals()))
 
+    @staticmethod
+    @command
+    def logs(
+        namespace: List[str],
+        name: Optional[List[str]] = None,
+        follow: bool = False,
+        **cmdargs
+    ) -> None:
+        return logs(**strip_args(locals()))
+
 
 def get_item_names(
     namespace: List[str],
