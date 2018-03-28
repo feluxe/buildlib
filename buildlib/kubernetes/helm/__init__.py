@@ -32,11 +32,12 @@ def update(
     options = [
         *kube.parse_option(flag='', val=release, sep=''),
         *kube.parse_option(flag='', val=chart, sep=''),
-        *kube.parse_option(flag='-n', val=namespace, sep=','),
+        *kube.parse_option(flag='--namespace', val=namespace, sep=','),
         *kube.parse_option(flag='--force', val=force, sep=''),
+        *kube.parse_option(flag='--recreate-pods', val=recreate_pods, sep=''),
     ]
 
     sp.run(
-        ['helm', 'update'] + options,
+        ['helm', 'upgrade'] + options,
         check=True,
     )

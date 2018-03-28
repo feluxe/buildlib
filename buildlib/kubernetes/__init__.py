@@ -18,13 +18,14 @@ def parse_option(flag: str, val: Union[List[str], bool],
     else:
         flag = [flag]
 
+    if type(val) == str:
+        return flag + [val]
     if type(val) == list:
         return flag + [sep.join(val)]
     elif type(val) == bool and val is True:
         return flag
     else:
         return []
-
 
 
 def generate_password(length: int = 32):

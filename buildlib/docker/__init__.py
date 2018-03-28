@@ -305,6 +305,3 @@ def build_image(
         ['docker', 'build', '.', '--pull', '-f', dockerfile] + options,
         check=True,
     )
-
-
-if True: print('Hello')
