@@ -1,6 +1,8 @@
 import string
 import random
+from datetime import datetime, timezone
 import json
+import time
 import sys
 import re
 from base64 import b64encode
@@ -54,6 +56,8 @@ class cmd:
         label: Optional[List[str]] = None,
         namefilter: Optional[Pattern] = None,
         statusfilter: Optional[Pattern] = None,
+        minage: int = None,
+        maxage: int = None,
         **cmdargs
     ) -> CmdResult:
         return get_item_names(**strip_args(locals()))
@@ -96,6 +100,8 @@ def get_item_names(
     label: Optional[List[str]] = None,
     namefilter: Optional[Pattern] = None,
     statusfilter: Optional[Pattern] = None,
+    minage: int = None,
+    maxage: int = None,
 ) -> Optional[List[str]]:
 
     options = [
@@ -119,16 +125,45 @@ def get_item_names(
         name = item.get('metadata', {}).get('name')
 
         try:
-            state = item.get('status', {}).get('containerStatuses',
-                                               [])[0].get('state')
+            states = item\
+            .get('status', {})\
+            .get('containerStatuses',[])[0]\
+            .get('state', {}).keys()
+
+            state = list(states)[0]
         except IndexError:
             state = {}
+
+        try:
+            started_date = item\
+            .get('status', {})\
+            .get('containerStatuses', [])[0]\
+            .get('state', {}).get(state, {}).get('startedAt')
+
+        except IndexError:
+            started_date = None
+
+        if started_date:
+            started_tuple = time.strptime(started_date, "%Y-%m-%dT%H:%M:%SZ")
+            started_ts = time.mktime(started_tuple)
+            now_ts = time.mktime(datetime.now(timezone.utc).timetuple())
+            age = now_ts - started_ts
+        else:
+            age = None
 
         if namefilter and not re.search(namefilter, name):
             continue
 
         if statusfilter:
-            if not any([re.search(statusfilter, k) for k in state.keys()]):
+            if not re.search(statusfilter, state):
+                continue
+
+        if minage and age:
+            if age <= minage:
+                continue
+
+        if maxage and age:
+            if age >= maxage:
                 continue
 
         item_names.append(name)

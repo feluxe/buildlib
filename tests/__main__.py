@@ -16,8 +16,11 @@ n = kubernetes.cmd.get_item_names(
     namespace=['mw-prod'],
     kind=['pods', 'replicaSets'],
     label=['app=logcenter'],
-    namefilter='.*gui.*'
+    namefilter='.*gui.*',
+    maxage=20,
 )
+
+print(n)
 
 # print('OUT', n.out)
 # print('ERR', n.err)
