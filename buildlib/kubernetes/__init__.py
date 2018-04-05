@@ -55,7 +55,7 @@ class cmd:
         kind: List[str],
         label: Optional[List[str]] = None,
         namefilter: Optional[Pattern] = None,
-        statusfilter: Optional[Pattern] = None,
+        statusfilter: Optional[List[str]] = None,
         minage: int = None,
         maxage: int = None,
         **cmdargs
@@ -99,10 +99,14 @@ def get_item_names(
     kind: List[str],
     label: Optional[List[str]] = None,
     namefilter: Optional[Pattern] = None,
-    statusfilter: Optional[Pattern] = None,
+    statusfilter: List[str] = None,
     minage: int = None,
     maxage: int = None,
 ) -> Optional[List[str]]:
+    """
+    @statusfilter: can be:
+      Running, Terminating, Error, CrashLoopBackOff, ContainerCreating.
+    """
 
     options = [
         *parse_option('', kind, sep=','),
@@ -125,20 +129,37 @@ def get_item_names(
         name = item.get('metadata', {}).get('name')
 
         try:
-            states = item\
+
+            state = item\
             .get('status', {})\
             .get('containerStatuses',[])[0]\
-            .get('state', {}).keys()
+            .get('state', {})
 
-            state = list(states)[0]
+            if state.get('waiting', {}).get('reason') == "ContainerCreating":
+                status = 'ContainerCreating'
+
+            elif state.get('running', None):
+                status = 'Running'
+
+            elif state.get('waiting', {}).get('reason') == "CrashLoopBackOff":
+                status = 'CrashLoopBackOff'
+
+            elif state.get('terminated', None).get('reason') == "Error":
+                status = 'Error'
+
+            elif state.get('terminated', None).get('exitCode') in ['0', 0]:
+                status = 'Terminating'
+
         except IndexError:
             state = {}
+            status = ''
 
         try:
+            key = list(state.keys())[0]
             started_date = item\
             .get('status', {})\
             .get('containerStatuses', [])[0]\
-            .get('state', {}).get(state, {}).get('startedAt')
+            .get('state', {}).get(key, {}).get('startedAt')
 
         except IndexError:
             started_date = None
@@ -154,9 +175,8 @@ def get_item_names(
         if namefilter and not re.search(namefilter, name):
             continue
 
-        if statusfilter:
-            if not re.search(statusfilter, state):
-                continue
+        if statusfilter and not status in statusfilter:
+            continue
 
         if minage and age:
             if age <= minage:

@@ -12,11 +12,12 @@ n = kubernetes.get_item_names(
 
 print(n)
 
-n = kubernetes.cmd.get_item_names(
-    namespace=['mw-prod'],
-    kind=['pods', 'replicaSets'],
+n = kubernetes.get_item_names(
+    namespace=['meyerwolters'],
+    kind=['pods'],
     label=['app=logcenter'],
     namefilter='.*gui.*',
+    # statusfilter=['Running'],
     maxage=20,
 )
 
