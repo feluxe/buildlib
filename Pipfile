@@ -11,10 +11,6 @@ wheel = "*"
 setuptools = "*"
 pylint = "*"
 yapf = "*"
-cmdi = "*"
-headlines = "*"
-sty = "*"
-prmt = "*"
 "ruamel.yaml" = "*"
 
 [requires]

@@ -12,8 +12,11 @@ from cmdi import command, CmdResult, set_result, strip_args
 from buildlib.kubernetes import helm
 
 
-def parse_option(flag: str, val: Union[List[str], bool],
-                 sep: 'str' = '') -> list:
+def parse_option(
+    flag: str,
+    val: Union[List[str], bool],
+    sep: 'str' = '',
+) -> list:
     """"""
     if flag in ['', None]:
         flag = []
@@ -99,7 +102,7 @@ def get_item_names(
     kind: List[str],
     label: Optional[List[str]] = None,
     namefilter: Optional[Pattern] = None,
-    statusfilter: List[str] = None,
+    statusfilter: Optional[List[str]] = None,
     minage: int = None,
     maxage: int = None,
 ) -> Optional[List[str]]:
