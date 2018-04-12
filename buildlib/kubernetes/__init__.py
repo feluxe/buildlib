@@ -153,6 +153,9 @@ def get_item_names(
             elif state.get('terminated', {}).get('exitCode') in ['0', 0]:
                 status = 'Terminating'
 
+            else:
+                status = None
+
         except IndexError:
             state = {}
             status = ''
