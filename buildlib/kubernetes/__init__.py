@@ -147,10 +147,10 @@ def get_item_names(
             elif state.get('waiting', {}).get('reason') == "CrashLoopBackOff":
                 status = 'CrashLoopBackOff'
 
-            elif state.get('terminated', None).get('reason') == "Error":
+            elif state.get('terminated', {}).get('reason') == "Error":
                 status = 'Error'
 
-            elif state.get('terminated', None).get('exitCode') in ['0', 0]:
+            elif state.get('terminated', {}).get('exitCode') in ['0', 0]:
                 status = 'Terminating'
 
         except IndexError:
