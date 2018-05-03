@@ -12,8 +12,7 @@ def validate(semver_num: str) -> bool:
 
     matches = [
         re.match(pattern, semver_num)
-        for pattern
-        in [pattern_no_suffix, pattern_suffix, pattern_suffix_num]
+        for pattern in [pattern_no_suffix, pattern_suffix, pattern_suffix_num]
     ]
 
     return any(matches)
@@ -27,10 +26,7 @@ def extract_pre_release_suffix(version: str) -> str:
     return re.sub(r'[0-9.\s]', '', version)
 
 
-def increase(
-    version: str,
-    type_: str
-) -> str:
+def increase(version: str, type_: str) -> str:
     """
     Increase version num based on @command:
         major: Increase num before first dot.
@@ -77,9 +73,7 @@ def convert_semver_to_wheelver(semver_num: str) -> str:
     1.12.1-alpha.10 -> 1.12.1a10
     """
     if not validate(semver_num):
-        raise ValueError(
-            'Given version number is not of semver format.'
-        )
+        raise ValueError('Given version number is not of semver format.')
 
     suffix: str = extract_pre_release_suffix(semver_num)
 
