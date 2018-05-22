@@ -31,12 +31,18 @@ class cmd:
         image: str,
         add_host: Optional[List[str]] = None,
         env: Optional[List[str]] = None,
+        name: Optional[str] = None,
         network: Optional[str] = None,
         publish: Optional[List[str]] = None,
         volume: Optional[List[str]] = None,
         **cmdargs
     ) -> CmdResult:
         return set_result(run_container(**strip_args(locals())))
+
+    @staticmethod
+    @command
+    def start_container(name: str, **cmdargs) -> CmdResult:
+        return set_result(start_container(**strip_args(locals())))
 
     @staticmethod
     @command
@@ -189,7 +195,7 @@ def run_container(
     image: str,
     add_host: Optional[List[str]] = None,
     env: Optional[List[str]] = None,
-    name: Optional[List[str]] = None,
+    name: Optional[str] = None,
     network: Optional[str] = None,
     publish: Optional[List[str]] = None,
     volume: Optional[List[str]] = None,
@@ -200,7 +206,7 @@ def run_container(
     options = [
         *_parse_option(add_host, '--add-host'),
         *_parse_option(env, '-e'),
-        *_parse_option(add_host, '--name'),
+        *_parse_option(name, '--name'),
         *_parse_option(network, '--network'),
         *_parse_option(publish, '-p'),
         *_parse_option(volume, '-v'),
@@ -208,6 +214,18 @@ def run_container(
 
     sp.run(
         ['docker', 'run', '-d'] + options + [image],
+        check=True,
+    )
+
+
+def start_container(name: str):
+
+    # options = [
+    #     *_parse_option(name, '--name'),
+    # ]
+
+    sp.run(
+        ['docker', 'start', name],
         check=True,
     )
 
