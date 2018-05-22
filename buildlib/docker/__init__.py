@@ -7,6 +7,7 @@ from cmdi import command, CmdResult, set_result, strip_args
 
 
 class cmd:
+
     @staticmethod
     @command
     def get_images(
@@ -151,6 +152,7 @@ def run_container(
     image: str,
     add_host: Optional[List[str]] = None,
     env: Optional[List[str]] = None,
+    name: Optional[List[str]] = None,
     network: Optional[str] = None,
     publish: Optional[List[str]] = None,
     volume: Optional[List[str]] = None,
@@ -161,6 +163,7 @@ def run_container(
     options = [
         *_parse_option(add_host, '--add-host'),
         *_parse_option(env, '-e'),
+        *_parse_option(add_host, '--name'),
         *_parse_option(network, '--network'),
         *_parse_option(publish, '-p'),
         *_parse_option(volume, '-v'),
