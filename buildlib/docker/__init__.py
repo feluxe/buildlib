@@ -1,4 +1,5 @@
 import re
+import json
 import subprocess as sp
 from typing import Optional, Pattern, NamedTuple, Union, List
 from buildlib.util import eprint
@@ -7,6 +8,15 @@ from cmdi import command, CmdResult, set_result, strip_args
 
 
 class cmd:
+
+    @staticmethod
+    @command
+    def ps(
+        all_: Optional[bool] = False,
+        filter_: Optional[List[str]] = None,
+        **cmdargs
+    ) -> CmdResult:
+        return set_result(ps(**strip_args(locals())))
 
     @staticmethod
     @command
@@ -104,6 +114,33 @@ class Image(NamedTuple):
     id: str
     created: str
     size: str
+
+
+def ps(
+    all_: Optional[bool] = False,
+    filter_: Optional[List[str]] = None,
+) -> dict:
+    """
+    Run the 'ps' command and return the results as a dict parsed from json.
+    """
+
+    options = [
+        *_parse_option(all_, '-a'),
+        *_parse_option(filter_, '--filter'),
+    ]
+
+    r = sp.run(
+        ['docker', 'ps', '--format', '{{ json . }}'] + options,
+        check=True,
+        stdout=sp.PIPE,
+    )
+
+    o = r.stdout
+
+    if o:
+        return json.loads(o)
+    else:
+        return {}
 
 
 def get_images(

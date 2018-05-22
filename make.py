@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess as sp
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 from cmdi import print_summary
 from buildlib import buildmisc, git, wheel, project, yaml
@@ -39,7 +40,7 @@ def deploy(cfg: Cfg):
 
 
 def test(cfg: Cfg):
-    print('No tests available.')
+    sp.run(['pipenv', 'run', 'python', '-m', 'tests'])
 
 
 def run():
