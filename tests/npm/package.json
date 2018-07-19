@@ -1,0 +1,12 @@
+{
+    "name": "@mw/bs-unigrata-search",
+    "version": "0.0.1",
+    "description": "Unigrata Search React Component",
+    "dependencies": {
+        "@glennsl/bs-json": "^1.3.1",
+        "react": "^16.4.0"
+    },
+    "devDependencies": {
+        "bs-platform": "^3.0.0"
+    }
+}
