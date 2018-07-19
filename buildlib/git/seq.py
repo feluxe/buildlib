@@ -21,6 +21,7 @@ def get_settings_from_user(
     check_status: bool = True,
     check_diff: bool = True,
     should_add_all: Optional[bool] = None,
+    should_tag: Optional[bool] = None,
     commit_msg: Optional[str] = None,
 ) -> GitSeqSettings:
 
@@ -30,6 +31,7 @@ def get_settings_from_user(
     s.new_release = new_release
     s.commit_msg = commit_msg
     s.should_add_all = should_add_all
+    s.should_tag = should_tag
 
     # Ask user to check status.
     if check_status and not git.prompt.confirm_status('y'):
@@ -54,9 +56,10 @@ def get_settings_from_user(
         s.commit_msg: str = git.prompt.commit_msg()
 
     # Ask user to run 'tag'.
-    s.should_tag: bool = git.prompt.should_tag(
-        default='y' if s.new_release is True else 'n'
-    )
+    if s.should_tag is None:
+        s.should_tag: bool = git.prompt.should_tag(
+            default='y' if s.new_release is True else 'n'
+        )
 
     # Ask user to push.
     s.should_push_git: bool = git.prompt.should_push(default='y')
@@ -101,6 +104,7 @@ def bump_git(
     check_status: bool = True,
     check_diff: bool = True,
     should_add_all: Optional[bool] = None,
+    should_tag: Optional[bool] = None,
     commit_msg: Optional[str] = None,
 ):
     s = get_settings_from_user(
@@ -109,6 +113,7 @@ def bump_git(
         check_status=check_status,
         check_diff=check_diff,
         should_add_all=should_add_all,
+        should_tag=should_tag,
         commit_msg=commit_msg,
     )
     return bump_sequence(s)
