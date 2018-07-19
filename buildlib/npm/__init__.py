@@ -13,6 +13,11 @@ class cmd:
     ) -> CmdResult:
         return set_result(bump_version(**strip_args(locals())))
 
+    @staticmethod
+    @command
+    def publish(**cmdargs) -> CmdResult:
+        return set_result(publish(**strip_args(locals())))
+
 
 def bump_version(
     new_version: str,
@@ -29,3 +34,11 @@ def bump_version(
 
     with open(filepath, 'w') as f:
         json.dump(data, f, indent=indent)
+
+
+def publish() -> None:
+    """"""
+    sp.run(
+        ['npm', 'publish'],
+        check=True,
+    )
