@@ -8,7 +8,9 @@ class cmd:
 
     @staticmethod
     @command
-    def bump_version(new_version: str, filepath: str, **cmdargs) -> CmdResult:
+    def bump_version(
+        new_version: str, filepath: str = 'package.json', **cmdargs
+    ) -> CmdResult:
         return set_result(bump_version(**strip_args(locals())))
 
 
