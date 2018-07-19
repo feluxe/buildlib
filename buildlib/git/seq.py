@@ -20,6 +20,7 @@ def get_settings_from_user(
     new_release: bool,
     check_status: bool = True,
     check_diff: bool = True,
+    should_add_all: Optional[bool] = None,
     commit_msg: Optional[str] = None,
 ) -> GitSeqSettings:
 
@@ -28,6 +29,7 @@ def get_settings_from_user(
     s.version = version
     s.new_release = new_release
     s.commit_msg = commit_msg
+    s.should_add_all = should_add_all
 
     # Ask user to check status.
     if check_status and not git.prompt.confirm_status('y'):
@@ -40,7 +42,8 @@ def get_settings_from_user(
         return s
 
     # Ask user to run 'git add -A.
-    s.should_add_all: bool = git.prompt.should_add_all(default='y')
+    if s.should_add_all is None:
+        s.should_add_all: bool = git.prompt.should_add_all(default='y')
 
     # Ask user to run commit.
     if not commit_msg:
@@ -95,15 +98,17 @@ def bump_sequence(s: GitSeqSettings) -> List[CmdResult]:
 def bump_git(
     version: str,
     new_release: bool = True,
-    commit_msg: Optional[str] = None,
     check_status: bool = True,
     check_diff: bool = True,
+    should_add_all: Optional[bool] = None,
+    commit_msg: Optional[str] = None,
 ):
     s = get_settings_from_user(
         version,
         new_release=new_release,
-        commit_msg=commit_msg,
         check_status=check_status,
         check_diff=check_diff,
+        should_add_all=should_add_all,
+        commit_msg=commit_msg,
     )
     return bump_sequence(s)
