@@ -18,7 +18,9 @@ class GitSeqSettings:
 def get_settings_from_user(
     version: str,
     new_release: bool,
-    commit_msg: Optional[str],
+    check_status: bool = True,
+    check_diff: bool = True,
+    commit_msg: Optional[str] = None,
 ) -> GitSeqSettings:
 
     s = GitSeqSettings()
@@ -28,12 +30,12 @@ def get_settings_from_user(
     s.commit_msg = commit_msg
 
     # Ask user to check status.
-    if not git.prompt.confirm_status('y'):
+    if check_status and not git.prompt.confirm_status('y'):
         s.should_run_any = False
         return s
 
     # Ask user to check diff.
-    if not git.prompt.confirm_diff('y'):
+    if check_diff and not git.prompt.confirm_diff('y'):
         s.should_run_any = False
         return s
 
@@ -94,6 +96,14 @@ def bump_git(
     version: str,
     new_release: bool = True,
     commit_msg: Optional[str] = None,
+    check_status: bool = True,
+    check_diff: bool = True,
 ):
-    s = get_settings_from_user(version, new_release, commit_msg)
+    s = get_settings_from_user(
+        version,
+        new_release=new_release,
+        commit_msg=commit_msg,
+        check_status=check_status,
+        check_diff=check_diff,
+    )
     return bump_sequence(s)
