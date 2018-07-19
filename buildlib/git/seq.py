@@ -22,6 +22,7 @@ def get_settings_from_user(
     check_diff: bool = True,
     should_add_all: Optional[bool] = None,
     should_tag: Optional[bool] = None,
+    should_push: Optional[bool] = None,
     commit_msg: Optional[str] = None,
 ) -> GitSeqSettings:
 
@@ -32,6 +33,7 @@ def get_settings_from_user(
     s.commit_msg = commit_msg
     s.should_add_all = should_add_all
     s.should_tag = should_tag
+    s.should_push = should_push
 
     # Ask user to check status.
     if check_status and not git.prompt.confirm_status('y'):
@@ -62,7 +64,8 @@ def get_settings_from_user(
         )
 
     # Ask user to push.
-    s.should_push_git: bool = git.prompt.should_push(default='y')
+    if s.should_push is None:
+        s.should_push_git: bool = git.prompt.should_push(default='y')
 
     # Ask user for branch.
     if any([s.should_tag, s.should_push_git]):
@@ -105,6 +108,7 @@ def bump_git(
     check_diff: bool = True,
     should_add_all: Optional[bool] = None,
     should_tag: Optional[bool] = None,
+    should_push: Optional[bool] = None,
     commit_msg: Optional[str] = None,
 ):
     s = get_settings_from_user(
@@ -114,6 +118,7 @@ def bump_git(
         check_diff=check_diff,
         should_add_all=should_add_all,
         should_tag=should_tag,
+        should_push=should_push,
         commit_msg=commit_msg,
     )
     return bump_sequence(s)
