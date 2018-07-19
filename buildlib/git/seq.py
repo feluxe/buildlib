@@ -65,10 +65,10 @@ def get_settings_from_user(
 
     # Ask user to push.
     if s.should_push is None:
-        s.should_push_git: bool = git.prompt.should_push(default='y')
+        s.should_push: bool = git.prompt.should_push(default='y')
 
     # Ask user for branch.
-    if any([s.should_tag, s.should_push_git]):
+    if any([s.should_tag, s.should_push]):
         s.branch: str = git.prompt.branch()
 
     return s
