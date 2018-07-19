@@ -18,12 +18,14 @@ class GitSeqSettings:
 def get_settings_from_user(
     version: str,
     new_release: bool,
+    commit_msg: Optional[str],
 ) -> GitSeqSettings:
 
     s = GitSeqSettings()
 
     s.version = version
     s.new_release = new_release
+    s.commit_msg = commit_msg
 
     # Ask user to check status.
     if not git.prompt.confirm_status('y'):
@@ -39,10 +41,11 @@ def get_settings_from_user(
     s.should_add_all: bool = git.prompt.should_add_all(default='y')
 
     # Ask user to run commit.
-    s.should_commit: bool = git.prompt.should_commit(default='y')
+    if not commit_msg:
+        s.should_commit: bool = git.prompt.should_commit(default='y')
 
     # Get commit msg from user.
-    if s.should_commit:
+    if s.should_commit and not commit_msg:
         s.commit_msg: str = git.prompt.commit_msg()
 
     # Ask user to run 'tag'.
@@ -90,6 +93,7 @@ def bump_sequence(s: GitSeqSettings) -> List[CmdResult]:
 def bump_git(
     version: str,
     new_release: bool = True,
+    commit_msg: Optional[str] = None,
 ):
-    s = get_settings_from_user(version, new_release)
+    s = get_settings_from_user(version, new_release, commit_msg)
     return bump_sequence(s)
