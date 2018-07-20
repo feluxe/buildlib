@@ -2,6 +2,7 @@ from typing import Optional
 import json
 from cmdi import CmdResult, command, set_result, strip_args
 import subprocess as sp
+from buildlib.npm import prompt
 
 
 class cmd:
