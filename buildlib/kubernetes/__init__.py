@@ -1,3 +1,4 @@
+import os
 import string
 import random
 from datetime import datetime, timezone
@@ -273,3 +274,25 @@ def logs(
         ['kubectl', 'logs'] + options,
         check=True,
     )
+
+
+def activate_kubectl_config(name=''):
+    """
+    Create a symlink pointing from "~/.kube/config" to "~/.kube/{name}"
+    """
+
+    cfg_dir = os.path.expanduser('~/.kube')
+    link_path = cfg_dir + '/config'
+    new_cfg_path = cfg_dir + '/' + name
+
+    if not os.path.isfile(new_cfg_path):
+        raise FileNotFoundError("Cannot find config file at: " + new_cfg_path)
+
+    if os.path.islink(link_path):
+        os.remove(link_path)
+    elif os.path.isfile(link_path):
+        err = f'There is a config file at: {link_path}. That path should be a '\
+               'symlink of empty.'
+        raise FileExistsError(err)
+
+    os.symlink(src=new_cfg_path, dst=link_path)
