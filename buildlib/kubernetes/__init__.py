@@ -97,6 +97,11 @@ class cmd:
     ) -> None:
         return logs(**strip_args(locals()))
 
+    @staticmethod
+    @command
+    def activate_kubectl_config(name: str, **cmdargs) -> None:
+        return activate_kubectl_config(**strip_args(locals()))
+
 
 def get_item_names(
     namespace: List[str],
@@ -276,7 +281,7 @@ def logs(
     )
 
 
-def activate_kubectl_config(name=''):
+def activate_kubectl_config(name: str) -> None:
     """
     Create a symlink pointing from "~/.kube/config" to "~/.kube/{name}"
     """
