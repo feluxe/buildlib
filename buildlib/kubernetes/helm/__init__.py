@@ -8,7 +8,7 @@ class cmd:
 
     @staticmethod
     @command
-    def update(
+    def upgrade(
         release: str,
         chart: str,
         namespace: List[str],
@@ -16,10 +16,10 @@ class cmd:
         recreate_pods: bool = False,
         **cmdargs
     ) -> CmdResult:
-        return update(**strip_args(locals()))
+        return upgrade(**strip_args(locals()))
 
 
-def update(
+def upgrade(
     release: str,
     chart: str,
     namespace: List[str],
