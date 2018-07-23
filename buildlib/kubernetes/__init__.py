@@ -204,20 +204,20 @@ def get_item_names(
 
 def apply(
     stdin: str = None,
-    files: List[str] = None,
-    namespace: List[str] = None,
+    file_: List[str] = None,  # -f, --filename
+    namespace: List[str] = None,  # --namespace
 ) -> None:
     """
     @stdin: Use this to pass in a config string via stdin.
     """
-    if stdin and files:
+    if stdin and file_:
         raise ValueError(
             'Cannot use parameter "stdin" and "files" at the same time'
         )
 
     options = [
         *parse_option('-n', namespace, sep=','),
-        *parse_option('-f', files, sep=','),
+        *parse_option('-f', file_, sep=','),
     ]
 
     cmd = ['kubectl', 'apply'] + options
