@@ -72,10 +72,11 @@ def install(
         *parse_option(flag='--version', val=version, sep=''),
     ]
 
-    sp.run(
-        ['helm', 'install'] + options,
-        check=True,
-    )
+    cmd = ['helm', 'install'] + options
+
+    print(cmd)
+
+    sp.run(cmd, check=True)
 
 
 def upgrade(
@@ -96,7 +97,8 @@ def upgrade(
         *parse_option(flag='--recreate-pods', val=recreate_pods, sep=''),
     ]
 
-    sp.run(
-        ['helm', 'upgrade'] + options,
-        check=True,
-    )
+    cmd = ['helm', 'upgrade'] + options
+
+    print(cmd)
+
+    sp.run(cmd, check=True)
