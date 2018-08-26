@@ -36,11 +36,10 @@ class cmd:
 
     @staticmethod
     @command
-    def bump_py_module_version(file: str, new_version: str, **cmdargs) -> CmdResult:
+    def bump_py_module_version(
+        file: str, new_version: str, **cmdargs
+    ) -> CmdResult:
         return set_result(bump_py_module_version(**strip_args(locals())))
-
-
-
 
 
 def inject_interface_into_readme(
@@ -61,7 +60,8 @@ def inject_interface_into_readme(
     end: int = readme_str.find('```', start)
 
     if '```' in readme_str:
-        mod_str: str = readme_str[0:start - 3] + help_str + readme_str[end + 3:]
+        mod_str: str = readme_str[0:start - 3] + help_str + readme_str[end +
+                                                                       3:]
     else:
         mod_str: str = help_str + readme_str
 
@@ -111,10 +111,9 @@ def bump_py_module_version(file: str, new_version: str) -> None:
         data = f.read()
         data = re.sub(
             pattern=r'__version__ = [\'|"].*[\'|"][ \t]*\n',
-            repl=f'__version__ = {new_version}',
+            repl=f"__version__ = '{new_version}'",
             string=data,
         )
 
     with open(file, 'r+') as f:
         f.write(data)
-
