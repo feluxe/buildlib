@@ -8,7 +8,7 @@ from docopt import docopt
 
 interface = """
     Install:
-        pipenv install
+        pipenv install --dev --pre
         pipenv run python make.py
 
     Usage:

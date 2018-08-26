@@ -6,6 +6,7 @@ Everything that does not deserve it's own package goes here.
 import os
 import shutil
 import glob
+import re
 import subprocess as sp
 from typing import Optional, List, Pattern, Union
 from cmdi import command, CmdResult, set_result, strip_args
@@ -32,6 +33,14 @@ class cmd:
     @command
     def create_py_venv(py_bin: str, venv_dir: str, **cmdargs) -> CmdResult:
         return set_result(create_py_venv(**strip_args(locals())))
+
+    @staticmethod
+    @command
+    def bump_py_module_version(file: str, new_version: str, **cmdargs) -> CmdResult:
+        return set_result(bump_py_module_version(**strip_args(locals())))
+
+
+
 
 
 def inject_interface_into_readme(
@@ -88,3 +97,24 @@ def create_py_venv(
         [py_bin, '-m', 'venv', venv_dir],
         check=True,
     )
+
+
+def bump_py_module_version(file: str, new_version: str) -> None:
+    """
+    Search a file for a python module version definition:
+    __version__ = 'xxx'
+    and update the version string.
+    """
+    data = ''
+
+    with open(file) as f:
+        data = f.read()
+        data = re.sub(
+            pattern=r'__version__ = [\'|"].*[\'|"][ \t]*\n',
+            repl=f'__version__ = {new_version}',
+            string=data,
+        )
+
+    with open(file, 'r+') as f:
+        f.write(data)
+
