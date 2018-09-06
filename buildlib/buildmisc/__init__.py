@@ -111,7 +111,7 @@ def bump_py_module_version(file: str, new_version: str) -> None:
         data = f.read()
         data = re.sub(
             pattern=r'__version__ = [\'|"].*[\'|"][ \t]*\n',
-            repl=f"__version__ = '{new_version}'",
+            repl=f"__version__ = '{new_version}'\n",
             string=data,
         )
 
