@@ -1,6 +1,6 @@
 import prmt
 from headlines import h3
-from buildlib import git
+from buildlib.git import lib as git
 
 
 def commit_msg(

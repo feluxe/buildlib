@@ -1,6 +1,7 @@
 from typing import Optional, List
-from buildlib import git
 from cmdi import CmdResult
+from buildlib.git import lib as git
+from buildlib.git import prompt
 
 
 class GitSeqSettings:
@@ -36,40 +37,40 @@ def get_settings_from_user(
     s.should_push = should_push
 
     # Ask user to check status.
-    if check_status and not git.prompt.confirm_status('y'):
+    if check_status and not prompt.confirm_status('y'):
         s.should_run_any = False
         return s
 
     # Ask user to check diff.
-    if check_diff and not git.prompt.confirm_diff('y'):
+    if check_diff and not prompt.confirm_diff('y'):
         s.should_run_any = False
         return s
 
     # Ask user to run 'git add -A.
     if s.should_add_all is None:
-        s.should_add_all: bool = git.prompt.should_add_all(default='y')
+        s.should_add_all: bool = prompt.should_add_all(default='y')
 
     # Ask user to run commit.
     if not commit_msg:
-        s.should_commit: bool = git.prompt.should_commit(default='y')
+        s.should_commit: bool = prompt.should_commit(default='y')
 
     # Get commit msg from user.
     if s.should_commit and not commit_msg:
-        s.commit_msg: str = git.prompt.commit_msg()
+        s.commit_msg: str = prompt.commit_msg()
 
     # Ask user to run 'tag'.
     if s.should_tag is None:
-        s.should_tag: bool = git.prompt.should_tag(
+        s.should_tag: bool = prompt.should_tag(
             default='y' if s.new_release is True else 'n'
         )
 
     # Ask user to push.
     if s.should_push is None:
-        s.should_push: bool = git.prompt.should_push(default='y')
+        s.should_push: bool = prompt.should_push(default='y')
 
     # Ask user for branch.
     if any([s.should_tag, s.should_push]):
-        s.branch: str = git.prompt.branch()
+        s.branch: str = prompt.branch()
 
     return s
 
