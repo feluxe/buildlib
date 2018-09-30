@@ -11,11 +11,11 @@ wheel = "*"
 setuptools = "*"
 pylint = "*"
 yapf = "*"
-"ruamel.yaml" = "*"
 cmdi = "*"
 sty = "*"
 prmt = "*"
 headlines = "*"
+oyaml = "*"
 
 [requires]
 python_version = "3.6"

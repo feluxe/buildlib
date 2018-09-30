@@ -1,26 +1,24 @@
-"public_name": "buildlib"
-"interal_name": "buildlib"
-"version": "2.0.1"
-"license": "unlicensed"
-"author": "Felix Meyer-Wolters"
-"author_email": "felix@meyerwolters.de"
-"maintainer": "Felix Meyer-Wolters"
-"maintainer_email": "felix@meyerwolters.de"
-"url": "https://github.com/feluxe/buildlib"
-"description": "A library to help build projects."
-"keywords": ["build", "library"]
-
-"pypi":
-  "install_requires": ["headlines", "prmt", "ruamel.yaml", "cmdi", "sty", "requests"]
-  "tests_require": []
-  "packages": ["buildlib"]
-  "package_dir": {"buildlib": "buildlib"}
-  "package_data": {}
-  "py_modules": []
-  "data_files": []
-  "classifiers": []
-  "platforms": ""
-  "entry_points": {"console_scripts": []
-, "gui_scripts": []
-}
-
+public_name: buildlib
+interal_name: buildlib
+version: 2.0.2
+license: unlicensed
+author: Felix Meyer-Wolters
+author_email: felix@meyerwolters.de
+maintainer: Felix Meyer-Wolters
+maintainer_email: felix@meyerwolters.de
+url: https://github.com/feluxe/buildlib
+description: A library to help build projects.
+keywords: [build, library]
+pypi:
+  install_requires: [headlines, prmt, oyaml, cmdi, sty, requests]
+  tests_require: []
+  packages: [buildlib]
+  package_dir: {buildlib: buildlib}
+  package_data: {}
+  py_modules: []
+  data_files: []
+  classifiers: []
+  platforms: ''
+  entry_points:
+    console_scripts: []
+    gui_scripts: []

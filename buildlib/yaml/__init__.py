@@ -1,37 +1,34 @@
-import ruamel.yaml as yaml
+import oyaml as yaml
+import sys
 from typing import Any
 
 
-def loadfile(
-    file: str,
-    keep_order: bool = False
-) -> dict:
+def loadfile(file: str, safe=False) -> dict:
     """
     Load yaml file.
     """
-    with open(file, 'r') as stream:
-        if keep_order:
-            return yaml.load(stream.read(), Loader=yaml.RoundTripLoader)
-        else:
-            return yaml.safe_load(stream.read())
+    if safe:
+        with open(file, 'r') as f:
+            return yaml.safe_load(f.read())
+    else:
+        with open(file, 'r') as f:
+            return yaml.load(f.read())
 
 
-def savefile(
-    data: Any,
-    file: str,
-    default_style: str = '"'
-) -> None:
+def savefile(data: Any, file: str, **kwargs) -> None:
     """
     Save data to yaml file.
     """
-    with open(file, 'w') as yaml_file:
-        yaml.dump(data, yaml_file, Dumper=yaml.RoundTripDumper,
-                  default_style=default_style)
+    with open(file, 'w') as f:
+        yaml.dump(data=data, stream=f, **kwargs)
 
 
 def pprint_yaml(data: Any) -> None:
-    lines: list = yaml.round_trip_dump(
-        data, indent=4,
+
+    lines: list = yaml.dump(
+        data,
+        indent=4,
         block_seq_indent=4,
     ).splitlines(True)
+
     print(''.join([line for line in lines]))

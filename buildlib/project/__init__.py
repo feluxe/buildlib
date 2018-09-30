@@ -20,7 +20,7 @@ def bump_version(
     config_file: str = 'Project',
 ) -> str:
 
-    cfg: dict = yaml.loadfile(config_file, keep_order=True)
+    cfg: dict = yaml.loadfile(config_file)
 
     if not semver_num:
         semver_num = semver_prompt.semver_num_by_choice(cfg['version'])
