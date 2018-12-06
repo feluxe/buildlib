@@ -1,2 +1,3 @@
-from buildlib.wheel import prompt
-from buildlib.wheel.lib import *
+from ..wheel import _prompt as prompt
+from ..wheel import _lib_cmd as cmd
+from ..wheel._lib import *

@@ -43,9 +43,9 @@ def increase(version: str, type_: str) -> str:
         suffix_new: str = suffix_str + '.0'
 
     else:
-        suffix_str: str = '-alpha.'
-        suffix_num: str = '.0'
-        suffix_new: str = ''
+        suffix_str = '-alpha.'
+        suffix_num = '.0'
+        suffix_new = ''
 
     if type_ == 'major':
         return '.'.join([str(int(vnum[0]) + 1), '0', '0' + suffix_new])

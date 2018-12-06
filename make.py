@@ -43,6 +43,25 @@ def test(cfg: Cfg):
     sp.run(['pipenv', 'run', 'python', '-m', 'tests'])
 
 
+def bump(cfg: Cfg):
+
+    r = []
+
+    if project.prompt.should_bump_version():
+        result = project.cmd.bump_version()
+        cfg.version = result.val
+        r.append(result)
+
+    new_release = cfg.version != proj['version']
+
+    r.extend(git.seq.bump_git(cfg.version, new_release))
+
+    if wheel.prompt.should_push('PYPI'):
+        r.append(deploy(cfg))
+
+    return r
+
+
 def run():
 
     cfg = Cfg()
@@ -62,18 +81,7 @@ def run():
         results.extend(git.seq.bump_git(cfg.version, new_release=False))
 
     if uinput['bump']:
-
-        if project.prompt.should_bump_version():
-            result = project.cmd.bump_version()
-            cfg.version = result.val
-            results.append(result)
-
-        if wheel.prompt.should_push('PYPI'):
-            results.append(deploy(cfg))
-
-        new_release = cfg.version != proj['version']
-
-        results.extend(git.seq.bump_git(cfg.version, new_release))
+        results.extend(bump(cfg))
 
     print_summary(results)
 

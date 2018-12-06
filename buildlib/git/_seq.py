@@ -1,18 +1,20 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 from cmdi import CmdResult
-from buildlib.git import lib as git
-from buildlib.git import prompt
+
+from ..git import _lib as git
+from ..git import _lib_cmd as git_cmd
+from ..git import _prompt as prompt
 
 
 class GitSeqSettings:
-    version: str = None
+    version: Optional[str] = None
     new_release: bool = True
     should_run_any: bool = True
-    should_add_all: bool = True
+    should_add_all: Optional[bool] = True
     should_commit: bool = True
-    commit_msg: str = 'No comment message.'
-    should_tag: bool = True
-    should_push: bool = True
+    commit_msg: Optional[str] = 'No comment message.'
+    should_tag: Optional[bool] = True
+    should_push: Optional[bool] = True
     branch: str = 'master'
 
 
@@ -48,36 +50,36 @@ def get_settings_from_user(
 
     # Ask user to run 'git add -A.
     if s.should_add_all is None:
-        s.should_add_all: bool = prompt.should_add_all(default='y')
+        s.should_add_all = prompt.should_add_all(default='y')
 
     # Ask user to run commit.
     if not commit_msg:
-        s.should_commit: bool = prompt.should_commit(default='y')
+        s.should_commit = prompt.should_commit(default='y')
 
     # Get commit msg from user.
     if s.should_commit and not commit_msg:
-        s.commit_msg: str = prompt.commit_msg()
+        s.commit_msg = prompt.commit_msg()
 
     # Ask user to run 'tag'.
     if s.should_tag is None:
-        s.should_tag: bool = prompt.should_tag(
+        s.should_tag = prompt.should_tag(
             default='y' if s.new_release is True else 'n'
         )
 
     # Ask user to push.
     if s.should_push is None:
-        s.should_push: bool = prompt.should_push(default='y')
+        s.should_push = prompt.should_push(default='y')
 
     # Ask user for branch.
     if any([s.should_tag, s.should_push]):
-        s.branch: str = prompt.branch()
+        s.branch = prompt.branch()
 
     return s
 
 
 def bump_sequence(s: GitSeqSettings) -> List[CmdResult]:
     """"""
-    results = []
+    results: List[CmdResult] = []
 
     # If any git commands should be run.
     if not s.should_run_any:
@@ -85,19 +87,19 @@ def bump_sequence(s: GitSeqSettings) -> List[CmdResult]:
 
     # Run 'add -A'
     if s.should_add_all:
-        results.append(git.cmd.add_all())
+        results.append(git_cmd.add_all())
 
     # Run 'commit -m'
     if s.should_commit:
-        results.append(git.cmd.commit(s.commit_msg))
+        results.append(git_cmd.commit(s.commit_msg))
 
     # Run 'tag'
     if s.should_tag:
-        results.append(git.cmd.tag(s.version, s.branch))
+        results.append(git_cmd.tag(s.version, s.branch))
 
     # Run 'push'
     if s.should_push:
-        results.append(git.cmd.push(s.branch))
+        results.append(git_cmd.push(s.branch))
 
     return results
 

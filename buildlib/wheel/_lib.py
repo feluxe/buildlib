@@ -4,7 +4,8 @@ import os
 import glob
 from cmdi import CmdResult, command, set_result, strip_args
 import subprocess as sp
-from buildlib import semver
+
+from .. import semver
 
 
 def extract_version_from_wheel_name(name: str) -> str:
@@ -30,7 +31,7 @@ def find_wheel(
         requested_version: str = wheelver_num
 
     elif semver_num:
-        requested_version: str = semver.convert_semver_to_wheelver(semver_num)
+        requested_version = semver.convert_semver_to_wheelver(semver_num)
 
     else:
         raise ValueError(
@@ -55,28 +56,8 @@ def find_wheel(
         return None
 
 
-class cmd:
+def push_to_gemfury(wheel_file: str) -> None:
 
-    @staticmethod
-    @command
-    def push_to_gemfury(wheel_file: str, **cmdargs) -> CmdResult:
-        return set_result(push_to_gemfury(**strip_args(locals())))
-
-    @staticmethod
-    @command
-    def push(
-        repository='pypi', clean_dir: bool = False, **cmdargs
-    ) -> CmdResult:
-        return set_result(push(**strip_args(locals())))
-
-    @staticmethod
-    @command
-    def build(clean_dir: bool = False, **cmdargs) -> CmdResult:
-        return set_result(build(**strip_args(locals())))
-
-
-def push_to_gemfury(wheel_file: str, ) -> None:
-    """"""
     sp.run(
         ['fury', 'push', wheel_file],
         check=True,
@@ -84,10 +65,12 @@ def push_to_gemfury(wheel_file: str, ) -> None:
 
 
 def _clean_bdist_tmp_files() -> None:
-    """"""
-    build_dir: str = f'{os.getcwd()}/build'
-    egg_file: list = glob.glob('**.egg-info')
-    egg_file: str = egg_file and egg_file[0] or ''
+
+    build_dir = f'{os.getcwd()}/build'
+
+    egg_file_opt: Optional[list] = glob.glob('**.egg-info')
+
+    egg_file: str = egg_file_opt and egg_file_opt[0] or ''
 
     os.path.isdir(build_dir) and shutil.rmtree(build_dir)
     os.path.isdir(egg_file) and shutil.rmtree(egg_file)
@@ -97,7 +80,7 @@ def push(
     repository='pypi',
     clean_dir: bool = False,
 ) -> None:
-    """"""
+
     sp.run(
         ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', repository],
         check=True,
@@ -107,7 +90,7 @@ def push(
         _clean_bdist_tmp_files()
 
 
-def build(clean_dir: bool = False, ) -> None:
+def build(clean_dir: bool = False) -> None:
     """
     @clean_dir: Clean 'build' dir before running build command. This may be necessary because of
     this: https://bitbucket.org/pypa/wheel/issues/147/bdist_wheel-should-start-by-cleaning-up

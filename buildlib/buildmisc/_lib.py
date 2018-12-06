@@ -1,39 +1,7 @@
-import os
-import shutil
-import glob
-import re
 import subprocess as sp
-from typing import Optional, List, Pattern, Union
-from cmdi import command, CmdResult, set_result, strip_args
-from buildlib import yaml, module
-from buildlib.semver import prompt as semver_prompt
-
-
-class cmd:
-
-    @staticmethod
-    @command
-    def inject_interface_into_readme(
-        interface_file: str, readme_file: str = 'README.md', **cmdargs
-    ) -> CmdResult:
-        return set_result(inject_interface_into_readme(**strip_args(locals())))
-
-    @staticmethod
-    @command
-    def build_read_the_docs(clean_dir: bool = False, **cmdargs) -> CmdResult:
-        return set_result(build_read_the_docs(**strip_args(locals())))
-
-    @staticmethod
-    @command
-    def create_py_venv(py_bin: str, venv_dir: str, **cmdargs) -> CmdResult:
-        return set_result(create_py_venv(**strip_args(locals())))
-
-    @staticmethod
-    @command
-    def bump_py_module_version(
-        file: str, new_version: str, **cmdargs
-    ) -> CmdResult:
-        return set_result(bump_py_module_version(**strip_args(locals())))
+import shutil
+import os
+import re
 
 
 def inject_interface_into_readme(
@@ -57,7 +25,7 @@ def inject_interface_into_readme(
         mod_str: str = readme_str[0:start - 3] + help_str + readme_str[end +
                                                                        3:]
     else:
-        mod_str: str = help_str + readme_str
+        mod_str = help_str + readme_str
 
     with open('README.md', 'w') as modified_readme:
         modified_readme.write(mod_str)

@@ -1,6 +1,6 @@
 import prmt
 from typing import List
-from buildlib.semver import lib as semver
+from ..semver import _lib as semver
 
 
 def semver_num_manually(fmt=None) -> str:

@@ -4,16 +4,6 @@ from buildlib.semver import prompt as semver_prompt
 from buildlib import yaml
 
 
-class cmd:
-
-    @staticmethod
-    @command
-    def bump_version(
-        semver_num: str = None, config_file: str = 'Project', **cmdargs
-    ) -> CmdResult:
-        return set_result(bump_version(**strip_args(locals())))
-
-
 def bump_version(
     semver_num: str = None,
     config_file: str = 'Project',

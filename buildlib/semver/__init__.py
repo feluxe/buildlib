@@ -1,2 +1,2 @@
-from buildlib.semver import prompt
-from buildlib.semver.lib import *
+from ..semver import _prompt as prompt
+from ..semver._lib import *
