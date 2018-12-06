@@ -13,9 +13,10 @@ pylint = "*"
 yapf = "*"
 cmdi = "*"
 sty = "*"
-prmt = "*"
 headlines = "*"
 oyaml = "*"
+mypy = "*"
+prmt = "==2.0.4"
 
 [requires]
 python_version = "3.6"

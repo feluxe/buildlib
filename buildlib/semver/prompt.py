@@ -1,25 +1,31 @@
 import prmt
+from typing import List
 from buildlib.semver import lib as semver
 
 
-def semver_num_manually(margin=(0, 1)) -> str:
+def semver_num_manually(fmt=None) -> str:
     """
     Ask user to enter a new version num. If input invalid recurse.
     """
     version: str = prmt.string(
-        question='Please enter new semver num.', margin=margin
+        question='Please enter new semver num.',
+        fmt=fmt,
     )
 
     if not semver.validate(version):
         print('Provided version num is not semver conform.')
-        version: str = semver_num_manually(margin=margin)
+        version = semver_num_manually(fmt=fmt)
 
     return version
 
 
-def _generate_update_semver_options(cur_version: str, is_pre: bool) -> list:
+def _generate_update_semver_options(
+    cur_version: str,
+    is_pre: bool,
+) -> List[str]:
     """
-    Generate the options that are shown to the user when she has to pick a version num.
+    Generate the options that are shown to the user when she has to pick a 
+    version num.
     """
     options: list = []
     options.insert(0, 'Enter a new version number manually.')
@@ -33,11 +39,15 @@ def _generate_update_semver_options(cur_version: str, is_pre: bool) -> list:
     return options
 
 
-def semver_num_by_choice(cur_version: str, margin=(0, 1)) -> str:
+def semver_num_by_choice(
+    cur_version: str,
+    fmt=None,
+) -> str:
     """
     Ask user to select a pre-defined version num or enter a new one manually.
     @return: A new semver number as str.
     """
+
     if cur_version and not semver.validate(cur_version):
         raise Exception('Current version is not "semver" conform.')
 
@@ -46,23 +56,22 @@ def semver_num_by_choice(cur_version: str, margin=(0, 1)) -> str:
     question: str = 'Please select a version number or insert a new one: (Current version: {})' \
         .format(cur_version)
 
-    options: list = _generate_update_semver_options(
-        cur_version=cur_version, is_pre=is_pre_release
+    options: List[str] = _generate_update_semver_options(
+        cur_version=cur_version,
+        is_pre=is_pre_release,
     )
 
-    default: str = '4' if is_pre_release else '3'
+    default: int = 4 if is_pre_release else 3
 
-    answer: int = prmt.select(
+    selected_key, _ = prmt.select(
         question=question,
         options=options,
         default=default,
-        return_val=False,
-        sort=False,
-        margin=margin
+        fmt=fmt,
     )
 
-    if answer == 0:
-        return semver_num_manually(margin)
+    if selected_key == 0:
+        return semver_num_manually(fmt=fmt)
 
     else:
-        return options[answer].split('\t')[0]
+        return options[selected_key].split('\t')[0]
