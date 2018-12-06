@@ -2,6 +2,11 @@ import prmt
 from typing import List
 from ..semver import _lib as semver
 
+__all__ = [
+    'semver_num_manually',
+    'semver_num_by_choice',
+]
+
 
 def semver_num_manually(fmt=None) -> str:
     """
