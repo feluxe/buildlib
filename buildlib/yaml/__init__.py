@@ -3,7 +3,7 @@ import sys
 from typing import Any
 
 
-def loadfile(file: str, safe=False) -> dict:
+def loadfile(file: str, safe=True) -> dict:
     """
     Load yaml file.
     """
@@ -15,12 +15,16 @@ def loadfile(file: str, safe=False) -> dict:
             return yaml.load(f.read())
 
 
-def savefile(data: Any, file: str, **kwargs) -> None:
+def savefile(data: Any, file: str, safe=True, **kwargs) -> None:
     """
     Save data to yaml file.
     """
-    with open(file, 'w') as f:
-        yaml.dump(data=data, stream=f, **kwargs)
+    if safe:
+        with open(file, 'w') as f:
+            yaml.safe_dump(data=data, stream=f, **kwargs)
+    else:
+        with open(file, 'w') as f:
+            yaml.dump(data=data, stream=f, **kwargs)
 
 
 def pprint_yaml(data: Any) -> None:
