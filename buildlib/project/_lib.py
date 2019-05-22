@@ -1,7 +1,7 @@
 import subprocess as sp
 from cmdi import CmdResult, command, set_result, strip_args
-from buildlib.semver import prompt as semver_prompt
-from buildlib import yaml
+from ..semver import prompt as semver_prompt
+from .. import yaml
 
 
 def bump_version(
