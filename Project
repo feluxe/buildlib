@@ -1,6 +1,6 @@
 public_name: buildlib
 interal_name: buildlib
-version: 2.1.7
+version: 2.1.8
 license: unlicensed
 author: Felix Meyer-Wolters
 author_email: felix@meyerwolters.de
@@ -8,12 +8,22 @@ maintainer: Felix Meyer-Wolters
 maintainer_email: felix@meyerwolters.de
 url: https://github.com/feluxe/buildlib
 description: A library to help build projects.
-keywords: [build, library]
+keywords:
+- build
+- library
 pypi:
-  install_requires: [headlines, 'prmt>=2.0.4,<3', oyaml, cmdi, sty, requests]
+  install_requires:
+  - headlines
+  - prmt>=2.0.4,<3
+  - oyaml
+  - cmdi
+  - sty
+  - requests
   tests_require: []
-  packages: [buildlib]
-  package_dir: {buildlib: buildlib}
+  packages:
+  - buildlib
+  package_dir:
+    buildlib: buildlib
   package_data: {}
   py_modules: []
   data_files: []

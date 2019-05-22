@@ -1,3 +1,4 @@
+import yaml as pyyaml
 import oyaml as yaml
 import sys
 from typing import Any
@@ -12,6 +13,7 @@ def loadfile(file: str, safe=True) -> dict:
             return yaml.safe_load(f.read())
     else:
         with open(file, 'r') as f:
+            pyyaml.warnings({'YAMLLoadWarning': False})
             return yaml.load(f.read())
 
 
