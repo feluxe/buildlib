@@ -1,7 +1,7 @@
 from typing import Optional, List, Pattern, Union
 from cmdi import command, CmdResult, set_result, strip_args
 
-from ..buildmisc import _lib
+from . import lib
 
 
 @command
@@ -10,7 +10,7 @@ def inject_interface_into_readme(
     readme_file: str = 'README.md',
     **cmdargs,
 ) -> CmdResult:
-    _lib.inject_interface_into_readme(**strip_args(locals()))
+    lib.inject_interface_into_readme(**strip_args(locals()))
     return set_result()
 
 
@@ -19,7 +19,7 @@ def build_read_the_docs(
     clean_dir: bool = False,
     **cmdargs,
 ) -> CmdResult:
-    _lib.build_read_the_docs(**strip_args(locals()))
+    lib.build_read_the_docs(**strip_args(locals()))
     return set_result()
 
 
@@ -29,7 +29,7 @@ def create_py_venv(
     venv_dir: str,
     **cmdargs,
 ) -> CmdResult:
-    _lib.create_py_venv(**strip_args(locals()))
+    lib.create_py_venv(**strip_args(locals()))
     return set_result()
 
 
@@ -39,5 +39,5 @@ def bump_py_module_version(
     new_version: str,
     **cmdargs,
 ) -> CmdResult:
-    _lib.bump_py_module_version(**strip_args(locals()))
+    lib.bump_py_module_version(**strip_args(locals()))
     return set_result()

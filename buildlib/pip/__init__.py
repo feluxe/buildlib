@@ -1,2 +1,2 @@
-from ..pip import _lib_cmd as cmd
-from ..pip._lib import *
+from .lib import *
+from . import cmd

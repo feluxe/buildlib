@@ -1,3 +1,2 @@
-from ..npm._lib import *
-from ..npm import _lib_cmd as cmd
-from ..npm import prompt
+from .lib import *
+from . import prompt, cmd

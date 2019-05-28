@@ -1,9 +1,9 @@
 from typing import Optional, List, Union
 from cmdi import CmdResult
 
-from ..git import _lib as git
-from ..git import _lib_cmd as git_cmd
-from ..git import prompt
+from . import lib as git
+from . import cmd as git_cmd
+from . import prompt
 
 
 class GitSeqSettings:

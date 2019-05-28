@@ -1,2 +1,2 @@
-from ..semver._lib import *
-from ..semver import prompt
+from .lib import *
+from . import prompt

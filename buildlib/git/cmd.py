@@ -1,12 +1,12 @@
 from typing import Optional
 from cmdi import command, CmdResult, set_result, strip_args
 
-from ..git import _lib
+from . import lib
 
 
 @command
 def add_all(**cmdargs) -> CmdResult:
-    _lib.add_all()
+    lib.add_all()
     return set_result()
 
 
@@ -15,7 +15,7 @@ def commit(
     msg: str,
     **cmdargs,
 ) -> CmdResult:
-    _lib.commit(**strip_args(locals()))
+    lib.commit(**strip_args(locals()))
     return set_result()
 
 
@@ -25,7 +25,7 @@ def tag(
     branch: str,
     **cmdargs,
 ) -> CmdResult:
-    _lib.tag(**strip_args(locals()))
+    lib.tag(**strip_args(locals()))
     return set_result()
 
 
@@ -34,22 +34,22 @@ def push(
     branch: str,
     **cmdargs,
 ) -> CmdResult:
-    _lib.push(**strip_args(locals()))
+    lib.push(**strip_args(locals()))
     return set_result()
 
 
 @command
 def get_default_branch(**cmdargs) -> CmdResult:
-    return set_result(_lib.get_default_branch())
+    return set_result(lib.get_default_branch())
 
 
 @command
 def status(**cmdargs) -> CmdResult:
-    _lib.status()
+    lib.status()
     return set_result()
 
 
 @command
 def diff(**cmdargs) -> CmdResult:
-    _lib.diff()
+    lib.diff()
     return set_result()

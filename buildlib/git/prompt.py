@@ -1,8 +1,8 @@
 import prmt
 from headlines import h3
 
-from ..git import _lib as git
-from ..git import _lib_cmd as git_cmd
+from . import lib as git
+from . import cmd as git_cmd
 
 
 def commit_msg(

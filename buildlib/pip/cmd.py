@@ -1,6 +1,6 @@
 from cmdi import CmdResult, command, set_result, strip_args
 
-from ..pip import _lib
+from . import lib
 
 
 @command
@@ -11,7 +11,7 @@ def freeze(
     options: list = None,
     **cmdargs,
 ) -> CmdResult:
-    _lib.freeze(**strip_args(locals()))
+    lib.freeze(**strip_args(locals()))
     return set_result()
 
 
@@ -23,7 +23,7 @@ def install(
     options: list = None,
     **cmdargs,
 ) -> CmdResult:
-    _lib.install(**strip_args(locals()))
+    lib.install(**strip_args(locals()))
     return set_result()
 
 
@@ -35,7 +35,7 @@ def install_requirements(
     options: list = None,
     **cmdargs,
 ) -> CmdResult:
-    _lib.install_requirements(**strip_args(locals()))
+    lib.install_requirements(**strip_args(locals()))
     return set_result()
 
 
@@ -47,5 +47,5 @@ def uninstall(
     options: list = None,
     **cmdargs,
 ) -> CmdResult:
-    _lib.uninstall(**strip_args(locals()))
+    lib.uninstall(**strip_args(locals()))
     return set_result()
