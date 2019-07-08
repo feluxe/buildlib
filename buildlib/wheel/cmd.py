@@ -16,7 +16,7 @@ def push_to_gemfury(
 @command
 def push(
     repository='pypi',
-    clean_dir: bool = False,
+    dist='dist/*',
     **cmdargs,
 ) -> CmdResult:
     lib.push(**strip_args(locals()))

@@ -76,18 +76,12 @@ def _clean_bdist_tmp_files() -> None:
     os.path.isdir(egg_file) and shutil.rmtree(egg_file)
 
 
-def push(
-    repository='pypi',
-    clean_dir: bool = False,
-) -> None:
+def push(repository='pypi', dist='dist/*') -> None:
 
     sp.run(
-        ['python', 'setup.py', 'bdist_wheel', 'upload', '-r', repository],
+        ['twine', 'upload', '-r', repository, dist],
         check=True,
     )
-
-    if clean_dir:
-        _clean_bdist_tmp_files()
 
 
 def build(clean_dir: bool = False) -> None:
