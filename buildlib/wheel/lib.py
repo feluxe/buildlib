@@ -25,6 +25,11 @@ def find_wheel(
     """
     Search dir for a wheel-file which contains a specific version number in its
     name. Return found wheel name or False.
+
+    :param semver_num: Use a semver number to search for the wheel. This will convert the
+    semver number into a wheel version number.
+    :param wheelver_num: Use the exact version string that you see in the wheel file name to
+    search for the wheel.
     """
 
     if wheelver_num:
@@ -47,7 +52,7 @@ def find_wheel(
     ]
 
     if matches:
-        return wheel_dir + '/' + matches[0]
+        return matches[0]
 
     elif not matches and raise_not_found:
         raise FileNotFoundError('Could not find wheel file.')
@@ -56,43 +61,25 @@ def find_wheel(
         return None
 
 
-def push_to_gemfury(wheel_file: str) -> None:
-
-    sp.run(
-        ['fury', 'push', wheel_file],
-        check=True,
-    )
-
-
-def _clean_bdist_tmp_files() -> None:
-
-    build_dir = f'{os.getcwd()}/build'
-
-    egg_file_opt: Optional[list] = glob.glob('**.egg-info')
-
-    egg_file: str = egg_file_opt and egg_file_opt[0] or ''
-
-    os.path.isdir(build_dir) and shutil.rmtree(build_dir)
-    os.path.isdir(egg_file) and shutil.rmtree(egg_file)
-
-
-def push(repository='pypi', dist='dist/*') -> None:
-
-    sp.run(
-        ['twine', 'upload', '-r', repository, dist],
-        check=True,
-    )
-
-
-def build(clean_dir: bool = False) -> None:
+def push(repository: str = 'pypi', wheel: str = 'dist/*') -> None:
     """
-    @clean_dir: Clean 'build' dir before running build command. This may be necessary because of
-    this: https://bitbucket.org/pypa/wheel/issues/147/bdist_wheel-should-start-by-cleaning-up
+    Push wheel file to registry via twine.
+    """
+    sp.run(['twine', 'upload', '-r', repository, wheel], check=True)
+
+
+def build(cleanup: bool = False) -> None:
+    """
+    Build wheel.
+
+    :param cleanup: Clean 'build' dir before running build command.
     """
     sp.run(
         ['python', 'setup.py', 'bdist_wheel'],
         check=True,
     )
 
-    if clean_dir:
-        _clean_bdist_tmp_files()
+    if cleanup:
+        shutil.rmtree('./build', onerror=None)
+        for f in glob.glob('**.egg-info'):
+            shutil.rmtree(f)

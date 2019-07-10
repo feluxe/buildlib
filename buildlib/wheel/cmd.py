@@ -5,18 +5,9 @@ from . import lib
 
 
 @command
-def push_to_gemfury(
-    wheel_file: str,
-    **cmdargs,
-) -> CmdResult:
-    lib.push_to_gemfury(**strip_args(locals()))
-    return set_result()
-
-
-@command
 def push(
-    repository='pypi',
-    dist='dist/*',
+    repository: str = 'pypi',
+    wheel: str = 'dist/*',
     **cmdargs,
 ) -> CmdResult:
     lib.push(**strip_args(locals()))
@@ -25,7 +16,7 @@ def push(
 
 @command
 def build(
-    clean_dir: bool = False,
+    cleanup: bool = False,
     **cmdargs,
 ) -> CmdResult:
     lib.build(**strip_args(locals()))
