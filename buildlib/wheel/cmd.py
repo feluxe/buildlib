@@ -6,8 +6,8 @@ from . import lib
 
 @command
 def push(
-    repository: str = 'pypi',
     wheel: str = 'dist/*',
+    repository: str = 'pypi',
     **cmdargs,
 ) -> CmdResult:
     lib.push(**strip_args(locals()))

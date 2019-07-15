@@ -61,7 +61,10 @@ def find_wheel(
         return None
 
 
-def push(repository: str = 'pypi', wheel: str = 'dist/*') -> None:
+def push(
+    wheel: str = 'dist/*',
+    repository: str = 'pypi',
+) -> None:
     """
     Push wheel file to registry via twine.
     """

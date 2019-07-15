@@ -5,7 +5,7 @@ Install:
 
 Usage:
   make.py build
-  make.py deploy
+  make.py push
   make.py test
   make.py bump
   make.py git
@@ -35,8 +35,9 @@ def build(cfg: Cfg):
     return wheel.cmd.build(clean_dir=True)
 
 
-def deploy(cfg: Cfg):
-    return wheel.cmd.push(clean_dir=True, repository=cfg.registry)
+def push(cfg: Cfg):
+    w = wheel.find_wheel('./dist', semver_num=cfg.version)
+    return wheel.cmd.push(f'./dist/{w}')
 
 
 def test(cfg: Cfg):
@@ -57,7 +58,7 @@ def bump(cfg: Cfg):
     r.extend(git.seq.bump_git(cfg.version, new_release))
 
     if wheel.prompt.should_push('PYPI'):
-        r.append(deploy(cfg))
+        r.append(push(cfg))
 
     return r
 
@@ -71,8 +72,8 @@ def run():
     if args['build']:
         results.append(build(cfg))
 
-    if args['deploy']:
-        results.append(deploy(cfg))
+    if args['push']:
+        results.append(push(cfg))
 
     if args['test']:
         test(cfg)
