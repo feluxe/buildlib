@@ -20,6 +20,7 @@ import os
 import subprocess as sp
 sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
 from cmdi import print_summary
+import prmt
 from buildlib import buildmisc, git, wheel, project, yaml
 from docopt import docopt
 
@@ -32,7 +33,7 @@ class Cfg:
 
 
 def build(cfg: Cfg):
-    return wheel.cmd.build(clean_dir=True)
+    return wheel.cmd.build(cleanup=True)
 
 
 def push(cfg: Cfg):
@@ -48,17 +49,20 @@ def bump(cfg: Cfg):
 
     r = []
 
-    if project.prompt.should_bump_version():
+    if prmt.confirm("BUMP VERSION number?", 'y'):
         result = project.cmd.bump_version()
         cfg.version = result.val
         r.append(result)
 
+    if prmt.confirm("BUILD wheel?", 'y'):
+        r.append(build(cfg))
+
+    if prmt.confirm("PUSH wheel to PYPI?", 'y'):
+        r.append(push(cfg))
+
     new_release = cfg.version != proj['version']
 
     r.extend(git.seq.bump_git(cfg.version, new_release))
-
-    if wheel.prompt.should_push('PYPI'):
-        r.append(push(cfg))
 
     return r
 
