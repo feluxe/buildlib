@@ -7,8 +7,6 @@ with open('README.md') as f:
 
 config = yaml.loadfile('Project')
 
-
-
 setup(
     name=config['public_name'],
     version=config['version'],
@@ -22,15 +20,21 @@ setup(
     download_url=config['url'] + '/tarball/' + config['version'],
     license=config['license'],
     keywords=config['keywords'],
-
     include_package_data=True,
-    platforms=config['pypi']['platforms'],
-    classifiers=config['pypi']['classifiers'],
-    install_requires=config['pypi']['install_requires'],
+    platforms='',
+    classifiers=[],
+    install_requires=[
+        'headlines',
+        'prmt>=3,<4',
+        'cmdi',
+        'oyaml',
+        'sty',
+        'requests',
+    ],
     packages=find_packages(where='.', exclude=('tests', 'tests.*')),
-    package_dir=config['pypi']['package_dir'],
-    package_data=config['pypi']['package_data'],
-    data_files=config['pypi']['data_files'],
-    entry_points=config['pypi']['entry_points'],
-    tests_require=config['pypi']['tests_require']
+    package_dir={'buildlib': 'buildlib'},
+    package_data={},
+    data_files=[],
+    entry_points={},
+    tests_require=[],
 )
