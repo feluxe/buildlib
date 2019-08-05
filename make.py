@@ -1,20 +1,19 @@
-"""
-Install:
+"""Install:
   pipenv install --dev --pre
-  pipenv run python make.py
 
 Usage:
-  make.py build
-  make.py push
-  make.py test
-  make.py bump
-  make.py git
-  make.py -h | --help
+  make.py [<command>] [options]
+
+Commands:
+  build    Build wheel.
+  push     Push wheel to pypi.
+  test     Run tests.
+  bump     Run interacitve bump sequence.
+  git      Run interactive git sequence.
 
 Options:
-  -h, --help               Show this screen.
+  -h, --help  Show this screen.
 """
-
 import sys
 import os
 import subprocess as sp
@@ -73,20 +72,24 @@ def run():
     args = docopt(__doc__)
     results = []
 
-    if args['build']:
+    if args['<command>'] == 'build':
         results.append(build(cfg))
 
-    if args['push']:
+    elif args['<command>'] == 'push':
         results.append(push(cfg))
 
-    if args['test']:
+    elif args['<command>'] == 'test':
         test(cfg)
 
-    if args['git']:
+    elif args['<command>'] == 'git':
         results.extend(git.seq.bump_git(cfg.version, new_release=False))
 
-    if args['bump']:
+    elif args['<command>'] == 'bump':
         results.extend(bump(cfg))
+
+    else:
+        print(__doc__)
+        return
 
     print_summary(results)
 

@@ -1,7 +1,5 @@
-
 # buildlib
-
 
 ## Description
 
-A library that helps building projects.
+A library to create build and deployment scripts.
