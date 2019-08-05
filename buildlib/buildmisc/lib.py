@@ -1,7 +1,7 @@
-import subprocess as sp
 import shutil
 import os
 import re
+import subprocess as sp
 
 
 def inject_interface_into_readme(
@@ -32,18 +32,13 @@ def inject_interface_into_readme(
 
 
 def build_read_the_docs(clean_dir: bool = False) -> None:
-    """"""
 
     build_dir = f'{os.getcwd()}/docs/build'
 
     if clean_dir and os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
-    sp.run(
-        ['make', 'html'],
-        cwd='{}/docs'.format(os.getcwd()),
-        check=True,
-    )
+    sp.run(['make', 'html'], cwd='{}/docs'.format(os.getcwd()), check=True)
 
 
 def create_py_venv(
@@ -55,10 +50,7 @@ def create_py_venv(
 
     @interpreter: must be the exact interpreter name. E.g. 'python3.5'
     """
-    sp.run(
-        [py_bin, '-m', 'venv', venv_dir],
-        check=True,
-    )
+    sp.run([py_bin, '-m', 'venv', venv_dir], check=True)
 
 
 def bump_py_module_version(file: str, new_version: str) -> None:

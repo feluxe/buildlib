@@ -2,7 +2,7 @@ from typing import Optional
 import shutil
 import os
 import glob
-from cmdi import CmdResult, command, set_result, strip_args
+from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
 
 from .. import semver
@@ -77,10 +77,7 @@ def build(cleanup: bool = False) -> None:
 
     :param cleanup: Clean 'build' dir before running build command.
     """
-    sp.run(
-        ['python', 'setup.py', 'bdist_wheel'],
-        check=True,
-    )
+    sp.run(['python', '-u', 'setup.py', 'bdist_wheel'], check=True)
 
     if cleanup:
         shutil.rmtree('./build', onerror=None)

@@ -13,7 +13,8 @@ def loadfile(file: str, safe=True) -> dict:
             return yaml.safe_load(f.read())
     else:
         with open(file, 'r') as f:
-            pyyaml.warnings({'YAMLLoadWarning': False})
+            if hasattr(pyyaml, 'warnings'):
+                pyyaml.warnings({'YAMLLoadWarning': False})
             return yaml.load(f.read())
 
 

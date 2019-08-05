@@ -1,5 +1,4 @@
-from cmdi import CmdResult, command, set_result, strip_args
-import subprocess as sp
+from cmdi import CmdResult, command, strip_cmdargs
 
 from . import lib
 
@@ -9,8 +8,7 @@ def install(
     dev: bool = False,
     **cmdargs,
 ) -> CmdResult:
-    lib.install(**strip_args(locals()))
-    return set_result()
+    return lib.install(**strip_cmdargs(locals()))
 
 
 @command
@@ -18,5 +16,4 @@ def create_env(
     version: str,
     **cmdargs,
 ) -> CmdResult:
-    lib.create_env(**strip_args(locals()))
-    return set_result()
+    return lib.create_env(**strip_cmdargs(locals()))

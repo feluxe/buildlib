@@ -1,22 +1,30 @@
 from typing import Optional
-from cmdi import command, CmdResult, set_result, strip_args
+from cmdi import command, CmdResult, strip_cmdargs
 
 from . import lib
 
 
 @command
 def add_all(**cmdargs) -> CmdResult:
-    lib.add_all()
-    return set_result()
+    return lib.add_all()
+
+
+@command
+def log(
+    revision_range: str = '-5',
+    reverse: bool = False,
+    no_pager: bool = True,
+    **cmdargs,
+) -> CmdResult:
+    return lib.log(**strip_cmdargs(locals()))
 
 
 @command
 def commit(
-    msg: str,
+    msg: str = "",
     **cmdargs,
 ) -> CmdResult:
-    lib.commit(**strip_args(locals()))
-    return set_result()
+    return lib.commit(**strip_cmdargs(locals()))
 
 
 @command
@@ -25,8 +33,7 @@ def tag(
     branch: str,
     **cmdargs,
 ) -> CmdResult:
-    lib.tag(**strip_args(locals()))
-    return set_result()
+    return lib.tag(**strip_cmdargs(locals()))
 
 
 @command
@@ -34,22 +41,19 @@ def push(
     branch: str,
     **cmdargs,
 ) -> CmdResult:
-    lib.push(**strip_args(locals()))
-    return set_result()
+    return lib.push(**strip_cmdargs(locals()))
 
 
 @command
 def get_default_branch(**cmdargs) -> CmdResult:
-    return set_result(lib.get_default_branch())
+    return lib.get_default_branch()
 
 
 @command
 def status(**cmdargs) -> CmdResult:
-    lib.status()
-    return set_result()
+    return lib.status()
 
 
 @command
 def diff(**cmdargs) -> CmdResult:
-    lib.diff()
-    return set_result()
+    return lib.diff()

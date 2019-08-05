@@ -8,8 +8,10 @@ import os
 # npm.test_bump_version()
 # npm.test_bump_version(as_cmd=True)
 
-from buildlib import yaml
+from buildlib import git
 
-yaml.loadfile('test.yaml', safe=False)
+import io
+o = io.StringIO()
+r = git.cmd.log("-5", reverse=True, _verbose=False)
 
-print('\nTests Finished')
+

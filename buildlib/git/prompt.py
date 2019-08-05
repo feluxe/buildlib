@@ -1,3 +1,4 @@
+import subprocess as sp
 import prmt
 from headlines import h3
 
@@ -10,12 +11,21 @@ def commit_msg(
     open_editor: bool = True,
 ) -> str:
 
-    return prmt.string(
-        question='Enter COMMIT message:\n',
-        fmt=fmt,
-        blacklist=[''],
-        open_editor=open_editor,
-    )
+    if open_editor:
+        r = sp.run(['git', 'commit', '--dry-run'], stdout=sp.PIPE)
+        instrucution = b"Lines starting with '#' will be ignored.\n\n" + r.stdout
+
+        return prmt.string_from_editor(
+            question='Commit Message',
+            instruction=instrucution.decode("utf8"),
+            file_type='gitcommit',
+        )
+    else:
+        return prmt.string(
+            question=r.stdout,
+            fmt=fmt,
+            blacklist=[''],
+        )
 
 
 def branch(

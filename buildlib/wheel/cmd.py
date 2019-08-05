@@ -1,5 +1,5 @@
 from typing import Optional
-from cmdi import CmdResult, command, set_result, strip_args
+from cmdi import CmdResult, command, strip_cmdargs
 
 from . import lib
 
@@ -10,8 +10,7 @@ def push(
     repository: str = 'pypi',
     **cmdargs,
 ) -> CmdResult:
-    lib.push(**strip_args(locals()))
-    return set_result()
+    return lib.push(**strip_cmdargs(locals()))
 
 
 @command
@@ -19,5 +18,4 @@ def build(
     cleanup: bool = False,
     **cmdargs,
 ) -> CmdResult:
-    lib.build(**strip_args(locals()))
-    return set_result()
+    return lib.build(**strip_cmdargs(locals()))

@@ -1,4 +1,4 @@
-from cmdi import CmdResult, command, set_result, strip_args
+from cmdi import CmdResult, command, strip_cmdargs
 
 from . import lib
 
@@ -9,4 +9,4 @@ def bump_version(
     config_file: str = 'Project',
     **cmdargs,
 ) -> CmdResult:
-    return set_result(lib.bump_version(**strip_args(locals())))
+    return lib.bump_version(**strip_cmdargs(locals()))

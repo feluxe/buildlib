@@ -1,4 +1,4 @@
-from cmdi import CmdResult, command, set_result, strip_args
+from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
 
 
@@ -11,7 +11,6 @@ def freeze(
     """
     Freeze current dependencies into 'requirements.txt'.
     """
-
     options = options or []
     sudo_cmd = 'sudo ' if sudo else ''
 
@@ -24,11 +23,7 @@ def freeze(
     else:
         cmd = [sudo_cmd + pip_bin + ' freeze ' + ' '.join(options)]
 
-    sp.run(
-        cmd,
-        shell=True,
-        check=True,
-    )
+    sp.run(cmd, shell=True, check=True)
 
 
 def install(
@@ -47,12 +42,7 @@ def install(
     cmd = [
         sudo_cmd + pip_bin + ' install ' + package + ' ' + ' '.join(options)
     ]
-
-    sp.run(
-        cmd,
-        shell=True,
-        check=True,
-    )
+    sp.run(cmd, shell=True, check=True)
 
 
 def install_requirements(
@@ -71,12 +61,7 @@ def install_requirements(
         sudo_cmd + pip_bin + ' install -r ' + requirements_file + ' ' +
         ' '.join(options)
     ]
-
-    sp.run(
-        cmd,
-        shell=True,
-        check=True,
-    )
+    sp.run(cmd, shell=True, check=True)
 
 
 def uninstall(
@@ -95,9 +80,4 @@ def uninstall(
     cmd = [
         sudo_cmd + pip_bin + ' uninstall ' + package + ' ' + ' '.join(options)
     ]
-
-    sp.run(
-        cmd,
-        shell=True,
-        check=True,
-    )
+    sp.run(cmd, shell=True, check=True)

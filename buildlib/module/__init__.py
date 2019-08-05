@@ -2,7 +2,7 @@ import os
 from importlib import util as importlib_util
 
 
-def module_exists(module_name: str):
+def module_exists(module_name: str) -> bool:
     """
     Check if a module exists.
     """
@@ -15,10 +15,11 @@ def module_exists(module_name: str):
 
 
 def load_module_from_file(module_path: str):
-    """"""
+    # TODO: Add type definitions.
+
     module_name: str = os.path.basename(module_path.replace('.py', ''))
     spec = importlib_util.spec_from_file_location(module_name, module_path)
     module = importlib_util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    spec.loader.exec_module(module)  # type: ignore
 
     return module

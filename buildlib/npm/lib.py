@@ -1,6 +1,6 @@
 import json
 from typing import Optional
-from cmdi import CmdResult, command, set_result, strip_args
+from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
 
 
@@ -20,8 +20,4 @@ def bump_version(
 
 
 def publish() -> None:
-    """"""
-    sp.run(
-        ['npm', 'publish'],
-        check=True,
-    )
+    sp.run(['npm', 'publish'], check=True)

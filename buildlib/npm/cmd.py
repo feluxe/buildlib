@@ -1,7 +1,6 @@
 import json
 from typing import Optional
-from cmdi import CmdResult, command, set_result, strip_args
-import subprocess as sp
+from cmdi import CmdResult, command, strip_cmdargs
 
 from . import lib
 
@@ -12,11 +11,9 @@ def bump_version(
     filepath: str = 'package.json',
     **cmdargs,
 ) -> CmdResult:
-    lib.bump_version(**strip_args(locals()))
-    return set_result()
+    return lib.bump_version(**strip_cmdargs(locals()))
 
 
 @command
 def publish(**cmdargs) -> CmdResult:
-    lib.publish()
-    return set_result()
+    return lib.publish()
