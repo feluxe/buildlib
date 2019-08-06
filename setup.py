@@ -25,7 +25,7 @@ setup(
     classifiers=[],
     install_requires=[
         'headlines',
-        'prmt>=3,<4',
+        'prmt>=4.0.1,<5',
         'cmdi',
         'oyaml',
         'sty',
