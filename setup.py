@@ -26,7 +26,7 @@ setup(
     install_requires=[
         'headlines',
         'prmt>=4.0.1,<5',
-        'cmdi',
+        'cmdi>=1.1.1,<2',
         'oyaml',
         'sty',
         'requests',

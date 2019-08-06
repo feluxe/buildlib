@@ -36,7 +36,7 @@ def branch(
     default = git_cmd.get_default_branch().val
 
     return prmt.string(
-        question='Enter BRANCH name:\n',
+        question='Enter BRANCH name:',
         default=default,
         fmt=fmt,
     )
@@ -51,7 +51,7 @@ def confirm_status(
     git_cmd.status()
 
     return prmt.confirm(
-        question='GIT STATUS ok?\n',
+        question='GIT STATUS ok?',
         default=default,
         fmt=fmt,
     )
@@ -66,7 +66,7 @@ def confirm_diff(
     git_cmd.diff()
 
     return prmt.confirm(
-        question='GIT DIFF ok?\n',
+        question='GIT DIFF ok?',
         default=default,
         fmt=fmt,
     )
@@ -78,7 +78,7 @@ def should_run_git(
 ) -> bool:
 
     return prmt.confirm(
-        question='Run ANY GIT COMMANDS?\n',
+        question='Run ANY GIT COMMANDS?',
         default=default,
         fmt=fmt,
     )
@@ -90,7 +90,7 @@ def should_add_all(
 ) -> bool:
 
     return prmt.confirm(
-        question='Run GIT ADD ALL ("git add --all")?\n',
+        question='Run GIT ADD ALL ("git add --all")?',
         default=default,
         fmt=fmt,
     )
@@ -102,7 +102,7 @@ def should_commit(
 ) -> bool:
 
     return prmt.confirm(
-        question='Run GIT COMMIT?\n',
+        question='Run GIT COMMIT?',
         default=default,
         fmt=fmt,
     )
@@ -114,7 +114,7 @@ def should_tag(
 ) -> bool:
 
     return prmt.confirm(
-        question='Run GIT TAG?\n',
+        question='Run GIT TAG?',
         default=default,
         fmt=fmt,
     )
@@ -126,7 +126,7 @@ def should_push(
 ) -> bool:
 
     return prmt.confirm(
-        question='GIT PUSH to GITHUB?\n',
+        question='GIT PUSH to GITHUB?',
         default=default,
         fmt=fmt,
     )
