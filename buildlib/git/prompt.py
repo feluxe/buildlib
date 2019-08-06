@@ -1,6 +1,5 @@
 import subprocess as sp
 import prmt
-from headlines import h3
 
 from . import lib as git
 from . import cmd as git_cmd
@@ -47,7 +46,6 @@ def confirm_status(
     fmt=None,
 ) -> bool:
 
-    print(h3('Git Status'))
     git_cmd.status()
 
     return prmt.confirm(
@@ -62,7 +60,6 @@ def confirm_diff(
     fmt=None,
 ) -> bool:
 
-    print(h3('Git Diff'))
     git_cmd.diff()
 
     return prmt.confirm(
