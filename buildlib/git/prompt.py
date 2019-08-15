@@ -1,5 +1,9 @@
 import subprocess as sp
-import prmt
+
+try:
+    from mewo.term import prompt
+except ImportError:
+    import prmt as prompt
 
 from . import lib as git
 from . import cmd as git_cmd
@@ -14,13 +18,13 @@ def commit_msg(
         r = sp.run(['git', 'commit', '--dry-run'], stdout=sp.PIPE)
         instrucution = b"Lines starting with '#' will be ignored.\n\n" + r.stdout
 
-        return prmt.string_from_editor(
+        return prompt.string_from_editor(
             question='Commit Message',
             instruction=instrucution.decode("utf8"),
             file_type='gitcommit',
         )
     else:
-        return prmt.string(
+        return prompt.string(
             question=r.stdout,
             fmt=fmt,
             blacklist=[''],
@@ -34,7 +38,7 @@ def branch(
 
     default = git_cmd.get_default_branch().val
 
-    return prmt.string(
+    return prompt.string(
         question='Enter BRANCH name:',
         default=default,
         fmt=fmt,
@@ -48,7 +52,7 @@ def confirm_status(
 
     git_cmd.status()
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='GIT STATUS ok?',
         default=default,
         fmt=fmt,
@@ -62,7 +66,7 @@ def confirm_diff(
 
     git_cmd.diff()
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='GIT DIFF ok?',
         default=default,
         fmt=fmt,
@@ -74,7 +78,7 @@ def should_run_git(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='Run ANY GIT COMMANDS?',
         default=default,
         fmt=fmt,
@@ -86,7 +90,7 @@ def should_add_all(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='Run GIT ADD ALL ("git add --all")?',
         default=default,
         fmt=fmt,
@@ -98,7 +102,7 @@ def should_commit(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='Run GIT COMMIT?',
         default=default,
         fmt=fmt,
@@ -110,7 +114,7 @@ def should_tag(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='Run GIT TAG?',
         default=default,
         fmt=fmt,
@@ -122,7 +126,7 @@ def should_push(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='GIT PUSH to GITHUB?',
         default=default,
         fmt=fmt,

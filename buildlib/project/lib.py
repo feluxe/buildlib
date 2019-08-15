@@ -1,4 +1,3 @@
-from cmdi import CmdResult, command, strip_cmdargs
 from ..semver import prompt as semver_prompt
 from .. import yaml
 

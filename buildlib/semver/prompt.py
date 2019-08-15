@@ -1,5 +1,9 @@
-import prmt
 from typing import List
+
+try:
+    from mewo.term import prompt
+except ImportError:
+    import prmt as prompt
 
 from . import lib as semver
 
@@ -8,7 +12,7 @@ def semver_num_manually(fmt=None) -> str:
     """
     Ask user to enter a new version num. If input invalid recurse.
     """
-    version: str = prmt.string(
+    version: str = prompt.string(
         question='Please enter new semver num.',
         fmt=fmt,
     )
@@ -25,7 +29,7 @@ def _generate_update_semver_options(
     is_pre: bool,
 ) -> List[str]:
     """
-    Generate the options that are shown to the user when she has to pick a 
+    Generate the options that are shown to the user when she has to pick a
     version num.
     """
     options: list = []
@@ -64,7 +68,7 @@ def semver_num_by_choice(
 
     default: int = 4 if is_pre_release else 3
 
-    selected_key, _ = prmt.select(
+    selected_key, _ = prompt.select(
         question=question,
         options=options,
         default=default,

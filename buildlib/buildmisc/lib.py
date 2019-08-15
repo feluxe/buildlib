@@ -22,8 +22,7 @@ def inject_interface_into_readme(
     end: int = readme_str.find('```', start)
 
     if '```' in readme_str:
-        mod_str: str = readme_str[0:start - 3] + help_str + readme_str[end +
-                                                                       3:]
+        mod_str: str = readme_str[0:start - 3] + help_str + readme_str[end + 3:]
     else:
         mod_str = help_str + readme_str
 

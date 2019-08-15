@@ -1,4 +1,7 @@
-import prmt
+try:
+    from mewo.term import prompt
+except ImportError:
+    import prmt as prompt
 
 
 def should_bump_version(
@@ -6,7 +9,7 @@ def should_bump_version(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question='BUMP VERSION number?\n',
         default=default,
         fmt=fmt,

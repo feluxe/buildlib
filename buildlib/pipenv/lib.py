@@ -1,4 +1,3 @@
-from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
 
 

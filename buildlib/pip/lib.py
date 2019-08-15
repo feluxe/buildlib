@@ -1,4 +1,3 @@
-from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
 
 
@@ -39,9 +38,7 @@ def install(
     options = options or []
     sudo_cmd = 'sudo ' if sudo else ''
 
-    cmd = [
-        sudo_cmd + pip_bin + ' install ' + package + ' ' + ' '.join(options)
-    ]
+    cmd = [sudo_cmd + pip_bin + ' install ' + package + ' ' + ' '.join(options)]
     sp.run(cmd, shell=True, check=True)
 
 
@@ -77,7 +74,5 @@ def uninstall(
     options = options or []
     sudo_cmd = 'sudo ' if sudo else ''
 
-    cmd = [
-        sudo_cmd + pip_bin + ' uninstall ' + package + ' ' + ' '.join(options)
-    ]
+    cmd = [sudo_cmd + pip_bin + ' uninstall ' + package + ' ' + ' '.join(options)]
     sp.run(cmd, shell=True, check=True)

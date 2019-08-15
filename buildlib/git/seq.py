@@ -1,6 +1,10 @@
 from typing import Optional, List, Union
-from cmdi import CmdResult
 from dataclasses import dataclass
+
+try:
+    from mewo.cmdi import CmdResult
+except ImportError:
+    from cmdi import CmdResult
 
 from . import lib as git
 from . import cmd as git_cmd
@@ -66,9 +70,7 @@ def bump_git(
 
     # Ask user to run 'tag'.
     if s.apply_tag is None:
-        s.apply_tag = prompt.should_tag(
-            default='y' if s.new_release is True else 'n'
-        )
+        s.apply_tag = prompt.should_tag(default='y' if s.new_release is True else 'n')
 
     # Ask user to push.
     if s.push is None:

@@ -1,4 +1,7 @@
-import prmt
+try:
+    from mewo.term import prompt
+except ImportError:
+    import prmt as prompt
 
 
 def should_run_any(
@@ -7,7 +10,7 @@ def should_run_any(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question=f'Run ANY {name}?\n',
         default=default,
         fmt=fmt,
@@ -20,7 +23,7 @@ def should_run_file(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question=f'Do you want to RUN {name}?\n',
         default=default,
         fmt=fmt,
@@ -33,7 +36,7 @@ def should_build(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question=f'Do you want to BUILD {item}?\n',
         default=default,
         fmt=fmt,
@@ -47,7 +50,7 @@ def should_push(
     fmt=None,
 ) -> bool:
 
-    return prmt.confirm(
+    return prompt.confirm(
         question=f'Do you want to PUSH {item} to {dst}?\n',
         default=default,
         fmt=fmt,

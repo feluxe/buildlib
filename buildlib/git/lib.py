@@ -53,9 +53,7 @@ def get_default_branch() -> Union[str, None]:
     cp1 = sp.run(['git', 'show-branch', '--list'], stdout=sp.PIPE)
 
     if cp1.stdout.find(b'No revs') == -1 and cp1.returncode == 0:
-        cp2 = sp.run(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=sp.PIPE
-        )
+        cp2 = sp.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=sp.PIPE)
 
         branch = cp2.stdout.replace(b'\n', b'')
 

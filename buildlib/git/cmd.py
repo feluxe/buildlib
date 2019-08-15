@@ -1,7 +1,10 @@
 from typing import Optional
-from cmdi import command, CmdResult, strip_cmdargs
-
 from . import lib
+
+try:
+    from mewo.cmdi import command, CmdResult, strip_cmdargs
+except ImportError:
+    from cmdi import command, CmdResult, strip_cmdargs
 
 
 @command

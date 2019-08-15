@@ -1,9 +1,9 @@
-from typing import Optional
 import shutil
 import os
 import glob
-from cmdi import CmdResult, command, strip_cmdargs
 import subprocess as sp
+
+from typing import Optional
 
 from .. import semver
 
