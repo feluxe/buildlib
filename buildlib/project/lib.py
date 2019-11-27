@@ -1,19 +1,39 @@
+import os
+import toml
 from ..semver import prompt as semver_prompt
 from .. import yaml
 
 
 def bump_version(
     semver_num: str = None,
-    config_file: str = 'Project',
+    config_file: str = "pyproject.toml",
 ) -> str:
 
-    cfg: dict = yaml.loadfile(config_file)
+    file = config_file
+
+    if not os.path.exists(config_file):
+        file = "pyproject.toml"
+        if not os.path.exists(config_file):
+            file = "Project"
+
+    try:
+        data = toml.load(file)
+        data_type = "toml"
+        version_in_file = data["mewo_project"]["version"]
+    except toml.decoder.TomlDecodeError:
+        data = yaml.loadfile(file)
+        data_type = "yaml"
+        version_in_file = data["version"]
 
     if not semver_num:
-        semver_num = semver_prompt.semver_num_by_choice(cfg['version'])
+        semver_num = semver_prompt.semver_num_by_choice(version_in_file)
 
-    cfg.update({'version': semver_num})
-
-    yaml.savefile(cfg, config_file)
+    if data_type == "toml":
+        data["mewo_project"].update({"version": semver_num})
+        with open(file, "w") as f:
+            toml.dump(data, f)
+    elif data_type == "yaml":
+        data.update({"version": semver_num})
+        yaml.savefile(data, file)
 
     return semver_num

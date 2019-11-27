@@ -9,7 +9,7 @@ from . import lib
 @command
 def bump_version(
     semver_num: str = None,
-    config_file: str = 'Project',
+    config_file: str = "pyproject.toml",
     **cmdargs,
 ) -> CmdResult:
     return lib.bump_version(**strip_cmdargs(locals()))
