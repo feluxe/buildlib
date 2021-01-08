@@ -14,21 +14,24 @@ Commands:
 Options:
   -h, --help  Show this screen.
 """
-import sys
 import os
 import subprocess as sp
-sys.path.append(os.path.abspath(os.path.join('..', 'buildlib')))
-from cmdi import print_summary
+import sys
+
+sys.path.append(os.path.abspath(os.path.join("..", "buildlib")))
 import prmt
-from buildlib import buildmisc, git, wheel, project, yaml
+import toml
+from cmdi import print_summary
 from docopt import docopt
 
-proj = yaml.loadfile('Project')
+from buildlib import buildmisc, git, project, wheel
+
+proj = toml.load("pyproject.toml")["mewo_project"]
 
 
 class Cfg:
-    version = proj['version']
-    registry = 'pypi'
+    version = proj["version"]
+    registry = "pypi"
 
 
 def build(cfg: Cfg):
@@ -36,30 +39,30 @@ def build(cfg: Cfg):
 
 
 def push(cfg: Cfg):
-    w = wheel.find_wheel('./dist', semver_num=cfg.version)
-    return wheel.cmd.push(f'./dist/{w}')
+    w = wheel.find_wheel("./dist", semver_num=cfg.version)
+    return wheel.cmd.push(f"./dist/{w}")
 
 
 def test(cfg: Cfg):
-    sp.run(['pipenv', 'run', 'python', '-m', 'tests'])
+    sp.run(["pipenv", "run", "python", "-m", "tests"])
 
 
 def bump(cfg: Cfg):
 
     r = []
 
-    if prmt.confirm("BUMP VERSION number?", 'y'):
+    if prmt.confirm("BUMP VERSION number?", "y"):
         result = project.cmd.bump_version()
         cfg.version = result.val
         r.append(result)
 
-    if prmt.confirm("BUILD wheel?", 'y'):
+    if prmt.confirm("BUILD wheel?", "y"):
         r.append(build(cfg))
 
-    if prmt.confirm("PUSH wheel to PYPI?", 'y'):
+    if prmt.confirm("PUSH wheel to PYPI?", "y"):
         r.append(push(cfg))
 
-    new_release = cfg.version != proj['version']
+    new_release = cfg.version != proj["version"]
 
     r.extend(git.seq.bump_git(cfg.version, new_release))
 
@@ -72,19 +75,19 @@ def run():
     args = docopt(__doc__)
     results = []
 
-    if args['<command>'] == 'build':
+    if args["<command>"] == "build":
         results.append(build(cfg))
 
-    elif args['<command>'] == 'push':
+    elif args["<command>"] == "push":
         results.append(push(cfg))
 
-    elif args['<command>'] == 'test':
+    elif args["<command>"] == "test":
         test(cfg)
 
-    elif args['<command>'] == 'git':
+    elif args["<command>"] == "git":
         results.extend(git.seq.bump_git(cfg.version, new_release=False))
 
-    elif args['<command>'] == 'bump':
+    elif args["<command>"] == "bump":
         results.extend(bump(cfg))
 
     else:
@@ -94,8 +97,8 @@ def run():
     print_summary(results)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         run()
     except KeyboardInterrupt:
-        print('\n\nScript aborted by user.')
+        print("\n\nScript aborted by user.")

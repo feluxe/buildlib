@@ -6,11 +6,12 @@ name = "pypi"
 [packages]
 
 [dev-packages]
+toml = "*"
 docopt = "*"
 wheel = "*"
 setuptools = "*"
 pylint = "*"
-yapf = "*"
+black = "*"
 mypy = "*"
 cmdi = "*"
 prmt = "*"
@@ -18,6 +19,7 @@ headlines = "*"
 oyaml = "*"
 sty = "*"
 requests = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"
