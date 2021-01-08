@@ -6,7 +6,6 @@ try:
 except ImportError:
     from cmdi import CmdResult
 
-from . import lib as git
 from . import cmd as git_cmd
 from . import prompt
 

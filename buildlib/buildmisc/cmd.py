@@ -1,4 +1,3 @@
-from typing import Optional, List, Pattern, Union
 from . import lib
 
 try:
@@ -10,7 +9,7 @@ except ImportError:
 @command
 def inject_interface_into_readme(
     interface_file: str,
-    readme_file: str = 'README.md',
+    readme_file: str = "README.md",
     **cmdargs,
 ) -> CmdResult:
     lib.inject_interface_into_readme(**strip_cmdargs(locals()))

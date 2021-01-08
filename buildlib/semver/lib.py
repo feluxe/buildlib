@@ -70,14 +70,22 @@ def convert_semver_to_wheelver(semver_num: str) -> str:
     """
     Convert a semver num to a python wheel-version num e.g.:
     1.12.1-alpha.10 -> 1.12.1a10
+    1.0.0-rc.0 -> 1.0.0rc0
     """
     if not validate(semver_num):
         raise ValueError('Given version number is not of semver format.')
 
     suffix: str = extract_pre_release_suffix(semver_num)
 
+    # Some suffixes such as 'alpha' and 'beta' are reduced to single letters 'a','b',
+    # others such as 'rc' are not reduced. 'rc' remains 'rc'.
+    if suffix in ["alpha", "beta"]:
+        suffix = suffix[1]
+    else:
+        suffix = suffix[1:]
+
     if suffix != '':
-        wheelvernum = semver_num.replace(suffix + '.', suffix[1])
+        wheelvernum = semver_num.replace(suffix + '.', suffix)
 
     else:
         wheelvernum = semver_num

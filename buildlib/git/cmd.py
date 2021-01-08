@@ -1,4 +1,3 @@
-from typing import Optional
 from . import lib
 
 try:
@@ -14,7 +13,7 @@ def add_all(**cmdargs) -> CmdResult:
 
 @command
 def log(
-    revision_range: str = '-5',
+    revision_range: str = "-5",
     reverse: bool = False,
     no_pager: bool = True,
     **cmdargs,
@@ -53,10 +52,21 @@ def get_default_branch(**cmdargs) -> CmdResult:
 
 
 @command
-def status(**cmdargs) -> CmdResult:
-    return lib.status()
+def status(
+    porcelain: bool = False,
+    **cmdargs,
+) -> CmdResult:
+    return lib.status(**strip_cmdargs(locals()))
 
 
 @command
 def diff(**cmdargs) -> CmdResult:
     return lib.diff()
+
+
+@command
+def branch(
+    show_current: bool = False,
+    **cmdargs,
+) -> CmdResult:
+    return lib.branch(**strip_cmdargs(locals()))

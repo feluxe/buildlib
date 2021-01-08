@@ -1,7 +1,7 @@
 import os
 import toml
 from ..semver import prompt as semver_prompt
-from .. import yaml
+from .. import yaml_
 
 
 def bump_version(
@@ -11,10 +11,9 @@ def bump_version(
 
     file = config_file
 
-    if not os.path.exists(config_file):
-        file = "pyproject.toml"
-        if not os.path.exists(config_file):
-            file = "Project"
+    if not os.path.exists(file):
+        file = "Project"
+        print(f"Cannot find '{config_file}'. Falling back to '{file}'...")
 
     try:
         data = toml.load(file)

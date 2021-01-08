@@ -5,7 +5,6 @@ try:
 except ImportError:
     import prmt as prompt
 
-from . import lib as git
 from . import cmd as git_cmd
 
 

@@ -1,7 +1,7 @@
-import yaml as pyyaml
-import oyaml as yaml
 import sys
 from typing import Any
+import yaml as pyyaml
+import oyaml as yaml
 
 
 def loadfile(file: str, safe=True) -> dict:

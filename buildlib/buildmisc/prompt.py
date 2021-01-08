@@ -6,12 +6,12 @@ except ImportError:
 
 def should_run_any(
     name: str,
-    default: str = '',
+    default: str = "",
     fmt=None,
 ) -> bool:
 
     return prompt.confirm(
-        question=f'Run ANY {name}?\n',
+        question=f"Run ANY {name}?\n",
         default=default,
         fmt=fmt,
     )
@@ -19,12 +19,12 @@ def should_run_any(
 
 def should_run_file(
     name: str,
-    default: str = '',
+    default: str = "",
     fmt=None,
 ) -> bool:
 
     return prompt.confirm(
-        question=f'Do you want to RUN {name}?\n',
+        question=f"Do you want to RUN {name}?\n",
         default=default,
         fmt=fmt,
     )
@@ -32,12 +32,12 @@ def should_run_file(
 
 def should_build(
     item: str,
-    default: str = '',
+    default: str = "",
     fmt=None,
 ) -> bool:
 
     return prompt.confirm(
-        question=f'Do you want to BUILD {item}?\n',
+        question=f"Do you want to BUILD {item}?\n",
         default=default,
         fmt=fmt,
     )
@@ -46,12 +46,12 @@ def should_build(
 def should_push(
     item: str,
     dst: str,
-    default: str = '',
+    default: str = "",
     fmt=None,
 ) -> bool:
 
     return prompt.confirm(
-        question=f'Do you want to PUSH {item} to {dst}?\n',
+        question=f"Do you want to PUSH {item} to {dst}?\n",
         default=default,
         fmt=fmt,
     )
